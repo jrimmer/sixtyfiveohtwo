@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Listing - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+           MEMBER LISTING
+===============================================
+</pre>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Level</th>
+                    <th>Rank</th>
+                    <th>Status</th>
+                    <th>Last On</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% members.forEach(member => { %>
+                <tr>
+                    <td><%= member.name %></td>
+                    <td><%= member.level %></td>
+                    <td><%= member.rank_title %></td>
+                    <td><%= member.status %></td>
+                    <td><%= member.last_login ? new Date(member.last_login).toLocaleDateString() : 'Never' %></td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <% if (totalPages > 1) { %>
+        <div class="pagination">
+            <% if (page > 1) { %>
+            <a href="/main/members?page=<%= page - 1 %>">&lt; Prev</a>
+            <% } %>
+            <span>Page <%= page %> of <%= totalPages %></span>
+            <% if (page < totalPages) { %>
+            <a href="/main/members?page=<%= page + 1 %>">Next &gt;</a>
+            <% } %>
+        </div>
+        <% } %>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/main">Return to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

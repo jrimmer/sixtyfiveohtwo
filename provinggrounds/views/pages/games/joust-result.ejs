@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joust Result - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+           JOUST RESULT
+===============================================
+</pre>
+        </div>
+
+        <h2>You vs <%= opponent.name %></h2>
+
+        <div class="combat-log">
+            <% log.forEach(entry => { %>
+            <p><%= entry %></p>
+            <% }); %>
+        </div>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">Your Wins:</span>
+                <span class="stat-value"><%= userWins %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Opponent Wins:</span>
+                <span class="stat-value"><%= oppWins %></span>
+            </div>
+        </div>
+
+        <div class="message <%= won ? 'message-success' : 'message-error' %>">
+            <% if (won) { %>
+            <strong>VICTORY!</strong>
+            <p>You defeated <%= opponent.name %> in the joust!</p>
+            <p>Gold earned: <%= goldReward %></p>
+            <% } else { %>
+            <strong>DEFEAT!</strong>
+            <p>You were bested by <%= opponent.name %>.</p>
+            <p>Better luck next time!</p>
+            <% } %>
+        </div>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">J)</span>
+                <a href="/games/joust">Return to Jousting</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/main">Return to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

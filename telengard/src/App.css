@@ -1,0 +1,61 @@
+/* App-specific styles */
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Animation for damage flash */
+@keyframes damage-flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; background-color: rgba(239, 68, 68, 0.3); }
+}
+
+.damage-flash {
+  animation: damage-flash 0.2s ease-in-out;
+}
+
+/* Animation for treasure sparkle */
+@keyframes sparkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; filter: brightness(1.5); }
+}
+
+.sparkle {
+  animation: sparkle 0.5s ease-in-out;
+}
+
+/* Scrollbar styling for message panels */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* ASCII renderer pre formatting */
+pre {
+  margin: 0;
+  white-space: pre;
+}
+
+/* Focus styles for accessibility */
+button:focus-visible {
+  outline: 2px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+input:focus-visible {
+  outline: 2px solid #f59e0b;
+  outline-offset: 2px;
+}

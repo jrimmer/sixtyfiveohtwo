@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Stats - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+            CHARACTER STATS
+===============================================
+</pre>
+        </div>
+
+        <h2><%= user.name %></h2>
+        <% if (user.real_name) { %>
+        <p style="color: var(--dim-color);">(<%= user.real_name %>)</p>
+        <% } %>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">Level:</span>
+                <span class="stat-value"><%= user.level %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Rank:</span>
+                <span class="stat-value"><%= user.rank_title %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Experience:</span>
+                <span class="stat-value"><%= user.experience %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Status:</span>
+                <span class="stat-value"><%= user.status %></span>
+            </div>
+        </div>
+
+        <h3>Combat Stats</h3>
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">HP:</span>
+                <span class="stat-value"><%= user.hp %>/<%= user.max_hp %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Power:</span>
+                <span class="stat-value"><%= user.power %>/<%= user.max_power %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Strength:</span>
+                <span class="stat-value"><%= user.strength %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Agility:</span>
+                <span class="stat-value"><%= user.agility %></span>
+            </div>
+        </div>
+
+        <h3>Equipment</h3>
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Weapon:</span>
+                <span class="stat-value"><%= user.weapon_name %> (+<%= user.weapon_power %>)</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Armor:</span>
+                <span class="stat-value"><%= user.armor_name %> (+<%= user.armor_power %>)</span>
+            </div>
+        </div>
+
+        <h3>Wealth</h3>
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Gold:</span>
+                <span class="stat-value"><%= user.gold %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Bank:</span>
+                <span class="stat-value"><%= user.bank %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Food:</span>
+                <span class="stat-value"><%= user.food %> units</span>
+            </div>
+        </div>
+
+        <h3>Combat Record</h3>
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Kills:</span>
+                <span class="stat-value"><%= user.kills %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Deaths:</span>
+                <span class="stat-value"><%= user.deaths %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Monsters Slain:</span>
+                <span class="stat-value"><%= user.monsters_killed %></span>
+            </div>
+        </div>
+
+        <% if (spells && spells.length > 0) { %>
+        <h3>Known Spells</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Spell</th>
+                    <th>Type</th>
+                    <th>Power</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% spells.forEach(spell => { %>
+                <tr>
+                    <td><%= spell.name %></td>
+                    <td><%= spell.is_battle ? 'Battle' : 'Peace' %></td>
+                    <td><%= spell.power %></td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <% } %>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/main">Return to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

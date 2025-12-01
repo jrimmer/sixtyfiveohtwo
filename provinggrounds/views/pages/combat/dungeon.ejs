@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Dungeon - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+            THE DUNGEON
+   "Dark corridors await the brave..."
+===============================================
+</pre>
+        </div>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">HP:</span>
+                <span class="stat-value"><%= user.hp %>/<%= user.max_hp %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Power:</span>
+                <span class="stat-value"><%= user.power %>/<%= user.max_power %></span>
+            </div>
+        </div>
+
+        <% if (user.hp <= 0) { %>
+        <div class="message message-error">
+            You are too injured to fight! Visit the healer.
+        </div>
+        <% } else { %>
+        <p>You descend into the dark dungeon...</p>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">S)</span>
+                <form action="/combat/dungeon/search" method="POST" style="display: inline;">
+                    <button type="submit">Search for Monsters</button>
+                </form>
+            </div>
+        </div>
+        <% } %>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/combat">Leave the Dungeon</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

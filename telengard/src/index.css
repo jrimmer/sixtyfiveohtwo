@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+/* Base styles */
+:root {
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #0f172a;
+}
+
+/* Reset button styles for Tailwind */
+button {
+  cursor: pointer;
+}
+
+/* ASCII mode specific styles */
+.font-mono {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Disable text selection during gameplay */
+.select-none {
+  user-select: none;
+}

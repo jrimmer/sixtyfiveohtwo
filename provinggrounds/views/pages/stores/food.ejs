@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Shop - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+             FOOD SHOP
+      "Sustenance for adventurers!"
+===============================================
+</pre>
+        </div>
+
+        <% if (typeof message !== 'undefined' && message) { %>
+        <div class="message message-success">
+            <%= message %>
+        </div>
+        <% } %>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+        <div class="message message-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">Gold:</span>
+                <span class="stat-value"><%= user.gold %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Food:</span>
+                <span class="stat-value"><%= user.food %> units</span>
+            </div>
+        </div>
+
+        <p>Food is essential for survival. Each day you consume 1 unit of food.
+        Without food, you will slowly starve!</p>
+
+        <h3>Buy Food</h3>
+        <p>Price: <%= foodPrice %> gold per unit</p>
+
+        <form action="/stores/food/buy" method="POST" style="margin: 20px 0;">
+            <label>Units to buy:</label>
+            <input type="number" name="amount" min="1" max="<%= Math.floor(user.gold / foodPrice) %>" value="10" style="width: 80px;">
+            <button type="submit">Buy Food</button>
+        </form>
+
+        <div style="color: var(--dim-color); margin: 20px 0;">
+            <p>Quick Buy:</p>
+            <form action="/stores/food/buy" method="POST" style="display: inline; margin-right: 10px;">
+                <input type="hidden" name="amount" value="10">
+                <button type="submit">10 units (<%= foodPrice * 10 %> gold)</button>
+            </form>
+            <form action="/stores/food/buy" method="POST" style="display: inline; margin-right: 10px;">
+                <input type="hidden" name="amount" value="50">
+                <button type="submit">50 units (<%= foodPrice * 50 %> gold)</button>
+            </form>
+            <form action="/stores/food/buy" method="POST" style="display: inline;">
+                <input type="hidden" name="amount" value="100">
+                <button type="submit">100 units (<%= foodPrice * 100 %> gold)</button>
+            </form>
+        </div>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/stores">Return to Bazaar</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

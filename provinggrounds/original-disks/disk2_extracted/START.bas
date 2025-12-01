@@ -1,0 +1,6 @@
+2090 
+
+8890 Turn Disk Over and Press Return"
+20 GETA$
+25 PRINT
+30 PRINTCHR$(4)"RUN START,D1"

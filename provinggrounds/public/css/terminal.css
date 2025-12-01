@@ -1,0 +1,394 @@
+/**
+ * Terminal-style CSS for Proving Grounds BBS
+ * Authentic retro BBS aesthetic
+ */
+
+/* Reset and base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-color: #000000;
+    --text-color: #00ff00;
+    --dim-color: #008800;
+    --bright-color: #88ff88;
+    --border-color: #00aa00;
+    --link-color: #00ffff;
+    --error-color: #ff0000;
+    --warning-color: #ffff00;
+    --highlight-bg: #003300;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    min-height: 100vh;
+    padding-bottom: 20px;
+}
+
+/* CRT scanline effect */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Container */
+.terminal {
+    max-width: 80ch;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Headers */
+h1, h2, h3 {
+    color: var(--bright-color);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 1.5em;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+h2 {
+    font-size: 1.2em;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 5px;
+}
+
+/* Links */
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--bright-color);
+    text-decoration: underline;
+}
+
+/* ASCII art box */
+.ascii-box {
+    padding: 15px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.ascii-box pre {
+    color: var(--bright-color);
+    white-space: pre;
+    overflow-x: auto;
+    display: inline-block;
+    text-align: left;
+}
+
+/* Menu */
+.menu {
+    margin: 20px 0;
+}
+
+.menu-item {
+    padding: 5px 0;
+    display: flex;
+    align-items: flex-start;
+}
+
+.menu-key {
+    color: var(--warning-color);
+    width: 30px;
+    flex-shrink: 0;
+}
+
+.menu-item a {
+    flex: 1;
+}
+
+/* Forms */
+.form-group {
+    margin: 15px 0;
+}
+
+label {
+    display: block;
+    color: var(--dim-color);
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 8px;
+    font-family: inherit;
+    font-size: inherit;
+    width: 100%;
+    max-width: 40ch;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--bright-color);
+    box-shadow: 0 0 5px var(--text-color);
+}
+
+button, .btn {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 8px 16px;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+button:hover, .btn:hover {
+    background-color: var(--highlight-bg);
+    border-color: var(--bright-color);
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+th, td {
+    padding: 5px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--dim-color);
+}
+
+th {
+    color: var(--bright-color);
+    border-bottom: 2px solid var(--border-color);
+}
+
+tr:hover {
+    background-color: var(--highlight-bg);
+}
+
+/* Stats display */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+    margin: 10px 0;
+}
+
+.stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+}
+
+.stat-label {
+    color: var(--dim-color);
+}
+
+.stat-value {
+    color: var(--bright-color);
+}
+
+/* Messages */
+.message {
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.message-success {
+    border-color: var(--text-color);
+    color: var(--bright-color);
+}
+
+.message-error {
+    border-color: var(--error-color);
+    color: var(--error-color);
+}
+
+.message-warning {
+    border-color: var(--warning-color);
+    color: var(--warning-color);
+}
+
+/* Combat log */
+.combat-log {
+    background-color: rgba(0, 30, 0, 0.5);
+    padding: 10px;
+    margin: 10px 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.combat-log::before,
+.combat-log::after {
+    content: "════════════════════════════════════════════════════════";
+    display: block;
+    color: var(--border-color);
+    overflow: hidden;
+}
+
+.combat-log::before {
+    margin-bottom: 10px;
+}
+
+.combat-log::after {
+    margin-top: 10px;
+}
+
+.combat-log p {
+    padding: 3px 0;
+}
+
+.combat-hit {
+    color: var(--error-color);
+}
+
+.combat-miss {
+    color: var(--dim-color);
+}
+
+.combat-victory {
+    color: var(--warning-color);
+    font-weight: bold;
+}
+
+/* Status bar */
+.status-bar {
+    margin-top: 20px;
+    background-color: var(--bg-color);
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+/* Prompt */
+.prompt {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.prompt::before {
+    content: ">";
+    color: var(--bright-color);
+    margin-right: 10px;
+}
+
+/* Board message */
+.board-message {
+    margin: 10px 0;
+    padding: 10px;
+}
+
+.board-message::before,
+.board-message::after {
+    content: "────────────────────────────────────────────────────────";
+    display: block;
+    color: var(--dim-color);
+    overflow: hidden;
+}
+
+.board-message::before {
+    margin-bottom: 10px;
+}
+
+.board-message::after {
+    margin-top: 10px;
+}
+
+.board-message-header {
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.board-message-body {
+    white-space: pre-wrap;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.pagination a {
+    padding: 5px 10px;
+}
+
+.pagination a::before {
+    content: "[";
+    color: var(--border-color);
+}
+
+.pagination a::after {
+    content: "]";
+    color: var(--border-color);
+}
+
+.pagination a.active {
+    background-color: var(--highlight-bg);
+}
+
+.pagination a.active::before,
+.pagination a.active::after {
+    color: var(--bright-color);
+}
+
+/* Loading animation */
+.loading::after {
+    content: "_";
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .terminal {
+        padding: 10px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    table {
+        font-size: 12px;
+    }
+}

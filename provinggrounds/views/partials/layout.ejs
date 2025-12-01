@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <%- body %>
+
+        <% if (typeof user !== 'undefined' && user) { %>
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %> (<%= user.rank_title %>)</span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+        <% } %>
+    </div>
+
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

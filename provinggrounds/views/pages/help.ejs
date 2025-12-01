@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+              HELP FILE
+       The Proving Grounds BBS
+===============================================
+</pre>
+        </div>
+
+        <h2>Welcome to The Proving Grounds!</h2>
+        <p>A fantasy BBS adventure where you can fight monsters,
+battle other users, explore dungeons, and become the most
+powerful warrior in the realm!</p>
+
+        <h3>Getting Started</h3>
+        <p>As a new character, you start at Level 1 with basic
+equipment. Your goal is to gain experience by fighting
+monsters in the Dungeon, then level up and acquire better
+equipment from the stores.</p>
+
+        <h3>Combat</h3>
+        <p>- <strong>Dungeon:</strong> Fight monsters for gold and experience
+- <strong>Proving Grounds:</strong> Battle other users for glory
+- <strong>Corridor of Death:</strong> Deadly challenges for the brave
+- <strong>Castle Attack:</strong> Raid the castle for treasures</p>
+
+        <h3>Stores</h3>
+        <p>Visit the Bazaar to purchase:
+- <strong>Weapons:</strong> Increase your attack power
+- <strong>Armor:</strong> Increase your defense
+- <strong>Spells:</strong> Learn magical abilities
+- <strong>Healing:</strong> Restore HP and Power
+- <strong>Food:</strong> Required for survival</p>
+
+        <h3>Banking</h3>
+        <p>Use the Castle Treasury to store gold safely. Gold in
+the bank cannot be stolen or lost when you die.</p>
+
+        <h3>Jousting</h3>
+        <p>Visit The Proving Downs to joust against other users
+in mounted combat. Win gold and improve your jousting record!</p>
+
+        <h3>Gambling</h3>
+        <p>Test your luck at:
+- Slot Machines (3, 4, or 5 wheels)
+- Blackjack
+- Roulette
+- Russian Roulette (DANGER!)</p>
+
+        <h3>Message Boards</h3>
+        <p>Communicate with other users via the message boards.
+Read announcements, share strategies, and make allies.</p>
+
+        <h3>Daily Limits</h3>
+        <p>You have a limited number of calls (logins) per day
+and limited time per session. Use them wisely!</p>
+
+        <h3>Levels</h3>
+        <p>There are 100 levels to achieve, from "Low-Life Scum"
+to "Immortal Timelord". Each level increases your stats
+and unlocks access to better equipment.</p>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/main">Return to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

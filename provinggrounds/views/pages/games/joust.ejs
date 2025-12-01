@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Proving Downs - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+         THE PROVING DOWNS
+           Jousting Arena
+===============================================
+</pre>
+        </div>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">Jousts Today:</span>
+                <span class="stat-value"><%= joustsRemaining %> remaining</span>
+            </div>
+            <% if (userJoust) { %>
+            <div class="stat">
+                <span class="stat-label">Joust Record:</span>
+                <span class="stat-value"><%= userJoust.wins %>W - <%= userJoust.losses %>L</span>
+            </div>
+            <% } %>
+        </div>
+
+        <% if (joustsRemaining <= 0) { %>
+        <div class="message message-warning">
+            You have no jousts remaining today!
+        </div>
+        <% } else { %>
+        <h3>Choose Your Opponent</h3>
+
+        <% if (opponents.length === 0) { %>
+        <p style="color: var(--dim-color);">No opponents available.</p>
+        <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Level</th>
+                    <th>Record</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% opponents.forEach(opp => { %>
+                <tr>
+                    <td><%= opp.name %></td>
+                    <td><%= opp.level %></td>
+                    <td><%= opp.wins || 0 %>W - <%= opp.losses || 0 %>L</td>
+                    <td>
+                        <form action="/games/joust/<%= opp.id %>" method="POST" style="display: inline;">
+                            <button type="submit">Challenge</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <% } %>
+        <% } %>
+
+        <div style="margin-top: 30px; color: var(--dim-color);">
+            <p>---------------------------------------</p>
+            <p>Jousting Rules:</p>
+            <p>- Best of 5 passes wins the match</p>
+            <p>- Win gold based on your level</p>
+            <p>- 2 jousts allowed per day</p>
+            <p>---------------------------------------</p>
+        </div>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/main">Return to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

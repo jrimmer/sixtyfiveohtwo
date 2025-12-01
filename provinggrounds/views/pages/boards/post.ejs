@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Message - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+           POST MESSAGE
+      <%= board.name %>
+===============================================
+</pre>
+        </div>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+        <div class="message message-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+        <form action="/boards/<%= board.id %>/post" method="POST">
+            <div class="form-group">
+                <label for="to">To (optional, leave blank for public):</label>
+                <input type="text" id="to" name="to" maxlength="20" value="<%= typeof replyTo !== 'undefined' ? replyTo : '' %>">
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required maxlength="60"
+                       value="<%= typeof replySubject !== 'undefined' ? 'Re: ' + replySubject : '' %>">
+            </div>
+
+            <div class="form-group">
+                <label for="body">Message:</label>
+                <textarea id="body" name="body" rows="10" required maxlength="2000" style="width: 100%; max-width: 60ch;"></textarea>
+            </div>
+
+            <div class="form-group">
+                <button type="submit">Post Message</button>
+            </div>
+        </form>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/boards/<%= board.id %>">Cancel / Return to Board</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

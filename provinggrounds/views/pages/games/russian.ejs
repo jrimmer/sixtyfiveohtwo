@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Russian Roulette - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box" style="border-color: var(--error-color);">
+<pre style="color: var(--error-color);">
+===============================================
+          RUSSIAN ROULETTE
+       "The ultimate gamble..."
+===============================================
+</pre>
+        </div>
+
+        <div class="message message-error">
+            <strong>WARNING!</strong>
+            <p>This is REAL Russian Roulette!</p>
+            <p>If you lose, YOUR CHARACTER DIES!</p>
+            <p>All gold, equipment, and progress will be LOST!</p>
+        </div>
+
+        <% if (typeof result !== 'undefined') { %>
+        <% if (result.survived) { %>
+        <div class="message message-success">
+            <strong>*CLICK*</strong>
+            <p>You survived! You won <%= result.winnings %> gold!</p>
+        </div>
+        <% } else { %>
+        <div class="message message-error">
+            <strong>*BANG*</strong>
+            <p>You are dead.</p>
+        </div>
+        <% } %>
+        <% } %>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">Gold:</span>
+                <span class="stat-value"><%= user.gold %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Level:</span>
+                <span class="stat-value"><%= user.level %></span>
+            </div>
+        </div>
+
+        <% if (user.status !== 'Dead') { %>
+        <h3>Choose Your Odds</h3>
+
+        <form action="/games/russian/play" method="POST">
+            <div class="form-group">
+                <label for="chambers">Chambers (more = safer, less reward):</label>
+                <select name="chambers" id="chambers">
+                    <option value="2">2 Chambers (50% death, 2x gold)</option>
+                    <option value="3">3 Chambers (33% death, 3x gold)</option>
+                    <option value="4">4 Chambers (25% death, 4x gold)</option>
+                    <option value="5">5 Chambers (20% death, 5x gold)</option>
+                    <option value="6" selected>6 Chambers (16% death, 6x gold)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bet">Bet Amount:</label>
+                <input type="number" name="bet" id="bet" min="1" max="<%= user.gold %>" value="<%= Math.floor(user.gold / 10) %>">
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="confirm" value="yes" required>
+                    I understand my character may DIE permanently
+                </label>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" style="background-color: var(--error-color); color: var(--bg-color);">PULL THE TRIGGER</button>
+            </div>
+        </form>
+        <% } %>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/games">Return to Gambling (Safely)</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "name": "sixtyfiveohtwo",
+  "version": "1.0.0",
+  "description": "SixtyFiveOhTwo - Classic 6502 games collection",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "npm run build:telengard && npm run build:sabotage",
+    "build:telengard": "cd telengard && npm install && npm run build",
+    "build:sabotage": "cd sabotage/sabotage-web && npm install && npm run build",
+    "dev": "node --watch server.js",
+    "postinstall": "npm run build"
+  },
+  "keywords": [
+    "6502",
+    "apple-ii",
+    "retro",
+    "games"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.5.0",
+    "dotenv": "^17.2.3",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "helmet": "^8.1.0",
+    "socket.io": "^4.8.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Booth - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+            VOTING BOOTH
+===============================================
+</pre>
+        </div>
+
+        <% if (typeof message !== 'undefined' && message) { %>
+        <div class="message message-success">
+            <%= message %>
+        </div>
+        <% } %>
+
+        <% topics.forEach(topic => { %>
+        <div class="board-message">
+            <div class="board-message-header">
+                <strong><%= topic.question %></strong>
+                <% if (topic.hasVoted) { %>
+                <span style="color: var(--dim-color);"> (You voted)</span>
+                <% } %>
+            </div>
+            <div class="board-message-body">
+                <% topic.options.forEach(option => { %>
+                <div style="margin: 10px 0; display: flex; align-items: center;">
+                    <% if (!topic.hasVoted) { %>
+                    <form action="/main/vote/<%= topic.id %>" method="POST" style="display: inline;">
+                        <input type="hidden" name="option" value="<%= option.id %>">
+                        <button type="submit" style="margin-right: 10px;"><%= option.option_text %></button>
+                    </form>
+                    <% } else { %>
+                    <span style="width: 150px;"><%= option.option_text %>:</span>
+                    <span style="color: var(--bright-color);"><%= option.votes %> votes</span>
+                    <% } %>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+        <% }); %>
+
+        <% if (topics.length === 0) { %>
+        <p style="color: var(--dim-color);">No active voting topics at this time.</p>
+        <% } %>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/main">Return to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

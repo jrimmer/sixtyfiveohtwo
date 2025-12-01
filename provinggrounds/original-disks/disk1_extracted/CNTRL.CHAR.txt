@@ -1,0 +1,1 @@
+           Control Characters           ------------------                            Cntrl:D -> Spinning Cursor On/OffE -> /SF -> Auto Center TextG -> BellH -> Back SpaceI -> Tab 5 Spaces forwardK -> Print '['L -> Print '/'M -> Carriage ReturnN -> Reverse TextP -> Down SpaceQ -> Back SpaceR -> RepeatS -> PauseX -> Back over all Text

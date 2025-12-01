@@ -1,0 +1,1 @@
+Maximum Lines per post,30Number of Weapons,100Number of Armors,100Number of Spells,26Number of levels below a user can fight,2Number of Monsters,200Number of Magic weapons and armor,5Number of Levels,100Validated Fights per call,3Non-Validated Fights per call,2Validated Jousts per call,3Non-Validated Jousts per call,2Gold For Posting(Y/N),Y

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+              ERROR
+===============================================
+</pre>
+        </div>
+
+        <div class="message message-error">
+            <strong>Error <%= typeof status !== 'undefined' ? status : 500 %></strong>
+            <p><%= typeof message !== 'undefined' ? message : 'An unknown error occurred' %></p>
+        </div>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/">Return to Login</a>
+            </div>
+            <% if (typeof user !== 'undefined' && user) { %>
+            <div class="menu-item">
+                <span class="menu-key">M)</span>
+                <a href="/main">Return to Main Menu</a>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>

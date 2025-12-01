@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Character - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+        THE PROVING GROUNDS
+           Character Creation
+===============================================
+</pre>
+        </div>
+
+        <% if (error) { %>
+        <div class="message message-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+        <h2>Create Your Character</h2>
+
+        <form action="/register" method="POST">
+            <div class="form-group">
+                <label for="username">Character Name:</label>
+                <input type="text" id="username" name="username" required maxlength="20" autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required minlength="4">
+            </div>
+
+            <div class="form-group">
+                <label for="confirm">Confirm Password:</label>
+                <input type="password" id="confirm" name="confirm" required minlength="4">
+            </div>
+
+            <div class="form-group">
+                <label for="realname">Real Name (optional):</label>
+                <input type="text" id="realname" name="realname" maxlength="40">
+            </div>
+
+            <% if (typeof captcha !== 'undefined' && captcha) { %>
+            <div class="form-group" style="margin-top: 20px;">
+                <pre style="color: var(--bright-color); margin-bottom: 10px;"><%= captcha.display %></pre>
+                <label for="captchaAnswer">Your Answer:</label>
+                <input type="text" id="captchaAnswer" name="captchaAnswer" required autocomplete="off" style="max-width: 10ch;">
+            </div>
+            <% } %>
+
+            <div class="form-group">
+                <button type="submit">Create Character</button>
+            </div>
+        </form>
+
+        <p style="margin-top: 20px;">
+            Already have an account? <a href="/">Login here</a>
+        </p>
+
+        <div style="margin-top: 30px; color: var(--dim-color);">
+            <p>---------------------------------------</p>
+            <p>Starting Stats:</p>
+            <p>  Level: 1 (Low-Life Scum)</p>
+            <p>  HP: 20 | Gold: 100</p>
+            <p>  Weapon: Hands | Armor: Rags</p>
+            <p>---------------------------------------</p>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

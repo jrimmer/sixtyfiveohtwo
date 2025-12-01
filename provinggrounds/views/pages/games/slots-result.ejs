@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot Results - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+           SLOT RESULTS
+===============================================
+</pre>
+        </div>
+
+        <div class="ascii-box" style="text-align: center; font-size: 2em;">
+            <% results.forEach((r, i) => { %>
+            [ <%= r %> ]<%= i < results.length - 1 ? ' ' : '' %>
+            <% }); %>
+        </div>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">Bet:</span>
+                <span class="stat-value"><%= bet %> gold</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Max Match:</span>
+                <span class="stat-value"><%= maxMatch %> of a kind</span>
+            </div>
+        </div>
+
+        <% if (winnings > 0) { %>
+        <div class="message message-success">
+            <strong>WINNER!</strong>
+            <p>You won <%= winnings %> gold!</p>
+            <p>Net gain: +<%= netGain %> gold</p>
+        </div>
+        <% } else { %>
+        <div class="message message-error">
+            <strong>NO MATCH</strong>
+            <p>Better luck next time!</p>
+            <p>Lost: <%= bet %> gold</p>
+        </div>
+        <% } %>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">Gold:</span>
+                <span class="stat-value"><%= user.gold %></span>
+            </div>
+        </div>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">A)</span>
+                <a href="/games/slots">Play Again</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/games">Return to Gambling</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

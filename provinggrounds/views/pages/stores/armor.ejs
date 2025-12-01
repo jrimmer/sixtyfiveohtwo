@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Armor Shop - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+             ARMOR SHOP
+      "Protection for the brave!"
+===============================================
+</pre>
+        </div>
+
+        <% if (typeof message !== 'undefined' && message) { %>
+        <div class="message message-success">
+            <%= message %>
+        </div>
+        <% } %>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+        <div class="message message-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">Gold:</span>
+                <span class="stat-value"><%= user.gold %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Current Armor:</span>
+                <span class="stat-value"><%= user.armor_name %> (+<%= user.armor_power %>)</span>
+            </div>
+        </div>
+
+        <h3>Available Armor</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Armor</th>
+                    <th>Defense</th>
+                    <th>Req. Level</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% armor.forEach(item => { %>
+                <tr class="<%= item.id === user.armor_id ? 'highlight' : '' %>">
+                    <td><%= item.name %></td>
+                    <td>+<%= item.power %></td>
+                    <td><%= item.level_required %></td>
+                    <td><%= item.price %></td>
+                    <td>
+                        <% if (item.id === user.armor_id) { %>
+                        <span style="color: var(--dim-color);">Equipped</span>
+                        <% } else if (user.level < item.level_required) { %>
+                        <span style="color: var(--dim-color);">Too Low</span>
+                        <% } else if (user.gold < item.price) { %>
+                        <span style="color: var(--dim-color);">Can't Afford</span>
+                        <% } else { %>
+                        <form action="/stores/armor/buy/<%= item.id %>" method="POST" style="display: inline;">
+                            <button type="submit">Buy</button>
+                        </form>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/stores">Return to Bazaar</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot Machines - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+           SLOT MACHINES
+      "Pull the lever and win!"
+===============================================
+</pre>
+        </div>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+        <div class="message message-error">
+            Invalid bet amount!
+        </div>
+        <% } %>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">Gold:</span>
+                <span class="stat-value"><%= user.gold %></span>
+            </div>
+        </div>
+
+        <h3>Choose Your Machine</h3>
+
+        <form action="/games/slots/play" method="POST">
+            <div class="form-group">
+                <label for="wheels">Number of Wheels:</label>
+                <select name="wheels" id="wheels">
+                    <option value="3">3 Wheels (2+ match to win)</option>
+                    <option value="4">4 Wheels (3+ match to win)</option>
+                    <option value="5">5 Wheels (3+ match to win)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bet">Bet Amount:</label>
+                <input type="number" name="bet" id="bet" min="1" max="<%= user.gold %>" value="10">
+            </div>
+
+            <div class="form-group">
+                <button type="submit">SPIN!</button>
+            </div>
+        </form>
+
+        <h3>Payout Table</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Wheels</th>
+                    <th>Match</th>
+                    <th>Payout</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>3</td><td>2 of 3</td><td>2.75x</td></tr>
+                <tr><td>3</td><td>3 of 3</td><td>81x</td></tr>
+                <tr><td>4</td><td>3 of 4</td><td>36x</td></tr>
+                <tr><td>4</td><td>4 of 4</td><td>400x</td></tr>
+                <tr><td>5</td><td>3 of 5</td><td>10x</td></tr>
+                <tr><td>5</td><td>4 of 5</td><td>250x</td></tr>
+                <tr><td>5</td><td>5 of 5</td><td>4000x</td></tr>
+            </tbody>
+        </table>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/games">Return to Gambling</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

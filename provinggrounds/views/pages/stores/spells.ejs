@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spell Shop - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+            SPELL SHOP
+      "Arcane knowledge awaits!"
+===============================================
+</pre>
+        </div>
+
+        <% if (typeof message !== 'undefined' && message) { %>
+        <div class="message message-success">
+            <%= message %>
+        </div>
+        <% } %>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+        <div class="message message-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">Gold:</span>
+                <span class="stat-value"><%= user.gold %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Power:</span>
+                <span class="stat-value"><%= user.power %>/<%= user.max_power %></span>
+            </div>
+        </div>
+
+        <% if (userSpells && userSpells.length > 0) { %>
+        <h3>Your Spells</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Spell</th>
+                    <th>Type</th>
+                    <th>Power</th>
+                    <th>Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% userSpells.forEach(spell => { %>
+                <tr>
+                    <td><%= spell.name %></td>
+                    <td><%= spell.is_battle ? 'Battle' : 'Peace' %></td>
+                    <td><%= spell.power %></td>
+                    <td><%= spell.cost %></td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <% } %>
+
+        <h3>Available Spells</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Spell</th>
+                    <th>Type</th>
+                    <th>Power</th>
+                    <th>Req. Level</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% spells.forEach(spell => { %>
+                <tr>
+                    <td><%= spell.name %></td>
+                    <td><%= spell.is_battle ? 'Battle' : 'Peace' %></td>
+                    <td><%= spell.power %></td>
+                    <td><%= spell.level_required %></td>
+                    <td><%= spell.price %></td>
+                    <td>
+                        <% if (spell.owned) { %>
+                        <span style="color: var(--dim-color);">Owned</span>
+                        <% } else if (user.level < spell.level_required) { %>
+                        <span style="color: var(--dim-color);">Too Low</span>
+                        <% } else if (user.gold < spell.price) { %>
+                        <span style="color: var(--dim-color);">Can't Afford</span>
+                        <% } else { %>
+                        <form action="/stores/spells/buy/<%= spell.id %>" method="POST" style="display: inline;">
+                            <button type="submit">Learn</button>
+                        </form>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/stores">Return to Bazaar</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

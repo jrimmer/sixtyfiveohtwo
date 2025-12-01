@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Castle Treasury - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+          CASTLE TREASURY
+===============================================
+</pre>
+        </div>
+
+        <% if (typeof message !== 'undefined' && message) { %>
+        <div class="message message-success">
+            <%= message %>
+        </div>
+        <% } %>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+        <div class="message message-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">Gold on Hand:</span>
+                <span class="stat-value"><%= user.gold %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Gold in Bank:</span>
+                <span class="stat-value"><%= user.bank %></span>
+            </div>
+        </div>
+
+        <h2>Deposit Gold</h2>
+        <form action="/main/treasury/deposit" method="POST" style="margin-bottom: 20px;">
+            <div class="form-group">
+                <label for="deposit">Amount to Deposit:</label>
+                <input type="number" id="deposit" name="amount" min="1" max="<%= user.gold %>">
+            </div>
+            <button type="submit">Deposit</button>
+        </form>
+
+        <h2>Withdraw Gold</h2>
+        <form action="/main/treasury/withdraw" method="POST">
+            <div class="form-group">
+                <label for="withdraw">Amount to Withdraw:</label>
+                <input type="number" id="withdraw" name="amount" min="1" max="<%= user.bank %>">
+            </div>
+            <button type="submit">Withdraw</button>
+        </form>
+
+        <div style="margin-top: 30px; color: var(--dim-color);">
+            <p>---------------------------------------</p>
+            <p>The Treasury keeps your gold safe from</p>
+            <p>thieves and death. Gold in bank cannot</p>
+            <p>be stolen or lost when you die.</p>
+            <p>---------------------------------------</p>
+        </div>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/main">Return to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quickscan - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+         QUICKSCAN NEW MESSAGES
+===============================================
+</pre>
+        </div>
+
+        <% if (messages.length === 0) { %>
+        <p style="color: var(--dim-color);">No unread messages found.</p>
+        <% } else { %>
+        <p>Found <%= messages.length %> unread message(s):</p>
+
+        <% messages.forEach(msg => { %>
+        <div class="board-message">
+            <div class="board-message-header">
+                <div><strong>Board:</strong> <%= msg.board_name %></div>
+                <div><strong>Subject:</strong> <a href="/boards/<%= msg.board_id %>/message/<%= msg.id %>"><%= msg.subject %></a></div>
+                <div><strong>From:</strong> <%= msg.author_name %> | <%= new Date(msg.created_at).toLocaleString() %></div>
+            </div>
+            <div class="board-message-body" style="max-height: 100px; overflow: hidden;">
+<%= msg.body.substring(0, 200) %><%= msg.body.length > 200 ? '...' : '' %>
+            </div>
+        </div>
+        <% }); %>
+        <% } %>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/boards">Return to Board List</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

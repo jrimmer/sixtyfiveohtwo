@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Proving Grounds BBS</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║   ████████╗██╗  ██╗███████╗                                    ║
+║   ╚══██╔══╝██║  ██║██╔════╝                                    ║
+║      ██║   ███████║█████╗                                      ║
+║      ██║   ██╔══██║██╔══╝                                      ║
+║      ██║   ██║  ██║███████╗                                    ║
+║      ╚═╝   ╚═╝  ╚═╝╚══════╝                                    ║
+║                                                                ║
+║   ██████╗ ██████╗  ██████╗ ██╗   ██╗██╗███╗   ██╗ ██████╗      ║
+║   ██╔══██╗██╔══██╗██╔═══██╗██║   ██║██║████╗  ██║██╔════╝      ║
+║   ██████╔╝██████╔╝██║   ██║██║   ██║██║██╔██╗ ██║██║  ███╗     ║
+║   ██╔═══╝ ██╔══██╗██║   ██║╚██╗ ██╔╝██║██║╚██╗██║██║   ██║     ║
+║   ██║     ██║  ██║╚██████╔╝ ╚████╔╝ ██║██║ ╚████║╚██████╔╝     ║
+║   ╚═╝     ╚═╝  ╚═╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝      ║
+║                                                                ║
+║   ██████╗ ██████╗  ██████╗ ██╗   ██╗███╗   ██╗██████╗ ███████╗ ║
+║  ██╔════╝ ██╔══██╗██╔═══██╗██║   ██║████╗  ██║██╔══██╗██╔════╝ ║
+║  ██║  ███╗██████╔╝██║   ██║██║   ██║██╔██╗ ██║██║  ██║███████╗ ║
+║  ██║   ██║██╔══██╗██║   ██║██║   ██║██║╚██╗██║██║  ██║╚════██║ ║
+║  ╚██████╔╝██║  ██║╚██████╔╝╚██████╔╝██║ ╚████║██████╔╝███████║ ║
+║   ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚══════╝ ║
+║                                                                ║
+║                  A Fantasy BBS Adventure                       ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+</pre>
+        </div>
+
+        <% if (error) { %>
+        <div class="message message-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+        <% if (typeof success !== 'undefined' && success) { %>
+        <div class="message message-success">
+            <%= success %>
+        </div>
+        <% } %>
+
+        <h2>Login</h2>
+
+        <form action="/login" method="POST" id="loginForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <input type="hidden" id="bypass" name="bypass" value="">
+
+            <div class="form-group">
+                <button type="submit">Enter the Grounds</button>
+            </div>
+        </form>
+        <script>
+            // Capture bypass key from URL and add to form
+            const params = new URLSearchParams(window.location.search);
+            const bypassKey = params.get('bypass');
+            if (bypassKey) {
+                document.getElementById('bypass').value = bypassKey;
+            }
+        </script>
+
+        <p style="margin-top: 20px;">
+            New user? <a href="/register">Register here</a>
+        </p>
+
+        <div style="margin-top: 30px; color: var(--dim-color);">
+            <p>═══════════════════════════════════════</p>
+            <p>A Web Recreation of the Classic Apple II BBS</p>
+            <p>Original by Unknown (c.1980s)</p>
+            <p>═══════════════════════════════════════</p>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

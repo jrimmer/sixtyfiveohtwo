@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+*/node_modules/
+*/*/node_modules/
+
+# Build outputs
+telengard/dist/
+sabotage/sabotage-web/dist/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*/env
+*/.env
+
+# Database files
+*.db
+*.db-journal
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Claude
+.claude/
+*/.claude/

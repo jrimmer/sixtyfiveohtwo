@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Proving Grounds - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+         THE PROVING GROUNDS
+           User vs User Combat
+===============================================
+</pre>
+        </div>
+
+        <% if (fightsRemaining <= 0) { %>
+        <div class="message message-warning">
+            You have no fights remaining today!
+        </div>
+        <% } else { %>
+        <p>Fights remaining today: <span style="color: var(--bright-color);"><%= fightsRemaining %></span></p>
+        <% } %>
+
+        <h2>Available Opponents</h2>
+
+        <% if (opponents.length === 0) { %>
+        <p style="color: var(--dim-color);">No opponents available at your level range.</p>
+        <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Level</th>
+                    <th>Rank</th>
+                    <th>Kills</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% opponents.forEach(opp => { %>
+                <tr>
+                    <td><%= opp.name %></td>
+                    <td><%= opp.level %></td>
+                    <td><%= opp.rank_title %></td>
+                    <td><%= opp.kills %></td>
+                    <td>
+                        <% if (fightsRemaining > 0) { %>
+                        <form action="/combat/fight-user/<%= opp.id %>" method="POST" style="display: inline;">
+                            <button type="submit">Attack</button>
+                        </form>
+                        <% } else { %>
+                        <span style="color: var(--dim-color);">-</span>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <% } %>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/combat">Return to Combat Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weapons Shop - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+            WEAPONS SHOP
+      "Arm yourself for battle!"
+===============================================
+</pre>
+        </div>
+
+        <% if (typeof message !== 'undefined' && message) { %>
+        <div class="message message-success">
+            <%= message %>
+        </div>
+        <% } %>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+        <div class="message message-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">Gold:</span>
+                <span class="stat-value"><%= user.gold %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Current Weapon:</span>
+                <span class="stat-value"><%= user.weapon_name %> (+<%= user.weapon_power %>)</span>
+            </div>
+        </div>
+
+        <h3>Available Weapons</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Weapon</th>
+                    <th>Power</th>
+                    <th>Req. Level</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% weapons.forEach(weapon => { %>
+                <tr class="<%= weapon.id === user.weapon_id ? 'highlight' : '' %>">
+                    <td><%= weapon.name %></td>
+                    <td>+<%= weapon.power %></td>
+                    <td><%= weapon.level_required %></td>
+                    <td><%= weapon.price %></td>
+                    <td>
+                        <% if (weapon.id === user.weapon_id) { %>
+                        <span style="color: var(--dim-color);">Equipped</span>
+                        <% } else if (user.level < weapon.level_required) { %>
+                        <span style="color: var(--dim-color);">Too Low</span>
+                        <% } else if (user.gold < weapon.price) { %>
+                        <span style="color: var(--dim-color);">Can't Afford</span>
+                        <% } else { %>
+                        <form action="/stores/weapons/buy/<%= weapon.id %>" method="POST" style="display: inline;">
+                            <button type="submit">Buy</button>
+                        </form>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+        <div class="pagination">
+            <% if (page > 1) { %>
+            <a href="/stores/weapons?page=<%= page - 1 %>">&lt; Prev</a>
+            <% } %>
+            <span>Page <%= page %> of <%= totalPages %></span>
+            <% if (page < totalPages) { %>
+            <a href="/stores/weapons?page=<%= page + 1 %>">Next &gt;</a>
+            <% } %>
+        </div>
+        <% } %>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/stores">Return to Bazaar</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

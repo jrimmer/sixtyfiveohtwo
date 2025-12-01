@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Boards - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+           MESSAGE BOARDS
+===============================================
+</pre>
+        </div>
+
+        <h2>Available Boards</h2>
+
+        <div class="menu">
+            <% boards.forEach((board, index) => { %>
+            <div class="menu-item">
+                <span class="menu-key"><%= index + 1 %>)</span>
+                <a href="/boards/<%= board.id %>"><%= board.name %></a>
+                <span style="color: var(--dim-color);"> (<%= board.message_count %> messages)</span>
+            </div>
+            <% }); %>
+        </div>
+
+        <h3>Quick Commands</h3>
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">Q)</span>
+                <a href="/boards/quickscan">Quickscan New Messages</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/main">Return to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

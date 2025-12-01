@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= message.subject %> - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+             MESSAGE
+===============================================
+</pre>
+        </div>
+
+        <div class="board-message">
+            <div class="board-message-header">
+                <div><strong>Subject:</strong> <%= message.subject %></div>
+                <div><strong>From:</strong> <%= message.author_name %></div>
+                <div><strong>Date:</strong> <%= new Date(message.created_at).toLocaleString() %></div>
+                <% if (message.to_name) { %>
+                <div><strong>To:</strong> <%= message.to_name %></div>
+                <% } %>
+            </div>
+            <div class="board-message-body">
+<%= message.body %>
+            </div>
+        </div>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">R)</span>
+                <a href="/boards/<%= board.id %>/post?reply=<%= message.id %>">Reply</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/boards/<%= board.id %>">Return to <%= board.name %></a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

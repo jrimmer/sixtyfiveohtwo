@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corridor of Death - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+         CORRIDOR OF DEATH
+   "Only the strongest survive..."
+===============================================
+</pre>
+        </div>
+
+        <div class="message message-warning">
+            WARNING: The Corridor of Death is extremely dangerous!
+            You will face endless waves of monsters until you die or flee.
+            The rewards are great, but so are the risks!
+        </div>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">HP:</span>
+                <span class="stat-value"><%= user.hp %>/<%= user.max_hp %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Power:</span>
+                <span class="stat-value"><%= user.power %>/<%= user.max_power %></span>
+            </div>
+        </div>
+
+        <% if (user.hp < user.max_hp * 0.75) { %>
+        <div class="message message-error">
+            You should heal before entering the Corridor!
+        </div>
+        <% } %>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">E)</span>
+                <form action="/combat/corridor/enter" method="POST" style="display: inline;">
+                    <button type="submit">Enter the Corridor</button>
+                </form>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/combat">Return to Combat Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= user.hp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

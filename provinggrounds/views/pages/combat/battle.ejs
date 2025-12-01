@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle! - The Proving Grounds</title>
+    <link rel="stylesheet" href="/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================
+              BATTLE!
+===============================================
+</pre>
+        </div>
+
+        <div class="stats" style="margin: 20px 0;">
+            <div class="stat">
+                <span class="stat-label">Your HP:</span>
+                <span class="stat-value"><%= battle.userHp %>/<%= user.max_hp %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Enemy HP:</span>
+                <span class="stat-value"><%= battle.enemyHp %>/<%= battle.enemy.hp %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Enemy:</span>
+                <span class="stat-value"><%= battle.enemy.name %> (Lvl <%= battle.enemy.level %>)</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Your Power:</span>
+                <span class="stat-value"><%= battle.userPower %>/<%= user.max_power %></span>
+            </div>
+        </div>
+
+        <% if (battle.log && battle.log.length > 0) { %>
+        <div class="combat-log">
+            <% battle.log.forEach(entry => { %>
+            <p class="<%= entry.type %>"><%= entry.text %></p>
+            <% }); %>
+        </div>
+        <% } %>
+
+        <% if (battle.status === 'fighting') { %>
+        <h3>Actions</h3>
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">A)</span>
+                <form action="/combat/battle/attack" method="POST" style="display: inline;">
+                    <button type="submit">Attack</button>
+                </form>
+            </div>
+            <% if (battleSpells && battleSpells.length > 0) { %>
+            <div class="menu-item">
+                <span class="menu-key">S)</span>
+                <span>Cast Spell:</span>
+            </div>
+            <% battleSpells.forEach(spell => { %>
+            <div class="menu-item" style="margin-left: 30px;">
+                <form action="/combat/battle/spell/<%= spell.id %>" method="POST" style="display: inline;">
+                    <button type="submit"><%= spell.name %> (<%= spell.power %> pwr, costs <%= spell.cost %> power)</button>
+                </form>
+            </div>
+            <% }); %>
+            <% } %>
+            <div class="menu-item">
+                <span class="menu-key">R)</span>
+                <form action="/combat/battle/run" method="POST" style="display: inline;">
+                    <button type="submit">Run Away</button>
+                </form>
+            </div>
+        </div>
+        <% } else { %>
+        <div class="message <%= battle.status === 'victory' ? 'message-success' : 'message-error' %>">
+            <% if (battle.status === 'victory') { %>
+            <strong>VICTORY!</strong>
+            <p>You defeated <%= battle.enemy.name %>!</p>
+            <p>Gold earned: <%= battle.goldReward %></p>
+            <p>Experience earned: <%= battle.expReward %></p>
+            <% if (battle.levelUp) { %>
+            <p style="color: var(--warning-color);">*** LEVEL UP! You are now level <%= user.level %>! ***</p>
+            <% } %>
+            <% } else if (battle.status === 'defeat') { %>
+            <strong>DEFEAT!</strong>
+            <p>You were slain by <%= battle.enemy.name %>!</p>
+            <% } else if (battle.status === 'fled') { %>
+            <strong>ESCAPED!</strong>
+            <p>You fled from battle!</p>
+            <% } %>
+        </div>
+
+        <div class="menu" style="margin-top: 20px;">
+            <div class="menu-item">
+                <span class="menu-key">&lt;</span>
+                <a href="/combat/dungeon">Return to Dungeon</a>
+            </div>
+        </div>
+        <% } %>
+
+        <div class="status-bar">
+            <span>[<%= user.name %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= user.gold %></span>
+            <span>HP: <%= battle.userHp %>/<%= user.max_hp %></span>
+        </div>
+    </div>
+    <script src="/js/terminal.js"></script>
+</body>
+</html>

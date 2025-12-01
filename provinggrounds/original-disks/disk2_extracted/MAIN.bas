@@ -1,0 +1,411 @@
+2088 
+
+9283 ="Y"THENPOKE1014,0:POKE952,240:POKE953,253
+20 IFFO>4THENFO=4
+30 CALL54915:POKE1,0:ONERRGOTO8720
+40 IFA>0THEN140
+50 PRINTCHR$(4)"SAVEMAIN,S3":PRINTCHR$(4)"RUNFIGHT,S6"
+60 ST=10:AG=10:WI=10:CH=10:WE=2:AR=2:EX=0:GD=500:LE=1:FI$="On":FD=100
+70 WP$="Dagger":AM$="Cloth":WP=3:AP=1
+80 HP=20:TH=20:PO=20:TP=20:BA=100:L$(1)="Low-Life Scum":A(1)=0:L$(2)="Maggot":A(2)=750
+90 FORT=1TOSN:S(T)=0:NEXT
+100 S(3)=2:S(5)=2:S(26)=2:S(19)=1:S(2)=2:S(8)=1:JW=0:JL=0:LR=0
+110 PRINTD$"OPENCASTLES,L39"C$(12):PRINTD$"WRITECASTLES,R"A:PRINT"00000000000000000000000000000000000000":PRINTD$"CLOSE"
+120 IFAD$="Yes"ANDSF$="Y"THENPRINTD$"OPENSAVE,L48"C$(27):PRINTD$"WRITESAVE,R"A:PRINT"0":FORX=1TO11:PRINT"0":NEXT:PRINTD$"CLOSE"
+130 RETURN
+140 GOSUB8300:O$=DL$+ME$+DL$+"[Time:"+STR$(TL)+"]:[Cmd/?]->":GOSUB6000:GOSUB1010:ONERRGOTO8720
+160 IFI$="."THEN2940
+170 IFI$="+"THENO$="Castle Editor":GOSUB8780:A$=CE$:GOSUB8750:CALL35848"CASTLE EDITOR"
+180 IFI$="!"THEN2910
+190 IFCL$="N"THENTL=TL-1:IFTL<0THENO$=EL$+"The Sands of Time have run dry...."+EL$:GOSUB7000:GOTO8510
+200 IFI$="/"THEN2870
+210 IF(I$="%"ANDLJ=2)OR(I$="D"ANDFO>3)THENO$=EL$+"Ye will have to wait till next call to  use that command!"+EL$:GOSUB7000:I$=" "
+220 IF(I$="J"ANDSF$<>"Y")OR(BD$<>"Y"ANDI$="B")THENO$=EL$+"Sorry sire, but that option is not      functioning at this time.":GOSUB7000:I$=" "
+230 IFI$="%"THENO$="Courtyard":GOSUB8780:A$=JO$:GOSUB8750:CALL35848"JOUST"
+240 IFI$="A"THENO$="Bazaar":GOSUB8780:A$=ST$:GOSUB8750:CALL35848"STORES"
+250 IFAD$="NO"ANDI$="J"THENO$=EL$+"Sorry my lord, but you will have to be- come a full time member before you can  use that function.":GOSUB7000:I$=" "
+260 IFI$<>":"THEN290
+270 O$=EL$+"Reset Joust Wins/Losses? Y/N: ":GOSUB6000:IFI$="Y"THENJW=0:JL=0:O$=EL$+"Done!":GOSUB7000:LR=0:GOTO140
+280 GOTO140
+290 IFI$="P"THEN2680
+300 IFI$="T"THEN2120
+310 IFI$="S"THENO$=EL$+T$:GOSUB7000:GOTO140
+320 IFI$="*"THENF$="CNTRL.CHAR":GOSUB8370:GOTO140
+330 IFI$="&"THENF$="FACTS":GOSUB8370:GOTO140
+340 IFI$<>"I"THEN380
+350 F$="INFO":GOSUB8370:O$=EL$+"Are you interested in buying a copy of  this system? Y/N:":GOSUB6000:IFI$<>"Y"THEN140
+360 O$=EL$+"Do you have an Apple computer? Y/N:":GOSUB6000:IFI$<>"Y"THEN140
+370 F$="BUY.INFO":GOSUB8370:GOTO140
+380 IFI$="^"THENF$="HELP":GOSUB8370:GOTO140
+390 IFI$="C"THENPOKE1,128:O$=DL$+"What is it concerning(40 Char. Max)?"+DL$:GOSUB6000:VTAB(4):PRINTI$:O$=EL$+"If I am around I'll answer.":GOSUB7000:HOME:POKE1,0:GOTO140
+400 IFI$="M"THEN1560
+410 IFI$="Z"THEN1760
+420 IFI$="$"THENF$="PGL":O$=SC$:GOSUB7000:HOME:F$="PGL":GOSUB8380:GOTO140
+430 IFI$="#"THENF$="CSTAT":O$=DL$+"---------------"+EL$+"Fight Outcomes-"+EL$+"---------------"+DL$:GOSUB7000:GOSUB8380:GOTO140
+440 IFI$="B"THEN1700
+450 IFI$="J"THEN2700
+460 IFI$="F"THEN1710
+470 IFI$<>"@"THEN530
+480 O$=EL$+"Current Password->"+PA$+DL$+"Change Password? Y/N:":GOSUB6000:IFI$<>"Y"THEN140
+490 POKE2,255
+500 O$=EL$+"Enter New Password->":GOSUB6000:IFLEN(I$)<1ORLEN(I$)>7THEN500
+510 POKE2,0
+520 PA$=I$:O$=EL$+"Finis!":GOSUB7000:GOTO140
+530 IFI$="V"THEN1780
+540 IFI$="E"THEN1730
+550 IFI$="D"THENO$="Battle Field":GOSUB8780:A$=FT$:GOSUB8750:CALL35848"FIGHT"
+560 IFI$="G"THENO$="Casino":GOSUB8780:A$=GA$:GOSUB8750:CALL35848"GA"
+570 IFI$="K"THEN1180
+580 IFI$="U"THENPOKE1,128:POKE2,255:GOTO950
+590 IFI$="?"THENF$="MENU":GOSUB8370:GOTO140
+600 IFI$="H"THEN720
+610 IFI$="X"THENF$="FEES":GOSUB8370:GOTO140
+620 IFI$="N"THENF$="NEWS":GOSUB8370:GOTO140
+630 IFI$="L"THEN1390
+640 IFI$="Y"THENGOSUB8520:GOTO140
+650 IFI$<>"O"THEN680
+660 O$=EL$+"My Lord!  Leaving so soon?:":GOSUB6000:IFI$="Y"THEN8510
+670 GOTO140
+680 IFI$<>"R"THEN710
+690 O$=EL$+"Re-Roll your character? Y/N:":GOSUB6000:IFI$="Y"THENGOSUB60:GOSUB8520
+700 GOTO140
+710 TL=TL+1:GOTO140
+720 GOSUB8740:O$="Battle Quickscan"+EL$+"----------------"+DL$+"1. User Fightscan"+EL$+"2. Castle Fightscan"+EL$+"3. Joust Fightscan"+DL$+"Which? (1-3/Q)->":GOSUB6000
+730 GOSUB980:B(0)=VAL(I$):IFB(0)<1ORB(0)>3THEN720
+735 O$=EL$+"Scan how many levels above you?"+EL$+"(1-"+STR$(LN-LE)+"/CR=All)->":CR=1:GOSUB6000:B(9)=VAL(I$)+LE:IFLE=B(9)THENB(9)=LN
+740 O$=EL$+"Quickscan entire file? Y/N:":GOSUB6000:GOSUB980:IFI$="Y"THENX=1:I$="Z":GOTO770
+750 O$=EL$+"Start at User #":GOSUB6000:X=VAL(I$)
+760 GOSUB980
+770 GOSUB8790:ONERRGOTO790
+780 GOTO800
+790 CALL-3288:PRINTD$"CLOSE":O$=DL$+"-/-> End of List!":GOSUB7000:GOTO140
+800 IFX<1ORX>USTHENO$="Invalid number!":GOSUB7000:GOTO720
+810 PRINTD$"OPENSTATS,L200"C$(15)
+820 FORFI=XTO(X+19)
+830 PRINTD$"READSTATS,R"FI
+840 INPUTB$(1),B$(3),J,B(1)
+850 IFB$(1)="Empty"ORLE>J+FLORJ>B(9)ORA=FITHEN920
+860 IF(B(0)=1ANDB$(3)="Dead")OR(B(0)=2ANDB(1)<0)THEN920
+870 Y=J-LE
+880 IFLE<JTHENO$="+"+STR$(Y):GOTO900
+890 O$=STR$(Y)
+900 O$=EL$+"User #"+STR$(FI)+" "+B$(1)+" "+O$:GOSUB7000
+910 IFPEEK(960)=PEEK(970)THEN790
+920 NEXTFI
+930 PRINTD$"CLOSE":IFI$<>"Z"THENO$=DL$+"Cont? (Y/N):":GOSUB6000:IFI$<>"Y"THEN140
+940 X=X+20:GOTO810
+950 O$=EL$+"Enter Message.  40 Chars Max."+DL$:GOSUB6000:IFLEN(I$)>40THENO$="Too long!"+EL$:GOSUB7000:GOTO950
+960 POKE1,0:POKE2,0
+970 O$=EL$+"The Deed Is Done!":ME$=I$:GOSUB7000:GOTO140
+980 IFI$<>"Q"ANDI$<>"0"THENRETURN
+990 POP:IFB$(2)="S"THENPOP
+1000 GOTO140
+1010 IFEX<A(2)THENRETURN
+1020 IFLE=LN-1THENO$=EL$+"You have reached the top level.  You    will either have to Re-Roll or stay at  this level.  Your stats will continue   to rise apropriately."+EL$+EL$+"[Press Return]":CR=1:GOSUB7000:GOSUB8000:LE=LE-1:EX=A(1)
+1030 LE=LE+1:G(3)=INT(8*RND(1))+3:TP=TP+G(3):PO=TP
+1040 O$=DL$+"L"+EL$+"e"+EL$+"v"+EL$+"e"+EL$+"l"+DL$+STR$(LE)+DL$+"You are now a "+L$(2)+"!"+DL$+"Power +"+STR$(G(3))+DL$
+1050 G(1)=INT(CH/5):G(2)=INT((G(1)*2)*RND(1))+(G(1)*3):O$=O$+"Hit points +"+STR$(G(2))+EL$:TH=TH+G(2):HP=TH
+1060 X=INT(5*RND(1))+3
+1070 O$=O$+EL$
+1080 Y=INT(5*RND(1))+1
+1090 IFY=5THENST=ST+X:O$=O$+"Strength +"
+1100 IFY=2THEN1080
+1110 IFY=4THENCH=CH+X:O$=O$+"Intellegence +"
+1120 IFY=3THENAG=AG+X:O$=O$+"Agility +"
+1130 IFY=1THENWI=WI+X:O$=O$+"Wisdom +"
+1140 O$=O$+STR$(X)+DL$+"All Stats +1"+EL$:GOSUB7000
+1150 G(0)=(LE*LE*100)+500:G(0)=INT(G(0)):O$=EL$+"Gold +"+STR$(G(0))+EL$:GD=GD+G(0):GOSUB7000
+1160 WI=WI+1:ST=ST+1:AG=AG+1:CH=CH+1
+1170 PRINTD$"OPENLEVELS"C$(7):PRINTD$"READLEVELS":FORX=1TO(LE-1):INPUTL$(1),A(1):NEXT:FORX=1TO2:INPUTL$(X),A(X):NEXT:PRINTD$"CLOSE":POP:GOTO140
+1180 GOSUB8740
+1190 O$=DL$+"         -=>Castle Treasury<=-"+DL$+"Would you be making a..."+DL$+"A.  Deposit"+EL$+"B.  Withdrawl"+DL$+"Which->":GOSUB6000:BA=INT(BA)
+1200 GOSUB980
+1210 IFI$="A"THEN1320
+1220 IFI$<>"B"THEN1190
+1230 IFBA<0THENO$=EL$+"You don't have any gold in the treasury!":GOSUB7000:GOTO140
+1240 O$=EL$+"You have "+STR$(BA)+" Gold in your Treasury!"+DL$+"Withdrawl entire amount? Y/N:":GOSUB6000:IFI$="Y"THENGD=GD+BA:BA=0:GOTO1310
+1250 O$=EL$+"Enter amount of Withdrawl $":GOSUB6000
+1260 GOSUB980
+1270 X=INT(VAL(I$))
+1280 IFX<0THEN1240
+1290 IFX>(BA)THENO$=EL$+YO$+EL$:GOSUB7000:GOTO1240
+1300 GD=GD+X:BA=BA-X:NU=NU-X
+1310 O$=EL$+"Your transaction has been processed."+EL$+"Thank you for your cooperation."+EL$:GOSUB7000:GOTO140
+1320 O$=EL$+"You have "+STR$(GD)+" Gold"+DL$+"Deposit entire amount? Y/N:":GOSUB6000:IFI$="Y"THENBA=BA+GD:GD=0:GOTO1380
+1330 O$=EL$+"Enter amount of deposit $":GOSUB6000:GOSUB980
+1340 X=INT(VAL(I$))
+1350 IFX<0THEN1320
+1360 IFX>GDTHENO$=EL$+YO$+EL$:GOSUB7000:GOTO1320
+1370 GD=GD-X:BA=BA+X
+1380 O$=EL$+"You now have "+STR$(BA)+" in your treasury!"+EL$:GOSUB7000:GOTO1310
+1390 O$=EL$+SC$+EL$+"The Ladder"+EL$+"----------"+DL$:GOSUB7000
+1400 ONERRGOTO8730
+1410 PRINTD$"OPENTOP,L35"C$(16)
+1420 O$=EL$+"Enter starting rank #":GOSUB6000:G(3)=VAL(I$):GOSUB980
+1430 IFG(3)<1ORG(3)>USTHENO$=EL$+"Invalid Number!"+EL$:GOSUB7000:GOTO1420
+1440 GOSUB8790
+1450 O$=EL$+"Num.  User/User num.       Level"+DL$+"A=Alive"+EL$+"D=Dead"+DL$:GOSUB7000
+1460 IFG(0)=1THENG(4)=G(4)+1
+1470 FORX=G(3)TO(G(3)+15)
+1480 PRINTD$"READTOP,R"X
+1490 INPUTA$,B$(1),G(2)
+1500 O$=STR$(X)+".  "+B$(1)+" "+A$:FORY=(32-LEN(O$))TO1STEP-1:O$=O$+".":NEXT:O$=O$+STR$(G(2))+EL$:GOSUB7000
+1510 IFPEEK(960)=PEEK(970)THEN140
+1520 NEXTX
+1530 O$=EL$+"Cont? (Y/N):":GOSUB6000:IFI$<>"Y"THENPRINTD$"CLOSE":GOTO140
+1540 G(3)=G(3)+16
+1550 O$=EL$:GOSUB7000:GOTO1470
+1560 O$=SC$+EL$+"Member Listing"+EL$+"--------------":GOSUB7000
+1570 O$=DL$+"Enter starting user #":GOSUB6000
+1580 G(1)=VAL(I$)
+1590 GOSUB980
+1600 IFG(1)>USOR1>G(1)THENO$="Invalid Number!":GOSUB7000:GOTO1570
+1610 ONERRGOTO8730
+1620 PRINTD$"OPENSTATS,L200"C$(15)
+1630 FORX=G(1)TO(G(1)+15)
+1640 PRINTD$"READSTATS,R"X
+1650 INPUTB$(1)
+1660 O$=EL$+"["+STR$(X)+"]  "+B$(1):GOSUB7000
+1670 NEXT
+1680 O$=DL$+"Cont? (Y/N):":GOSUB6000:IFI$<>"Y"THENPRINTD$"CLOSE":GOTO140
+1690 G(1)=G(1)+16:GOTO1630
+1700 O$="Scroll City":GOSUB8780:A$=BO$:GOSUB8750:CALL35848"BRD"
+1710 O$=DL$+"Leave Feedback to Sysop? (Y/N):":GOSUB6000:IFI$<>"Y"THEN140
+1720 FE=1:GOTO1730
+1730 O$="Post Office":GOSUB8780:A$=ML$:GOSUB8750:CALL35848"MA"
+1740 A$=CH$:GOSUB8750:CALL35848"CHAT"
+1750 RETURN
+1760 O$=DL$+EL$+"Log for "+DA$+DL$+" Hv=Half Validated   Va=Validated"+EL$+" Ex=Used Two Calls  New=New User"+EL$+"Adv=Used Adventure  202=Used 202"+DL$
+1770 O$=O$+"Call Number / User / User Info"+EL$+"------------------------------"+DL$:GOSUB7000:F$="LOG":GOSUB8380:GOTO140
+1780 GOSUB8740:O$="Voting Booth"+EL$+"------------"+DL$+"This Weeks Topic is: "+DL$
+1790 GOSUB7000
+1800 F$="VOTING.TOP":GOSUB8380
+1810 IFVO=1THENO$="View Results? Y/N: ":GOSUB6000:IFI$<>"Y"THEN140
+1820 IFVO=1THENO$=EL$:GOSUB7000
+1830 X=0
+1840 PRINTD$"OPENVOTING"C$(18)
+1850 PRINTD$"READVOTING"
+1860 ONERRGOTO1900
+1870 X=X+1
+1880 INPUTT$(X),B(X)
+1890 GOTO1870
+1900 CALL-3288:PRINTD$"CLOSE":X=X-1
+1910 FORA1=1TOX:N%(A1)=0:NEXT:T=0
+1920 FORA1=1TOX
+1930 T=T+B(A1)
+1940 NEXT
+1950 IFT=0THEN1990
+1960 FORA1=1TOX
+1970 N%(A1)=(B(A1)*100)/T
+1980 NEXT
+1990 ONERRGOTO8720
+2000 FORY=1TOX
+2010 O$=STR$(Y)+". "+T$(Y)
+2020 FORAM=20TOLEN(T$(Y))STEP-1:O$=O$+".":NEXT:O$=O$+STR$(B(Y))+"  "+STR$(N%(Y))+"%"+EL$:GOSUB7000
+2030 NEXT
+2040 IFVO=1THEN140
+2050 O$=DL$+"Which(1-"+STR$(X)+"/Q)->":GOSUB6000:GOSUB980
+2060 Y=VAL(I$):IFY<1ORY>XTHEN2050
+2070 VO=1
+2080 B(Y)=B(Y)+1:O$=EL$+"HOLD...Your Vote Is Being Registered."+EL$:GOSUB7000:PRINTD$"OPENVOTING"C$(18):PRINTD$"WRITEVOTING":FORY=1TOX:PRINTT$(Y)","B(Y):NEXT
+2090 PRINTD$"CLOSE"
+2100 G(3)=LE*100
+2110 O$=EL$+"Gold +"+STR$(G(3))+DL$+"Experience +"+STR$(G(3))+EL$:GD=GD+G(3):EX=EX+G(3):O$=O$+EL$+"It Is Done Sire!":GOSUB7000:GOTO140
+2120 O$=DL$+"Trade Stats"+EL$+"-----------"+EL$
+2130 O$=O$+EL$+"1) Hp/Po"+EL$+"2) Stats"+DL$+"Which: ":GOSUB6000:GOSUB980
+2140 IFVAL(I$)=1THEN2470
+2150 G(5)=AG:G(6)=WI:G(7)=ST:G(8)=CH
+2160 AG=G(5):WI=G(6):ST=G(7):CH=G(8)
+2170 O$=EL$+"What Stat Do You Want To Raise: "+DL$
+2180 O$=O$+"1) Agility"+EL$+"2) Wisdom"+EL$+"3) Strength"+EL$+"4) Intellingence "+DL$+"Which: ":GOSUB6000:GOSUB980
+2190 G(1)=VAL(I$):IFG(1)<1ORG(1)>4THEN2170
+2200 O$=EL$+"Trade With:"+DL$+"1) Agility ["+STR$(AG)+"]"+EL$+"2) Wisdom ["+STR$(WI)+"]"+EL$+"3) Strength ["+STR$(ST)+"]"+EL$+"4) Intelligence ["+STR$(CH)+"]"+DL$+"Which: "
+2210 GOSUB6000:GOSUB980
+2220 G(0)=VAL(I$):IFG(0)<1ORG(0)>4THEN2200
+2230 G(3)=AG
+2240 IFG(0)=2THENG(3)=WI
+2250 IFG(0)=3THENG(3)=ST
+2260 IFG(0)=4THENG(3)=CH
+2270 T=INT((G(3)-(LE*1.5))/1.5):IFT<1THENT=0
+2280 O$=EL$+"1 Point per 1.5 Trade"+DL$+"Amount to be Raised(Max="+STR$(T)+")->":GOSUB6000:GOSUB980
+2290 I$=STR$(INT(VAL(I$)))
+2300 G(4)=VAL(I$):G(2)=INT((VAL(I$)*1.5)+.5)
+2310 IFG(4)<1THEN2270
+2320 IFG(3)-(LE*1.5)<G(2)THEN2270
+2330 O$=EL$+"Results"+EL$+"-------"+DL$:GOSUB7000
+2340 IFG(1)=1THENAG=AG+G(4):O$="Agility ["+STR$(AG)+"]"
+2350 IFG(1)=2THENWI=WI+G(4):O$="Wisdom ["+STR$(WI)+"]"
+2360 IFG(1)=3THENST=ST+G(4):O$="Strength ["+STR$(ST)+"]"
+2370 IFG(1)=4THENCH=CH+G(4):O$="Intelligence ["+STR$(CH)+"]"
+2380 O$=O$+DL$:GOSUB7000
+2390 IFG(0)=1THENAG=AG-G(2):O$="Agility ["+STR$(AG)+"]"
+2400 IFG(0)=2THENWI=WI-G(2):O$="Wisdom ["+STR$(WI)+"]"
+2410 IFG(0)=3THENST=ST-G(2):O$="Strength ["+STR$(ST)+"]"
+2420 IFG(0)=4THENCH=CH-G(2):O$="Intelligence ["+STR$(CH)+"]"
+2430 O$=O$+EL$:GOSUB7000
+2440 O$=EL$+"OK? Y/N ":GOSUB6000
+2450 IFI$<>"Y"THENO$=EL$+"No Changes Made"+EL$:GOSUB7000:GOTO2160
+2460 O$=EL$+"Done!":GOSUB7000:GOTO140
+2470 G(6)=TH:G(7)=TP
+2480 TH=G(6):TP=G(7)
+2490 O$=DL$+"Raise:"+DL$+"1) Hit Points"+EL$+"2) Power"+DL$+"Which: ":GOSUB6000:GOSUB980
+2500 G(0)=INT(VAL(I$)):IFG(0)<1ORG(0)>2THEN2490
+2510 O$=EL$+"1 Point for 3":G(2)=1/3
+2520 IFG(0)=1THENO$=EL$+"2 Points for 1":G(2)=2
+2530 G(1)=2:Y=TP:IFG(0)=2THENG(1)=1:Y=TH
+2540 IFG(1)=1THENY=INT((Y-LE*15)/3)
+2550 IFG(1)=2THENY=INT(Y-(7+LE*3))*2
+2560 O$=O$+" Max = "+STR$(Y)+EL$:GOSUB7000
+2570 O$=EL$+"Enter Amount To Raise: ":GOSUB6000:GOSUB980
+2580 X=INT(VAL(I$))
+2590 IFX<1ORX>YTHEN2570
+2600 G(4)=X/G(2):G(5)=X
+2610 IFG(0)=1THENG(4)=G(4)+.99:G(4)=INT(G(4))
+2620 IFG(0)=1THENTH=TH+G(5):TP=TP-G(4)
+2630 IFG(0)=2THENTP=TP+G(5):TH=TH-G(4)
+2640 O$=EL$+"Results"+EL$+"-------"+DL$+"Maximum Hit Points ["+STR$(TH)+"]"+DL$+"Maximum Power ["+STR$(TP)+"]"+DL$+"Ok? Y/N:":GOSUB6000
+2650 IFI$="N"THEN2480
+2660 HP=TH:PO=TP
+2670 O$=EL$+"Finis!":GOSUB7000:GOTO140
+2680 O$=DL$+"Equipment & Gold"+EL$+"----------------"+DL$+"Weapon: "+WP$+EL$+" Armor: "+AM$+DL$+"Gold: "+STR$(GD)+EL$
+2690 O$=O$+"Gold in the Treasury: "+STR$(BA):GOSUB7000:GOTO140
+2700 B$(1)="Split Infinity":B$(2)="Mazes of Death":B$(3)="Empty":B$(4)="Empty":B$(5)="Empty"
+2710 GOSUB8740:O$=EL$+"      -=*>Adventurer's Corner<*=-"+DL$:FORX=1TO5:O$=O$+STR$(X)+". "+B$(X)+EL$:NEXT:O$=O$+EL$+"Which-> ":GOSUB6000
+2720 GOSUB980
+2730 X=VAL(I$):IFX<1ORX>4ORB$(X)="Empty"THEN2710
+2735 IFX=2ANDNA$<>SY$THENO$=EL$+"Sorry, that adventure is temporarily outof order.":GOSUB7000:GOTO2710
+2740 O$=EL$+B$(X)+EL$:FORY=1TOLEN(B$(X)):O$=O$+"-":NEXT:O$=O$+DL$+"1. Saved Game"+EL$+"2. Restart "+B$(X)+EL$+"3. Prelude"+EL$+"4. Help File"
+2750 L=X:O$=O$+DL$+"Which?(1-4/Q)->":GOSUB6000
+2760 GOSUB980:IFI$<>"4"ANDI$<>"3"THEN2790
+2770 F$="HELP."+B$(L):IFI$="3"THENF$="PRELUDE."+B$(L)
+2780 GOSUB8370:O$=EL$+"[Press Return]":CR=1:GOSUB6000:GOTO2740
+2790 IFI$<>"2"THEN2830
+2800 IFI$="2"THENO$=EL$+"Restart "+B$(Z)+"-> ":GOSUB6000:IFI$<>"Y"THEN2700
+2810 IFZ=2THENPRINTD$"OPENMAZE.SAVE,L30"C$(22):PRINTD$"WRITEMAZE.SAVE,R"A:FORX=1TO13:PRINT"0":NEXT:PRINTD$"CLOSE":GOTO2840
+2820 GOSUB120:GOTO2840
+2830 IFI$<>"1"THEN2700
+2840 O$=EL$+"Before you get to the adventure you     will be logged off.  Do not hang up,    the adventure will start in about 2     minutes."+EL$:GOSUB7000
+2850 IFCA<CPTHENO$=EL$+"Do You wish To Add your other call to   your adventure time?  If So, you will   be given an extra 25 minutes->":GOSUB6000:IFI$="Y"THENCO=CO+25:CA=CA+1
+2860 AU$="Y":Z=L:GOTO8510
+2870 IFCA>=CPTHENO$=EL$+"You must have at least one call left    today to use this option.":GOSUB7000:GOTO140
+2880 O$=EL$+"This option will use up another call    of yours for today in exchange for 20   minutes and an extra fight.  Add of     call? Y/N:":GOSUB6000:IFI$<>"Y"THEN140
+2890 FO=FO-1:CO=CO+20:CA=CA+1:CL=CL+1:LA=LA-(LA*2):HP=TH:PO=TP:TL=TL+20:LJ=LJ-1
+2900 O$=EL$+"Poof!"+DL$+"Calls left today-> "+STR$(CP-CA):GOSUB7000:GOTO140
+2910 IFCL$="N"THENO$=EL$+"You get "+STR$(CO)+" minutes per call   at all times.":GOSUB7000:GOTO140
+2920 GOSUB8740:O$="Time Slot / Persons / Time Per Call     -----------------------------------"+DL$:GOSUB7000:PRINTD$"OPENTIMESLOTS"C$(21):PRINTD$"READTIMESLOTS"
+2930 FORX=1TO24:INPUTA$,I$,O$:O$=A$+"   "+I$+"   "+O$+" Minutes"+EL$:GOSUB7000:NEXT:PRINTD$"CLOSE":O$=EL$+"If you are a Half Validated user then   subtract 5 minutes.":GOSUB7000:GOTO130
+2940 GOSUB8740:O$="You wander into the Temple of Training, tired a wary, hoping to make yourself   stronger and wiser.  Soon you are spot- ted by a femal priestess, who comes     over and begins to speak:"+DL$:GOSUB7000
+2950 B(0)=LE*LE*150:O$="Each training session will raise one of your virtue by 4 points.  Each session costs "+STR$(B(0))+" gold pieces and will take five minutes off of your remaining time on the system.":GOSUB8800
+2960 GOSUB7000
+2970 O$=DL$+"Which of the four virtues do you wish tostudy?"+DL$+"1. Strength"+EL$+"2. Agility"+EL$+"3. Intelligence"+EL$+"4. Wisdom"+DL$:GOSUB8300:O$=O$+"Which?(TL="+STR$(TL)+")->":GOSUB6000
+2980 IFI$="Q"ORI$="0"THENO$=EL$+"Maybe next time sire...":GOSUB7000:GOTO140
+2990 X=VAL(I$):Z=X:IFX<1ORX>4THEN2970
+3000 IFTL<5THENO$=EL$+"Sorry sire, but you do not have enought time left.":GOSUB7000:GOTO140
+3010 IFGD<B(0)THENO$=EL$+"Sorry sire, you funds seem to be on the short side in funds.":GOSUB7000:GOTO140
+3020 T=4
+3030 IFX=1THENA$="Legendary warrior Garret Jax":ST=ST+T
+3040 IFX=2THENA$="Elf Dayel, cousin to Eventine":AG=AG+T
+3050 IFX=3THENA$="Wizard Allanon, the last of the Druids, son of Bremen":CH=CH+T
+3060 IFX=4THENA$="Valegirl Brin Oshmond, daughter of Wil Oshmond, possesor of the Wishsong of Shannara":WI=WI+T
+3070 O$="The "+A$+", will be your instructor.  Learn well my young friend...."
+3080 GOSUB8800:O$=EL$+"A very fine choice sire..."+DL$+O$+DL$:GOSUB7000:O$="Your instructor walks into the room     smiling at you and informs you to begin you trailing."+DL$:GOSUB7000
+3090 GD=GD-B(0):RESTORE:FORY=1TOZ:FORT=1TO10:READB$(T):NEXT:NEXT:CO=CO-5:GOTO3140
+3100 DATA Parry,Strike,Jump,Attack,Flee,Kill,Wound,Behead,Dismember,Swing
+3110 DATA  Jump,Dive,Run,Duck,Jump Back,Sidestep,Spin,Draw Weapon,Backflip,Flip
+3120 DATA Read,Study,Memorize,Conjure,Write,Create,Plan,Decieve,Compromise,Flee
+3130 DATA Cast,Attack,Buy,Rest,Heal,Incinerate,Protect,Learn,Resurrect,Demodenia
+3140 FORY=1TO5:X=INT(10*RND(1))+1:O$=B$(X)+"....."+DL$:GOSUB7000:FORX=1TO1000:NEXT:NEXT:O$=EL$+"You train well young man!  You have     earned your raise....Go in Peace.":GOSUB7000:GOTO140
+3150 FORX=1TO1000:NEXT
+6000 GOSUB7000:GOSUB8000:RETURN
+7000 POKE960,0:&B/O$:RETURN
+8000 CC=0:IFPEEK(1)=128ANDCF=1ANDCA$="Y"THENCA$="N":CALL38539:CF=9
+8010 IFCF=9ANDPEEK(1)<>128THENCF=1:CA$="Y"
+8020 IFCA$<>"Y"ORLEN(CN$)>1THEN8040
+8030 IFCF=1THENCALL38539
+8040 IFPEEK(1)=128THEN8140
+8050 IFLEN(CN$)=0THEN8140
+8060 FORT=1TOLEN(CN$)
+8070 IFMID$(CN$,T,1)=","THENI$=MID$(CN$,1,T-1):CN$=RIGHT$(CN$,LEN(CN$)-T):GOTO8110
+8080 IFMID$(CN$,T,1)="#"THENI$=MID$(CN$,1,T-1):CN$="":GOTO8110
+8090 NEXT
+8100 POKE960,0
+8110 IFO$="STOP"THENO$="":GOTO8210
+8120 IFLEN(I$)=0THEN8050
+8130 O$=I$+EL$:GOSUB7000:GOTO8290
+8140 POKE960,0:&A/SP$:I$=MID$(SP$,1):IFPEEK(961)THEN1740
+8150 CN$=I$+"#":O$="STOP"
+8160 IFLEFT$(I$,1)="#"THENI$="#":CN$=""
+8170 POKE961,0:IFPEEK(960)=255THENCC=CC+1:FORT=1TO500:NEXT:IFCC>1ORI$="OFF"THEN8510
+8180 IFPEEK(960)=255THEN8140
+8190 IFPEEK(1)=128THENCN$="":GOTO8230
+8200 IFLEN(CN$)>0THEN8060
+8210 IFLEN(I$)<>1ANDRIGHT$(I$,1)=" "THENI$=LEFT$(I$,LEN(I$)-1):GOTO8210
+8220 IFLEN(I$)<>1ANDLEFT$(I$,1)=" "THENI$=RIGHT$(I$,LEN(I$)-1):GOTO8220
+8230 IFLEN(I$)=0ANDCR=1THENO$=EL$:GOSUB7000:GOTO8250
+8240 IFLEN(I$)=0THEN8000
+8250 IFCA$<>"Y"THEN8290
+8260 IFCF=1THENCALL36798
+8270 IFI$="202 ON"THENO$=EL$+"202 is now On.":GOSUB7000:CALL36798:CF=1
+8280 IFI$="202 OFF"THENO$=EL$+"202 is now Off.":GOSUB7000:CALL38539:CF=0
+8290 CR=0:RETURN
+8300 IFCL$="N"THENT$=DA$:RETURN
+8310 PR#4:IN#4:INPUT"#";T,T,T,T,T,B:INPUT"%";T$
+8320 PR#0:POKE56,102:POKE57,213:CALL1002
+8330 IFTI>TTHENT=TI+(60-TI)+T
+8340 TL=CO-(T-TI)
+8350 IFTL<=0THENO$=EL$+"You are out of Time!":GOSUB7000:POP:GOTO8510
+8360 RETURN
+8370 HOME:O$=SC$+DL$+DL$+DL$:GOSUB7000
+8380 POKE960,0:PRINTD$"OPEN"F$""C$(17):PRINTCHR$(4)"READ"F$
+8390 IFCF<>1THEN8460
+8400 C=1
+8410 &E/ZZ$:IFLEN(ZZ$)>0THENA$=ZZ$:IFASC(LEFT$(A$,1))=0THENC=-1:GOTO8440
+8420 C=C+1:O$=EL$+ZZ$:GOSUB7000
+8430 IFC<>16THEN8410
+8440 O$=DL$+"CR) Continue or Q)uit:":CR=1:GOSUB6000:IFI$="Q"ORC=-1THEN8470
+8450 GOTO8400
+8460 &C
+8470 PRINTD$"CLOSE":IFPEEK(960)=255THEN8350
+8480 IFPEEK(960)=PEEK(970)THENPOKE960,3:O$=EL$:GOTO7000
+8490 IFPEEK(960)=PEEK(971)THENPOKE960,2
+8500 RETURN
+8510 A$=OF$:GOSUB8750:CALL35848"OFF"
+8520 B$(1)=STR$(ST):B$(3)=STR$(AG):B$(4)=STR$(WI):B$(5)=STR$(CH):B$(6)=STR$(EX):B$(7)=STR$(GD):B$(8)=STR$(A(2)-EX):FORX=1TO8:B$(X)=B$(X)+EL$:NEXT
+8530 O$=SC$+EL$+"Character Status"+EL$+"----------------"+DL$+"Character Name: "+NA$+DL$:GOSUB7000
+8540 O$="     Calls Today ["+STR$(CA)+"]"+EL$+"     Calls A Day ["+STR$(CP)+"]"+EL$+"     Total Calls ["+STR$(CL)+"]"+EL$+"     Adventure Access? "+AD$+DL$
+8550 O$=O$+DL$:GOSUB7000
+8560 O$="Strength: "+B$(1)+"Agility: "+B$(3)+"Wisdom: "+B$(4)+"Inteligence: "+B$(5)+EL$:GOSUB7000
+8570 O$="     Fights Left: "+STR$(4-FO)+EL$+"     Jousts Left: "+STR$(2-LJ)+DL$:GOSUB7000
+8580 O$="Maximum hit points: "+STR$(TH)+EL$+"Hit points: "+STR$(HP)+EL$+"Maximum power: "+STR$(TP)+EL$+"Power: "+STR$(PO)+DL$:GOSUB7000
+8590 O$="Battle class: "+STR$(WE+AR)+EL$:GOSUB7000
+8600 O$="Weapon: "+WP$+EL$+"Armor: "+AM$+EL$+"Experience: "+B$(6)+"Level: "+L$(1)+" #"+STR$(LE)+EL$+"Food: "+STR$(FD)+EL$+"Gold: "+B$(7)+EL$:GOSUB7000
+8610 O$="       Joust Wins: "+STR$(JW)+EL$+"     Joust Losses: "+STR$(JL)+EL$+"            Skill: "+STR$(INT(ST+AG+JW-JL))+DL$:GOSUB7000
+8620 O$="Castle Protection: ":IFCP$="Y"THENO$=O$+"Activated"
+8630 IFCP$="N"THENO$=O$+"Off(Fee not payed)"
+8640 O$=O$+EL$+" Gold in Treasury: "+STR$(BA)+DL$:GOSUB7000
+8650 O$="Experience needed to achieve the level"+EL$+"of "+L$(2)+" is "+B$(8):GOSUB7000
+8660 O$=DL$+"Spells"+EL$+"------"+DL$
+8670 GOSUB7000
+8680 FORX=1TOSN
+8690 IFS(X)>0THENO$=S$(X)+"-"+STR$(S(X))+EL$:GOSUB7000
+8700 NEXTX
+8710 RETURN
+8720 CALL-3288:GOTO140
+8730 CALL-3288:PRINTD$"CLOSE":GOTO140
+8740 HOME:O$=SC$+DL$+DL$+EL$:GOSUB7000:RETURN
+8750 Y=VAL(MID$(A$,4,1)):POKE43626,Y:Y=VAL(RIGHT$(A$,1)):POKE43624,Y:Y=VAL(LEFT$(A$,3)):IFYR$="Y"THENPRINTD$"OPEN VC,V"Y
+8760 IFTC$="Y"THENPOKE1014,10:POKE952,215:POKE953,251
+8770 RETURN
+8780 HOME:O$=SC$+"[%] Hold...Destination: "+O$+" [%]"+EL$:GOSUB7000:RETURN
+8790 O$=EL$+"    Press Space Bar to abort listing"+EL$:GOSUB7000:RETURN
+8800 IFLEN(O$)<40THEN8900
+8810 Y=40
+8820 X=0
+8830 IFMID$(O$,Y-X,1)=" "THENB$(0)=LEFT$(O$,(Y-1)-X):B$(0)=B$(0)+EL$+RIGHT$(O$,LEN(O$)-(Y-X)):GOTO8850
+8840 X=X+1:GOTO8830
+8850 O$=B$(0)
+8860 IF(Y+40)>LEN(O$)THEN8900
+8870 Y=Y+39
+8880 Y=(Y-X)+1
+8890 GOTO8820
+8900 RETURN
