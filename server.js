@@ -47,6 +47,21 @@ const introConfig = {
     bannerStyle: process.env.INTRO_BANNER_STYLE || 'random'
 };
 
+// ASCII art banners for 6502 logo
+const banners = {
+    block: ` ██████  ███████  ██████  ██████
+██       ██      ██  ████      ██
+███████  ███████ ██ ██ ██  █████
+██    ██      ██ ████  ██ ██
+ ██████  ███████  ██████  ███████`,
+    figlet: `   __   ____   ___  ____
+  / /  | ___| / _ \\|___ \\
+ / /_  |___ \\| | | | __) |
+| '_ \\  ___) | |_| |/ __/
+| (_) ||____/ \\___/|_____|
+ \\___/`
+};
+
 // View engine setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -114,7 +129,8 @@ app.get('/', (req, res) => {
 
     res.render('index', {
         intro: introConfig,
-        bannerStyle
+        bannerStyle,
+        banners
     });
 });
 
@@ -229,9 +245,19 @@ app.use((err, req, res, next) => {
     });
 });
 
-// 404 handler
+// 404 handler - render index with intro config
 app.use((req, res) => {
-    res.status(404).render('index');
+    let bannerStyle = req.session?.bannerStyle;
+    if (!bannerStyle) {
+        bannerStyle = introConfig.bannerStyle === 'random'
+            ? (Math.random() < 0.5 ? 'block' : 'figlet')
+            : introConfig.bannerStyle;
+    }
+    res.status(404).render('index', {
+        intro: introConfig,
+        bannerStyle,
+        banners
+    });
 });
 
 // Start server
