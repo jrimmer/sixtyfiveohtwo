@@ -11,6 +11,9 @@ const helmet = require('helmet');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
+const fs = require('fs');
+const Database = require('better-sqlite3');
+const SqliteStore = require('better-sqlite3-session-store')(session);
 
 const app = express();
 const httpServer = createServer(app);
@@ -104,8 +107,24 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Session store (SQLite for production, memory for dev)
+const SESSION_DB_PATH = process.env.SESSION_DB_PATH || './data/sessions.db';
+let sessionStore;
+if (process.env.NODE_ENV === 'production') {
+    const sessionDir = path.dirname(SESSION_DB_PATH);
+    if (!fs.existsSync(sessionDir)) {
+        fs.mkdirSync(sessionDir, { recursive: true });
+    }
+    const sessionDb = new Database(SESSION_DB_PATH);
+    sessionStore = new SqliteStore({
+        client: sessionDb,
+        expired: { clear: true, intervalMs: 900000 } // Clean expired sessions every 15 min
+    });
+}
+
 // Session configuration
 const sessionMiddleware = session({
+    store: sessionStore,
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
@@ -162,7 +181,6 @@ app.get('/sabotage/{*path}', (req, res) => {
 // -----------------------------
 
 // Database connection for Proving Grounds
-const Database = require('better-sqlite3');
 const DB_PATH = process.env.DATABASE_PATH || './provinggrounds/data/provinggrounds.db';
 let db;
 

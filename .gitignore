@@ -17,6 +17,7 @@ sabotage/sabotage-web/dist/
 # Database files
 *.db
 *.db-journal
+data/
 
 # IDE
 .idea/
