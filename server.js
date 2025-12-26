@@ -247,6 +247,9 @@ app.use((err, req, res, next) => {
 
 // 404 handler - render index with intro config
 app.use((req, res) => {
+    // Reset views to root (provinggrounds middleware may have changed it)
+    req.app.set('views', path.join(__dirname, 'views'));
+
     let bannerStyle = req.session?.bannerStyle;
     if (!bannerStyle) {
         bannerStyle = introConfig.bannerStyle === 'random'
