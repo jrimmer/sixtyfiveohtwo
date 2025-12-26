@@ -26,6 +26,13 @@ if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
 }
 const SESSION_SECRET = process.env.SESSION_SECRET || 'dev-only-secret-change-in-prod';
 
+// Sanitize text input (strip HTML entities)
+function sanitizeText(text) {
+    return text.replace(/[<>&"']/g, c => ({
+        '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;'
+    })[c]);
+}
+
 // Intro configuration with defaults
 const introConfig = {
     boot: {
@@ -34,12 +41,12 @@ const introConfig = {
     },
     marquee: {
         enabled: process.env.INTRO_MARQUEE_ENABLED !== 'false',
-        text: process.env.INTRO_MARQUEE_TEXT || 'SIXTYFIVEOHTWO PRESENTS CLASSIC APPLE II GAMES FAITHFULLY RECREATED FOR THE MODERN WEB... ORIGINAL AUTHORS FOREVER...',
+        text: sanitizeText(process.env.INTRO_MARQUEE_TEXT || 'SIXTYFIVEOHTWO PRESENTS CLASSIC APPLE II GAMES FAITHFULLY RECREATED FOR THE MODERN WEB... ORIGINAL AUTHORS FOREVER...'),
         speed: parseInt(process.env.INTRO_MARQUEE_SPEED, 10) || 50
     },
     greets: {
         enabled: process.env.INTRO_GREETS_ENABLED !== 'false',
-        list: (process.env.INTRO_GREETS_LIST || 'THE STACK,APPLE MAFIA,DIGITAL GANG,MIDWEST PIRATES').split(',').map(s => s.trim())
+        list: (process.env.INTRO_GREETS_LIST || 'THE STACK,APPLE MAFIA,DIGITAL GANG,MIDWEST PIRATES').split(',').map(s => sanitizeText(s.trim()))
     },
     audio: {
         enabled: process.env.INTRO_AUDIO_ENABLED === 'true'
@@ -61,6 +68,17 @@ const banners = {
 | (_) ||____/ \\___/|_____|
  \\___/`
 };
+
+// Get intro render data (used by index and 404)
+function getIntroRenderData(session) {
+    let bannerStyle = session?.bannerStyle;
+    if (!bannerStyle) {
+        bannerStyle = introConfig.bannerStyle === 'random'
+            ? (Math.random() < 0.5 ? 'block' : 'figlet')
+            : introConfig.bannerStyle;
+    }
+    return { intro: introConfig, bannerStyle, banners };
+}
 
 // View engine setup
 app.set('view engine', 'ejs');
@@ -116,22 +134,11 @@ app.get('/health', (req, res) => {
 
 // Main index page - game selection menu
 app.get('/', (req, res) => {
-    // Determine banner style (persist in session)
-    let bannerStyle = req.session.bannerStyle;
-    if (!bannerStyle) {
-        if (introConfig.bannerStyle === 'random') {
-            bannerStyle = Math.random() < 0.5 ? 'block' : 'figlet';
-        } else {
-            bannerStyle = introConfig.bannerStyle;
-        }
-        req.session.bannerStyle = bannerStyle;
+    const data = getIntroRenderData(req.session);
+    if (!req.session.bannerStyle) {
+        req.session.bannerStyle = data.bannerStyle;
     }
-
-    res.render('index', {
-        intro: introConfig,
-        bannerStyle,
-        banners
-    });
+    res.render('index', data);
 });
 
 // -----------------------------
@@ -249,18 +256,7 @@ app.use((err, req, res, next) => {
 app.use((req, res) => {
     // Reset views to root (provinggrounds middleware may have changed it)
     req.app.set('views', path.join(__dirname, 'views'));
-
-    let bannerStyle = req.session?.bannerStyle;
-    if (!bannerStyle) {
-        bannerStyle = introConfig.bannerStyle === 'random'
-            ? (Math.random() < 0.5 ? 'block' : 'figlet')
-            : introConfig.bannerStyle;
-    }
-    res.status(404).render('index', {
-        intro: introConfig,
-        bannerStyle,
-        banners
-    });
+    res.status(404).render('index', getIntroRenderData(req.session));
 });
 
 // Start server

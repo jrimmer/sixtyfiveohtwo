@@ -36,3 +36,7 @@ npm-debug.log*
 # Claude
 .claude/
 */.claude/
+
+# Beads (only track issues.jsonl)
+.beads/*
+!.beads/issues.jsonl
