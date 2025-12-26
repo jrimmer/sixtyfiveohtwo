@@ -1,0 +1,936 @@
+# Cracker Intro Homepage Implementation Plan
+
+> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+
+**Goal:** Replace the current home page with an Apple II warez-style boot menu featuring a configurable boot sequence, randomized ASCII art banner, scrolling marquee, greets easter egg, and optional audio.
+
+**Architecture:** Server-side config via environment variables passed to EJS template. Session cookie stores banner style choice. Boot sequence runs once per browser session (sessionStorage). All interactive features (keyboard nav, audio, greets overlay) handled in client-side JavaScript.
+
+**Tech Stack:** Express.js, EJS templates, vanilla JavaScript, Web Audio API, CSS animations
+
+---
+
+## Task 1: Add Environment Variables
+
+**Files:**
+- Modify: `.env.example:10` (append new variables)
+
+**Step 1: Add intro config variables to .env.example**
+
+Add after the existing content:
+
+```bash
+# Intro Boot Sequence
+INTRO_BOOT_ENABLED=true
+INTRO_BOOT_DELAY=2000
+
+# Scrolling Marquee
+INTRO_MARQUEE_ENABLED=true
+INTRO_MARQUEE_TEXT=SIXTYFIVEOHTWO PRESENTS CLASSIC APPLE II GAMES FAITHFULLY RECREATED FOR THE MODERN WEB... ORIGINAL AUTHORS FOREVER...
+INTRO_MARQUEE_SPEED=50
+
+# Greets Easter Egg
+INTRO_GREETS_ENABLED=true
+INTRO_GREETS_LIST=THE STACK,APPLE MAFIA,DIGITAL GANG,MIDWEST PIRATES
+
+# Audio
+INTRO_AUDIO_ENABLED=false
+
+# Banner Style (random|block|figlet)
+INTRO_BANNER_STYLE=random
+```
+
+**Step 2: Verify file updated**
+
+Run: `cat .env.example`
+Expected: Shows all original vars plus new `INTRO_*` vars
+
+**Step 3: Commit**
+
+```bash
+git add .env.example
+git commit -m "feat: add intro configuration environment variables"
+```
+
+---
+
+## Task 2: Add Intro Config to Server
+
+**Files:**
+- Modify: `server.js:19-27` (add config parsing after PORT)
+- Modify: `server.js:82-84` (update index route to pass config)
+
+**Step 1: Add intro config parsing**
+
+After line 27 (after `const SESSION_SECRET = ...`), add:
+
+```javascript
+// Intro configuration with defaults
+const introConfig = {
+    boot: {
+        enabled: process.env.INTRO_BOOT_ENABLED !== 'false',
+        delay: parseInt(process.env.INTRO_BOOT_DELAY, 10) || 2000
+    },
+    marquee: {
+        enabled: process.env.INTRO_MARQUEE_ENABLED !== 'false',
+        text: process.env.INTRO_MARQUEE_TEXT || 'SIXTYFIVEOHTWO PRESENTS CLASSIC APPLE II GAMES FAITHFULLY RECREATED FOR THE MODERN WEB... ORIGINAL AUTHORS FOREVER...',
+        speed: parseInt(process.env.INTRO_MARQUEE_SPEED, 10) || 50
+    },
+    greets: {
+        enabled: process.env.INTRO_GREETS_ENABLED !== 'false',
+        list: (process.env.INTRO_GREETS_LIST || 'THE STACK,APPLE MAFIA,DIGITAL GANG,MIDWEST PIRATES').split(',').map(s => s.trim())
+    },
+    audio: {
+        enabled: process.env.INTRO_AUDIO_ENABLED === 'true'
+    },
+    bannerStyle: process.env.INTRO_BANNER_STYLE || 'random'
+};
+```
+
+**Step 2: Update index route to pass config and set banner cookie**
+
+Replace the index route (around line 82-84):
+
+```javascript
+// Main index page - game selection menu
+app.get('/', (req, res) => {
+    // Determine banner style (persist in session)
+    let bannerStyle = req.session.bannerStyle;
+    if (!bannerStyle) {
+        if (introConfig.bannerStyle === 'random') {
+            bannerStyle = Math.random() < 0.5 ? 'block' : 'figlet';
+        } else {
+            bannerStyle = introConfig.bannerStyle;
+        }
+        req.session.bannerStyle = bannerStyle;
+    }
+
+    res.render('index', {
+        intro: introConfig,
+        bannerStyle
+    });
+});
+```
+
+**Step 3: Verify server starts without errors**
+
+Run: `npm run dev`
+Expected: Server starts, no errors in console
+
+**Step 4: Commit**
+
+```bash
+git add server.js
+git commit -m "feat: add intro config parsing and pass to template"
+```
+
+---
+
+## Task 3: Create ASCII Banner Data
+
+**Files:**
+- Create: `views/partials/banners.ejs`
+
+**Step 1: Create banners partial with both ASCII art styles**
+
+Create file `views/partials/banners.ejs`:
+
+```ejs
+<%# ASCII art banners for 6502 logo %>
+
+<%
+const banners = {
+    block: `
+ ██████  ███████  ██████  ██████
+██       ██      ██  ████      ██
+███████  ███████ ██ ██ ██  █████
+██    ██      ██ ████  ██ ██
+ ██████  ███████  ██████  ███████`.trim(),
+
+    figlet: `
+   __   ____   ___  ____
+  / /  | ___| / _ \\|___ \\
+ / /_  |___ \\| | | | __) |
+| '_ \\  ___) | |_| |/ __/
+| (_) ||____/ \\___/|_____|
+ \\___/`.trim()
+};
+%>
+```
+
+**Step 2: Verify file created**
+
+Run: `ls views/partials/`
+Expected: Shows `banners.ejs`
+
+**Step 3: Commit**
+
+```bash
+git add views/partials/banners.ejs
+git commit -m "feat: add ASCII art banners for 6502 logo"
+```
+
+---
+
+## Task 4: Build Boot Screen HTML Structure
+
+**Files:**
+- Modify: `views/index.ejs` (complete rewrite - save backup first)
+
+**Step 1: Backup existing index.ejs**
+
+Run: `cp views/index.ejs views/index.ejs.backup`
+
+**Step 2: Write new index.ejs with boot screen structure**
+
+Replace entire file with:
+
+```ejs
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SixtyFiveOhTwo - Classic 6502 Games</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --phosphor: #33ff33;
+            --phosphor-dim: #22aa22;
+            --phosphor-glow: #44ff44;
+            --bg-dark: #0a0a0a;
+            --scanline: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: #000;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .monitor {
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow:
+                0 0 0 4px #333,
+                0 0 0 8px #222,
+                0 20px 60px rgba(0, 0, 0, 0.8),
+                inset 0 2px 4px rgba(255, 255, 255, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .screen {
+            background: var(--bg-dark);
+            border-radius: 20px;
+            padding: 30px 40px;
+            position: relative;
+            overflow: hidden;
+            min-height: 500px;
+            box-shadow:
+                inset 0 0 100px rgba(51, 255, 51, 0.03),
+                inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Scanlines */
+        .screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                var(--scanline) 2px,
+                var(--scanline) 4px
+            );
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Vignette */
+        .screen::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(
+                ellipse at center,
+                transparent 0%,
+                rgba(0, 0, 0, 0.3) 100%
+            );
+            pointer-events: none;
+            z-index: 11;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            color: var(--phosphor);
+            text-shadow: 0 0 5px var(--phosphor);
+        }
+
+        /* Boot Screen */
+        #boot-screen {
+            font-size: 1.4rem;
+            line-height: 1.8;
+        }
+
+        #boot-screen.hidden {
+            display: none;
+        }
+
+        .boot-line {
+            opacity: 0;
+        }
+
+        .boot-line.visible {
+            opacity: 1;
+        }
+
+        .spinner {
+            display: inline-block;
+        }
+
+        .skip-hint {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1rem;
+            color: var(--phosphor-dim);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .skip-hint.visible {
+            opacity: 1;
+        }
+
+        /* Menu Screen */
+        #menu-screen {
+            display: none;
+        }
+
+        #menu-screen.visible {
+            display: block;
+        }
+
+        .ascii-banner {
+            font-size: 0.9rem;
+            line-height: 1.2;
+            margin-bottom: 5px;
+            color: var(--phosphor-glow);
+            text-shadow: 0 0 10px var(--phosphor);
+        }
+
+        .site-name {
+            font-size: 1.8rem;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            color: var(--phosphor);
+            text-shadow: 0 0 10px var(--phosphor), 0 0 20px var(--phosphor-glow);
+        }
+
+        .menu-header {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .game-list {
+            list-style: none;
+        }
+
+        .game-item {
+            margin-bottom: 8px;
+        }
+
+        .game-link {
+            display: block;
+            padding: 12px 20px;
+            color: var(--phosphor);
+            text-decoration: none;
+            font-size: 1.6rem;
+            border: 1px solid transparent;
+            transition: all 0.1s ease;
+            text-shadow: 0 0 5px var(--phosphor);
+        }
+
+        .game-link:hover, .game-link:focus {
+            background: rgba(51, 255, 51, 0.1);
+            border-color: var(--phosphor);
+            box-shadow:
+                0 0 10px rgba(51, 255, 51, 0.3),
+                inset 0 0 20px rgba(51, 255, 51, 0.05);
+        }
+
+        .game-link::before {
+            content: '> ';
+            opacity: 0;
+            transition: opacity 0.1s ease;
+        }
+
+        .game-link:hover::before, .game-link:focus::before {
+            opacity: 1;
+        }
+
+        .game-number {
+            color: var(--phosphor-glow);
+            margin-right: 15px;
+        }
+
+        .game-desc {
+            font-size: 1rem;
+            color: var(--phosphor-dim);
+            margin-left: 40px;
+            padding-bottom: 8px;
+        }
+
+        .prompt {
+            margin-top: 30px;
+            font-size: 1.3rem;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 12px;
+            height: 1.2em;
+            background: var(--phosphor);
+            margin-left: 5px;
+            animation: blink 1s step-end infinite;
+            vertical-align: bottom;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Marquee */
+        .marquee-container {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--phosphor-dim);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee-text {
+            display: inline-block;
+            font-size: 1.2rem;
+            color: var(--phosphor-dim);
+            animation: scroll-left linear infinite;
+            padding-left: 100%;
+        }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Greets Overlay */
+        #greets-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 40px;
+        }
+
+        #greets-overlay.visible {
+            display: flex;
+        }
+
+        .greets-title {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--phosphor-glow);
+            text-shadow: 0 0 10px var(--phosphor);
+        }
+
+        .greets-list {
+            font-size: 1.4rem;
+            line-height: 2;
+            color: var(--phosphor);
+        }
+
+        .greets-close {
+            margin-top: 30px;
+            font-size: 1.2rem;
+            color: var(--phosphor-dim);
+        }
+
+        /* Power LED */
+        .led {
+            width: 12px;
+            height: 12px;
+            background: #33ff33;
+            border-radius: 50%;
+            margin: 20px auto 0;
+            box-shadow:
+                0 0 10px #33ff33,
+                0 0 20px #33ff33;
+            animation: led-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes led-pulse {
+            0%, 100% { box-shadow: 0 0 10px #33ff33, 0 0 20px #33ff33; }
+            50% { box-shadow: 0 0 15px #33ff33, 0 0 30px #33ff33; }
+        }
+
+        /* Boot flicker */
+        @keyframes screen-flicker {
+            0%, 100% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.8; }
+            94% { opacity: 1; }
+        }
+
+        .booting .screen {
+            animation: screen-flicker 3s ease-in-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .monitor {
+                padding: 20px;
+                border-radius: 20px;
+            }
+
+            .screen {
+                padding: 20px;
+                min-height: 400px;
+            }
+
+            .ascii-banner {
+                font-size: 0.6rem;
+            }
+
+            .site-name {
+                font-size: 1.4rem;
+            }
+
+            .game-link {
+                font-size: 1.3rem;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body class="<%= intro.boot.enabled ? 'booting' : '' %>">
+    <%- include('partials/banners') %>
+
+    <div class="monitor">
+        <div class="screen">
+            <div class="content">
+                <!-- Boot Screen -->
+                <div id="boot-screen" class="<%= intro.boot.enabled ? '' : 'hidden' %>">
+                    <div class="boot-line" id="boot-apple">APPLE ][</div>
+                    <div class="boot-line" id="boot-memory"></div>
+                    <div class="boot-line" id="boot-disk"></div>
+                    <div class="skip-hint" id="skip-hint">PRESS ANY KEY TO SKIP</div>
+                </div>
+
+                <!-- Menu Screen -->
+                <div id="menu-screen" class="<%= intro.boot.enabled ? '' : 'visible' %>">
+                    <pre class="ascii-banner"><%= banners[bannerStyle] %></pre>
+                    <div class="site-name">SIXTYFIVEOHTWO</div>
+
+                    <nav>
+                        <h2 class="menu-header">SELECT PROGRAM:</h2>
+                        <ul class="game-list">
+                            <li class="game-item">
+                                <a href="/telengard/" class="game-link">
+                                    <span class="game-number">1.</span> TELENGARD
+                                </a>
+                                <p class="game-desc">Dungeon crawler RPG (Avalon Hill, 1982)</p>
+                            </li>
+                            <li class="game-item">
+                                <a href="/sabotage/" class="game-link">
+                                    <span class="game-number">2.</span> SABOTAGE
+                                </a>
+                                <p class="game-desc">Defend your base from paratroopers</p>
+                            </li>
+                            <li class="game-item">
+                                <a href="/provinggrounds/" class="game-link">
+                                    <span class="game-number">3.</span> THE PROVING GROUNDS
+                                </a>
+                                <p class="game-desc">Classic BBS door game recreation</p>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <div class="prompt">
+                        ENTER SELECTION (1-3):<span class="cursor"></span>
+                    </div>
+
+                    <% if (intro.marquee.enabled) { %>
+                    <div class="marquee-container">
+                        <div class="marquee-text" style="animation-duration: <%= Math.max(10, intro.marquee.text.length / intro.marquee.speed * 10) %>s">
+                            <%= intro.marquee.text %>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+
+                <!-- Greets Overlay -->
+                <% if (intro.greets.enabled) { %>
+                <div id="greets-overlay">
+                    <div class="greets-title">GREETS FLY OUT TO:</div>
+                    <div class="greets-list">
+                        <% if (intro.greets.list.length > 0) { %>
+                            <%= intro.greets.list.join(' · ') %>
+                        <% } else { %>
+                            NO GREETS TODAY
+                        <% } %>
+                    </div>
+                    <div class="greets-close">PRESS G TO CLOSE</div>
+                </div>
+                <% } %>
+            </div>
+        </div>
+        <div class="led"></div>
+    </div>
+
+    <script>
+        // Configuration from server
+        const config = {
+            boot: {
+                enabled: <%= intro.boot.enabled %>,
+                delay: <%= intro.boot.delay %>
+            },
+            greets: {
+                enabled: <%= intro.greets.enabled %>
+            },
+            audio: {
+                enabled: <%= intro.audio.enabled %>
+            }
+        };
+
+        // Audio context (lazy init)
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!config.audio.enabled || audioCtx) return;
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playClick() {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.frequency.value = 800;
+            gain.gain.value = 0.1;
+            osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+            osc.stop(audioCtx.currentTime + 0.05);
+        }
+
+        function playDiskStep() {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'square';
+            osc.frequency.value = 100 + Math.random() * 50;
+            gain.gain.value = 0.05;
+            osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+            osc.stop(audioCtx.currentTime + 0.03);
+        }
+
+        // Boot sequence
+        const bootScreen = document.getElementById('boot-screen');
+        const menuScreen = document.getElementById('menu-screen');
+        const skipHint = document.getElementById('skip-hint');
+        let bootComplete = false;
+        let bootSkipped = false;
+
+        function showMenu() {
+            if (bootComplete) return;
+            bootComplete = true;
+            bootScreen.classList.add('hidden');
+            menuScreen.classList.add('visible');
+            document.body.classList.remove('booting');
+            sessionStorage.setItem('bootComplete', 'true');
+        }
+
+        function skipBoot() {
+            if (bootComplete || bootSkipped) return;
+            bootSkipped = true;
+            initAudio();
+            playClick();
+            showMenu();
+        }
+
+        // Check if boot already completed this session
+        if (sessionStorage.getItem('bootComplete') === 'true') {
+            config.boot.enabled = false;
+            bootScreen.classList.add('hidden');
+            menuScreen.classList.add('visible');
+            bootComplete = true;
+        }
+
+        if (config.boot.enabled && !bootComplete) {
+            const spinChars = ['|', '/', '-', '\\'];
+            let spinIdx = 0;
+            let trackNum = 1;
+
+            // Show skip hint after 1 second
+            setTimeout(() => {
+                if (!bootComplete) skipHint.classList.add('visible');
+            }, 1000);
+
+            // Skip on any key or click
+            document.addEventListener('keydown', skipBoot, { once: true });
+            document.addEventListener('click', skipBoot, { once: true });
+
+            // Boot sequence timing
+            const bootApple = document.getElementById('boot-apple');
+            const bootMemory = document.getElementById('boot-memory');
+            const bootDisk = document.getElementById('boot-disk');
+
+            // Phase 1: APPLE ][
+            setTimeout(() => {
+                if (bootComplete) return;
+                initAudio();
+                playClick();
+                bootApple.classList.add('visible');
+            }, 500);
+
+            // Phase 2: Memory check
+            setTimeout(() => {
+                if (bootComplete) return;
+                playClick();
+                bootMemory.textContent = 'CHECKING MEMORY...';
+                bootMemory.classList.add('visible');
+            }, 800);
+
+            setTimeout(() => {
+                if (bootComplete) return;
+                bootMemory.textContent = 'CHECKING MEMORY... 48K OK';
+            }, 1200);
+
+            // Phase 3: Disk loading
+            setTimeout(() => {
+                if (bootComplete) return;
+                playClick();
+                bootDisk.classList.add('visible');
+
+                const diskInterval = setInterval(() => {
+                    if (bootComplete) {
+                        clearInterval(diskInterval);
+                        return;
+                    }
+                    playDiskStep();
+                    spinIdx = (spinIdx + 1) % 4;
+                    bootDisk.textContent = `LOADING SIXTYFIVEOHTWO... TRACK ${String(trackNum).padStart(2, '0')}  ${spinChars[spinIdx]}`;
+                    trackNum++;
+                    if (trackNum > 17) trackNum = 1;
+                }, 100);
+
+                // Complete boot
+                setTimeout(() => {
+                    clearInterval(diskInterval);
+                    showMenu();
+                }, config.boot.delay);
+            }, 1600);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!bootComplete) return;
+
+            const key = e.key.toLowerCase();
+
+            if (key === '1') {
+                playClick();
+                window.location.href = '/telengard/';
+            } else if (key === '2') {
+                playClick();
+                window.location.href = '/sabotage/';
+            } else if (key === '3') {
+                playClick();
+                window.location.href = '/provinggrounds/';
+            } else if (key === 'g' && config.greets.enabled) {
+                playClick();
+                const overlay = document.getElementById('greets-overlay');
+                overlay.classList.toggle('visible');
+            }
+        });
+    </script>
+</body>
+</html>
+```
+
+**Step 3: Verify server still runs and page loads**
+
+Run: `npm run dev`
+Visit: `http://localhost:3000`
+Expected: Boot sequence plays, then menu appears
+
+**Step 4: Commit**
+
+```bash
+git add views/index.ejs views/partials/banners.ejs
+git commit -m "feat: implement cracker intro boot sequence and menu"
+```
+
+---
+
+## Task 5: Test All Configuration Options
+
+**Files:** None (testing only)
+
+**Step 1: Test boot disabled**
+
+Add to `.env`:
+```
+INTRO_BOOT_ENABLED=false
+```
+
+Restart server, visit `http://localhost:3000`
+Expected: Menu appears immediately, no boot sequence
+
+**Step 2: Test marquee disabled**
+
+Update `.env`:
+```
+INTRO_BOOT_ENABLED=true
+INTRO_MARQUEE_ENABLED=false
+```
+
+Restart server, visit `http://localhost:3000`
+Expected: Boot plays, menu shows, no scrolling text at bottom
+
+**Step 3: Test custom marquee text**
+
+Update `.env`:
+```
+INTRO_MARQUEE_ENABLED=true
+INTRO_MARQUEE_TEXT=CUSTOM TEST MESSAGE HERE...
+```
+
+Restart server, complete boot
+Expected: Custom message scrolls at bottom
+
+**Step 4: Test greets disabled**
+
+Update `.env`:
+```
+INTRO_GREETS_ENABLED=false
+```
+
+Restart server, complete boot, press G
+Expected: Nothing happens (no overlay)
+
+**Step 5: Test custom greets list**
+
+Update `.env`:
+```
+INTRO_GREETS_ENABLED=true
+INTRO_GREETS_LIST=ALPHA,BETA,GAMMA
+```
+
+Restart server, complete boot, press G
+Expected: Overlay shows "ALPHA · BETA · GAMMA"
+
+**Step 6: Test audio enabled**
+
+Update `.env`:
+```
+INTRO_AUDIO_ENABLED=true
+```
+
+Restart server, visit page
+Expected: Clicks and disk sounds during boot
+
+**Step 7: Test banner style forced**
+
+Update `.env`:
+```
+INTRO_BANNER_STYLE=block
+```
+
+Restart server multiple times
+Expected: Always shows block-style banner
+
+Update to `figlet`, verify always shows figlet style
+
+**Step 8: Reset .env to defaults and commit test results**
+
+Remove all `INTRO_*` vars from `.env` (keep only in `.env.example`)
+
+```bash
+git status
+# Should be clean - no changes to commit
+```
+
+---
+
+## Task 6: Delete Backup File and Final Commit
+
+**Files:**
+- Delete: `views/index.ejs.backup`
+
+**Step 1: Remove backup file**
+
+Run: `rm views/index.ejs.backup`
+
+**Step 2: Verify all files are correct**
+
+Run: `git status`
+Expected: Working tree clean (or only untracked backup deleted)
+
+Run: `npm run dev`
+Expected: Full boot sequence works with all features
+
+**Step 3: Final verification commit if needed**
+
+If any fixes were made during testing:
+```bash
+git add -A
+git commit -m "fix: polish intro implementation after testing"
+```
+
+---
+
+## Summary
+
+| Task | Description | Files |
+|------|-------------|-------|
+| 1 | Add environment variables | `.env.example` |
+| 2 | Add config parsing to server | `server.js` |
+| 3 | Create ASCII banner data | `views/partials/banners.ejs` |
+| 4 | Build complete homepage template | `views/index.ejs` |
+| 5 | Test all configuration options | (manual testing) |
+| 6 | Cleanup and final verification | Delete backup |
+
+Total estimated tasks: 6 (with multiple steps each)
