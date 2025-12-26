@@ -50,11 +50,13 @@
             padding: 30px 40px;
             position: relative;
             overflow: hidden;
+            min-height: 500px;
             box-shadow:
                 inset 0 0 100px rgba(51, 255, 51, 0.03),
                 inset 0 0 20px rgba(0, 0, 0, 0.8);
         }
 
+        /* Scanlines */
         .screen::before {
             content: '';
             position: absolute;
@@ -73,6 +75,7 @@
             z-index: 10;
         }
 
+        /* Vignette */
         .screen::after {
             content: '';
             position: absolute;
@@ -92,47 +95,74 @@
         .content {
             position: relative;
             z-index: 1;
-        }
-
-        .hero {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--phosphor-dim);
-        }
-
-        .logo {
-            font-size: 3.5rem;
             color: var(--phosphor);
-            text-shadow:
-                0 0 10px var(--phosphor),
-                0 0 20px var(--phosphor),
-                0 0 40px var(--phosphor-glow);
-            letter-spacing: 4px;
-            animation: flicker 0.15s infinite;
+            text-shadow: 0 0 5px var(--phosphor);
         }
 
-        .logo-accent {
-            color: var(--phosphor-glow);
-        }
-
-        .tagline {
+        /* Boot Screen */
+        #boot-screen {
             font-size: 1.4rem;
-            color: var(--phosphor-dim);
-            margin-top: 10px;
-            text-shadow: 0 0 5px var(--phosphor-dim);
+            line-height: 1.8;
         }
 
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.98; }
+        #boot-screen.hidden {
+            display: none;
+        }
+
+        .boot-line {
+            opacity: 0;
+        }
+
+        .boot-line.visible {
+            opacity: 1;
+        }
+
+        .spinner {
+            display: inline-block;
+        }
+
+        .skip-hint {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1rem;
+            color: var(--phosphor-dim);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .skip-hint.visible {
+            opacity: 1;
+        }
+
+        /* Menu Screen */
+        #menu-screen {
+            display: none;
+        }
+
+        #menu-screen.visible {
+            display: block;
+        }
+
+        .ascii-banner {
+            font-size: 0.9rem;
+            line-height: 1.2;
+            margin-bottom: 5px;
+            color: var(--phosphor-glow);
+            text-shadow: 0 0 10px var(--phosphor);
+        }
+
+        .site-name {
+            font-size: 1.8rem;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            color: var(--phosphor);
+            text-shadow: 0 0 10px var(--phosphor), 0 0 20px var(--phosphor-glow);
         }
 
         .menu-header {
-            color: var(--phosphor);
             font-size: 1.5rem;
             margin-bottom: 20px;
-            text-shadow: 0 0 5px var(--phosphor);
         }
 
         .game-list {
@@ -186,11 +216,7 @@
 
         .prompt {
             margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid var(--phosphor-dim);
-            color: var(--phosphor);
             font-size: 1.3rem;
-            text-shadow: 0 0 5px var(--phosphor);
         }
 
         .cursor {
@@ -208,11 +234,66 @@
             51%, 100% { opacity: 0; }
         }
 
-        .footer {
+        /* Marquee */
+        .marquee-container {
             margin-top: 30px;
-            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--phosphor-dim);
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee-text {
+            display: inline-block;
+            font-size: 1.2rem;
             color: var(--phosphor-dim);
-            font-size: 1rem;
+            animation: scroll-left linear infinite;
+            padding-left: 100%;
+        }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Greets Overlay */
+        #greets-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 40px;
+        }
+
+        #greets-overlay.visible {
+            display: flex;
+        }
+
+        .greets-title {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--phosphor-glow);
+            text-shadow: 0 0 10px var(--phosphor);
+        }
+
+        .greets-list {
+            font-size: 1.4rem;
+            line-height: 2;
+            color: var(--phosphor);
+        }
+
+        .greets-close {
+            margin-top: 30px;
+            font-size: 1.2rem;
+            color: var(--phosphor-dim);
         }
 
         /* Power LED */
@@ -233,6 +314,19 @@
             50% { box-shadow: 0 0 15px #33ff33, 0 0 30px #33ff33; }
         }
 
+        /* Boot flicker */
+        @keyframes screen-flicker {
+            0%, 100% { opacity: 1; }
+            92% { opacity: 1; }
+            93% { opacity: 0.8; }
+            94% { opacity: 1; }
+        }
+
+        .booting .screen {
+            animation: screen-flicker 3s ease-in-out;
+        }
+
+        /* Responsive */
         @media (max-width: 600px) {
             .monitor {
                 padding: 20px;
@@ -241,10 +335,15 @@
 
             .screen {
                 padding: 20px;
+                min-height: 400px;
             }
 
-            .logo {
-                font-size: 2rem;
+            .ascii-banner {
+                font-size: 0.6rem;
+            }
+
+            .site-name {
+                font-size: 1.4rem;
             }
 
             .game-link {
@@ -254,66 +353,248 @@
         }
     </style>
 </head>
-<body>
+<body class="<%= intro.boot.enabled ? 'booting' : '' %>">
+    <%- include('partials/banners') %>
+
     <div class="monitor">
         <div class="screen">
             <div class="content">
-                <header class="hero">
-                    <h1 class="logo">
-                        <span class="logo-accent">6502</span>
-                    </h1>
-                    <h2 class="logo" style="font-size: 2.5rem; margin-top: -5px;">
-                        SixtyFiveOhTwo
-                    </h2>
-                    <p class="tagline">Classic Apple II Games Collection</p>
-                </header>
-
-                <nav>
-                    <h2 class="menu-header">SELECT PROGRAM:</h2>
-                    <ul class="game-list">
-                        <li class="game-item">
-                            <a href="/telengard/" class="game-link">
-                                <span class="game-number">1.</span> TELENGARD
-                            </a>
-                            <p class="game-desc">Dungeon crawler RPG (Avalon Hill, 1982)</p>
-                        </li>
-                        <li class="game-item">
-                            <a href="/sabotage/" class="game-link">
-                                <span class="game-number">2.</span> SABOTAGE
-                            </a>
-                            <p class="game-desc">Defend your base from paratroopers</p>
-                        </li>
-                        <li class="game-item">
-                            <a href="/provinggrounds/" class="game-link">
-                                <span class="game-number">3.</span> THE PROVING GROUNDS
-                            </a>
-                            <p class="game-desc">Classic BBS door game recreation</p>
-                        </li>
-                    </ul>
-                </nav>
-
-                <div class="prompt">
-                    ENTER SELECTION (1-3):<span class="cursor"></span>
+                <!-- Boot Screen -->
+                <div id="boot-screen" class="<%= intro.boot.enabled ? '' : 'hidden' %>">
+                    <div class="boot-line" id="boot-apple">APPLE ][</div>
+                    <div class="boot-line" id="boot-memory"></div>
+                    <div class="boot-line" id="boot-disk"></div>
+                    <div class="skip-hint" id="skip-hint">PRESS ANY KEY TO SKIP</div>
                 </div>
 
-                <div class="footer">
-                    <p>APPLE ][ FOREVER</p>
+                <!-- Menu Screen -->
+                <div id="menu-screen" class="<%= intro.boot.enabled ? '' : 'visible' %>">
+                    <pre class="ascii-banner"><%= banners[bannerStyle] %></pre>
+                    <div class="site-name">SIXTYFIVEOHTWO</div>
+
+                    <nav>
+                        <h2 class="menu-header">SELECT PROGRAM:</h2>
+                        <ul class="game-list">
+                            <li class="game-item">
+                                <a href="/telengard/" class="game-link">
+                                    <span class="game-number">1.</span> TELENGARD
+                                </a>
+                                <p class="game-desc">Dungeon crawler RPG (Avalon Hill, 1982)</p>
+                            </li>
+                            <li class="game-item">
+                                <a href="/sabotage/" class="game-link">
+                                    <span class="game-number">2.</span> SABOTAGE
+                                </a>
+                                <p class="game-desc">Defend your base from paratroopers</p>
+                            </li>
+                            <li class="game-item">
+                                <a href="/provinggrounds/" class="game-link">
+                                    <span class="game-number">3.</span> THE PROVING GROUNDS
+                                </a>
+                                <p class="game-desc">Classic BBS door game recreation</p>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <div class="prompt">
+                        ENTER SELECTION (1-3):<span class="cursor"></span>
+                    </div>
+
+                    <% if (intro.marquee.enabled) { %>
+                    <div class="marquee-container">
+                        <div class="marquee-text" style="animation-duration: <%= Math.max(10, intro.marquee.text.length / intro.marquee.speed * 10) %>s">
+                            <%= intro.marquee.text %>
+                        </div>
+                    </div>
+                    <% } %>
                 </div>
+
+                <!-- Greets Overlay -->
+                <% if (intro.greets.enabled) { %>
+                <div id="greets-overlay">
+                    <div class="greets-title">GREETS FLY OUT TO:</div>
+                    <div class="greets-list">
+                        <% if (intro.greets.list.length > 0) { %>
+                            <%= intro.greets.list.join(' \u00B7 ') %>
+                        <% } else { %>
+                            NO GREETS TODAY
+                        <% } %>
+                    </div>
+                    <div class="greets-close">PRESS G TO CLOSE</div>
+                </div>
+                <% } %>
             </div>
         </div>
         <div class="led"></div>
     </div>
 
     <script>
-        // Keyboard navigation for authentic feel
+        // Configuration from server
+        const config = {
+            boot: {
+                enabled: <%= intro.boot.enabled %>,
+                delay: <%= intro.boot.delay %>
+            },
+            greets: {
+                enabled: <%= intro.greets.enabled %>
+            },
+            audio: {
+                enabled: <%= intro.audio.enabled %>
+            }
+        };
+
+        // Audio context (lazy init)
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!config.audio.enabled || audioCtx) return;
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playClick() {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.frequency.value = 800;
+            gain.gain.value = 0.1;
+            osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+            osc.stop(audioCtx.currentTime + 0.05);
+        }
+
+        function playDiskStep() {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'square';
+            osc.frequency.value = 100 + Math.random() * 50;
+            gain.gain.value = 0.05;
+            osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+            osc.stop(audioCtx.currentTime + 0.03);
+        }
+
+        // Boot sequence
+        const bootScreen = document.getElementById('boot-screen');
+        const menuScreen = document.getElementById('menu-screen');
+        const skipHint = document.getElementById('skip-hint');
+        let bootComplete = false;
+        let bootSkipped = false;
+
+        function showMenu() {
+            if (bootComplete) return;
+            bootComplete = true;
+            bootScreen.classList.add('hidden');
+            menuScreen.classList.add('visible');
+            document.body.classList.remove('booting');
+            sessionStorage.setItem('bootComplete', 'true');
+        }
+
+        function skipBoot() {
+            if (bootComplete || bootSkipped) return;
+            bootSkipped = true;
+            initAudio();
+            playClick();
+            showMenu();
+        }
+
+        // Check if boot already completed this session
+        if (sessionStorage.getItem('bootComplete') === 'true') {
+            config.boot.enabled = false;
+            bootScreen.classList.add('hidden');
+            menuScreen.classList.add('visible');
+            bootComplete = true;
+        }
+
+        if (config.boot.enabled && !bootComplete) {
+            const spinChars = ['|', '/', '-', '\\'];
+            let spinIdx = 0;
+            let trackNum = 1;
+
+            // Show skip hint after 1 second
+            setTimeout(() => {
+                if (!bootComplete) skipHint.classList.add('visible');
+            }, 1000);
+
+            // Skip on any key or click
+            document.addEventListener('keydown', skipBoot, { once: true });
+            document.addEventListener('click', skipBoot, { once: true });
+
+            // Boot sequence timing
+            const bootApple = document.getElementById('boot-apple');
+            const bootMemory = document.getElementById('boot-memory');
+            const bootDisk = document.getElementById('boot-disk');
+
+            // Phase 1: APPLE ][
+            setTimeout(() => {
+                if (bootComplete) return;
+                initAudio();
+                playClick();
+                bootApple.classList.add('visible');
+            }, 500);
+
+            // Phase 2: Memory check
+            setTimeout(() => {
+                if (bootComplete) return;
+                playClick();
+                bootMemory.textContent = 'CHECKING MEMORY...';
+                bootMemory.classList.add('visible');
+            }, 800);
+
+            setTimeout(() => {
+                if (bootComplete) return;
+                bootMemory.textContent = 'CHECKING MEMORY... 48K OK';
+            }, 1200);
+
+            // Phase 3: Disk loading
+            setTimeout(() => {
+                if (bootComplete) return;
+                playClick();
+                bootDisk.classList.add('visible');
+
+                const diskInterval = setInterval(() => {
+                    if (bootComplete) {
+                        clearInterval(diskInterval);
+                        return;
+                    }
+                    playDiskStep();
+                    spinIdx = (spinIdx + 1) % 4;
+                    bootDisk.textContent = `LOADING SIXTYFIVEOHTWO... TRACK ${String(trackNum).padStart(2, '0')}  ${spinChars[spinIdx]}`;
+                    trackNum++;
+                    if (trackNum > 17) trackNum = 1;
+                }, 100);
+
+                // Complete boot
+                setTimeout(() => {
+                    clearInterval(diskInterval);
+                    showMenu();
+                }, config.boot.delay);
+            }, 1600);
+        }
+
+        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
-            const key = e.key;
+            if (!bootComplete) return;
+
+            const key = e.key.toLowerCase();
+
             if (key === '1') {
+                playClick();
                 window.location.href = '/telengard/';
             } else if (key === '2') {
+                playClick();
                 window.location.href = '/sabotage/';
             } else if (key === '3') {
+                playClick();
                 window.location.href = '/provinggrounds/';
+            } else if (key === 'g' && config.greets.enabled) {
+                playClick();
+                const overlay = document.getElementById('greets-overlay');
+                overlay.classList.toggle('visible');
             }
         });
     </script>

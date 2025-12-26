@@ -26,6 +26,27 @@ if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
 }
 const SESSION_SECRET = process.env.SESSION_SECRET || 'dev-only-secret-change-in-prod';
 
+// Intro configuration with defaults
+const introConfig = {
+    boot: {
+        enabled: process.env.INTRO_BOOT_ENABLED !== 'false',
+        delay: parseInt(process.env.INTRO_BOOT_DELAY, 10) || 2000
+    },
+    marquee: {
+        enabled: process.env.INTRO_MARQUEE_ENABLED !== 'false',
+        text: process.env.INTRO_MARQUEE_TEXT || 'SIXTYFIVEOHTWO PRESENTS CLASSIC APPLE II GAMES FAITHFULLY RECREATED FOR THE MODERN WEB... ORIGINAL AUTHORS FOREVER...',
+        speed: parseInt(process.env.INTRO_MARQUEE_SPEED, 10) || 50
+    },
+    greets: {
+        enabled: process.env.INTRO_GREETS_ENABLED !== 'false',
+        list: (process.env.INTRO_GREETS_LIST || 'THE STACK,APPLE MAFIA,DIGITAL GANG,MIDWEST PIRATES').split(',').map(s => s.trim())
+    },
+    audio: {
+        enabled: process.env.INTRO_AUDIO_ENABLED === 'true'
+    },
+    bannerStyle: process.env.INTRO_BANNER_STYLE || 'random'
+};
+
 // View engine setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -80,7 +101,21 @@ app.get('/health', (req, res) => {
 
 // Main index page - game selection menu
 app.get('/', (req, res) => {
-    res.render('index');
+    // Determine banner style (persist in session)
+    let bannerStyle = req.session.bannerStyle;
+    if (!bannerStyle) {
+        if (introConfig.bannerStyle === 'random') {
+            bannerStyle = Math.random() < 0.5 ? 'block' : 'figlet';
+        } else {
+            bannerStyle = introConfig.bannerStyle;
+        }
+        req.session.bannerStyle = bannerStyle;
+    }
+
+    res.render('index', {
+        intro: introConfig,
+        bannerStyle
+    });
 });
 
 // -----------------------------
