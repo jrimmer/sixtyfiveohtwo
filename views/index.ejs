@@ -380,16 +380,16 @@
                                 <p class="game-desc">Dungeon crawler RPG (Avalon Hill, 1982)</p>
                             </li>
                             <li class="game-item">
-                                <a href="/sabotage/" class="game-link">
-                                    <span class="game-number">2.</span> SABOTAGE
-                                </a>
-                                <p class="game-desc">Defend your base from paratroopers</p>
-                            </li>
-                            <li class="game-item">
                                 <a href="/provinggrounds/" class="game-link">
-                                    <span class="game-number">3.</span> THE PROVING GROUNDS
+                                    <span class="game-number">2.</span> THE PROVING GROUNDS
                                 </a>
                                 <p class="game-desc">Classic BBS door game recreation</p>
+                            </li>
+                            <li class="game-item">
+                                <a href="/sabotage/" class="game-link">
+                                    <span class="game-number">3.</span> SABOTAGE <span style="color: var(--phosphor-dim);">[UNDER CONSTRUCTION]</span>
+                                </a>
+                                <p class="game-desc">Defend your base from paratroopers</p>
                             </li>
                         </ul>
                     </nav>
@@ -585,10 +585,10 @@
                 window.location.href = '/telengard/';
             } else if (key === '2') {
                 playClick();
-                window.location.href = '/sabotage/';
+                window.location.href = '/provinggrounds/';
             } else if (key === '3') {
                 playClick();
-                window.location.href = '/provinggrounds/';
+                window.location.href = '/sabotage/';
             } else if (key === 'g' && config.greets.enabled) {
                 playClick();
                 const overlay = document.getElementById('greets-overlay');
