@@ -184,12 +184,40 @@ app.get('/sabotage/{*path}', (req, res) => {
 const DB_PATH = process.env.DATABASE_PATH || './provinggrounds/data/provinggrounds.db';
 let db;
 
+// Auto-initialize database if it doesn't exist
+const dbDir = path.dirname(DB_PATH);
+if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+}
+
 try {
+    const dbExists = fs.existsSync(DB_PATH);
     db = new Database(DB_PATH);
     db.pragma('foreign_keys = ON');
+
+    if (!dbExists) {
+        console.log('Initializing Proving Grounds database...');
+        const schemaPath = path.join(__dirname, 'provinggrounds/src/db/schema.sql');
+        const schema = fs.readFileSync(schemaPath, 'utf8');
+        db.exec(schema);
+
+        // Insert default config
+        const insertConfig = db.prepare('INSERT OR REPLACE INTO config (key, value) VALUES (?, ?)');
+        const defaults = {
+            bbs_name: 'The Proving Grounds', sysop_name: 'Sysop', max_users: '500',
+            calls_per_day: '2', minutes_per_call: '60', max_level: '100',
+            fight_level_range: '2', max_fights_per_day: '4', max_jousts_per_day: '2',
+            corridor_rooms: '200', adventure_rooms: '900', registration_captcha: '0', version: '1.0.0'
+        };
+        for (const [key, value] of Object.entries(defaults)) {
+            insertConfig.run(key, value);
+        }
+        console.log('Proving Grounds database initialized.');
+    }
+
     app.set('db', db);
 } catch (err) {
-    console.warn('Proving Grounds database not found. Run "cd provinggrounds && npm run db:init" to initialize.');
+    console.error('Proving Grounds database error:', err.message);
 }
 
 // Proving Grounds static assets
