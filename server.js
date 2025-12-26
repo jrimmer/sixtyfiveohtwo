@@ -108,7 +108,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Session store (SQLite for production, memory for dev)
-const SESSION_DB_PATH = process.env.SESSION_DB_PATH || './data/sessions.db';
+const SESSION_DB_PATH = process.env.SESSION_DB_PATH ||
+    (process.env.NODE_ENV === 'production' ? '/data/sessions.db' : './data/sessions.db');
 let sessionStore;
 if (process.env.NODE_ENV === 'production') {
     const sessionDir = path.dirname(SESSION_DB_PATH);
@@ -181,7 +182,8 @@ app.get('/sabotage/{*path}', (req, res) => {
 // -----------------------------
 
 // Database connection for Proving Grounds
-const DB_PATH = process.env.DATABASE_PATH || './provinggrounds/data/provinggrounds.db';
+const DB_PATH = process.env.DATABASE_PATH ||
+    (process.env.NODE_ENV === 'production' ? '/data/provinggrounds.db' : './provinggrounds/data/provinggrounds.db');
 let db;
 
 // Auto-initialize database if it doesn't exist
