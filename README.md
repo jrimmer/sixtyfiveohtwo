@@ -202,3 +202,10 @@ This project is for educational and preservation purposes. The original games ar
 - The Apple II preservation community
 - [6502bench SourceGen](https://6502bench.com/) for disassembly tools
 - The retrocomputing community for keeping these classics alive
+
+## Built With
+
+This project was developed with AI-assisted coding:
+
+- [Claude Code](https://claude.ai/code) - Anthropic's AI coding assistant
+- [Obra Superpowers](https://github.com/obra/superpowers) - AI workflow enhancement for Claude Code
