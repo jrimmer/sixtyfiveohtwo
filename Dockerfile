@@ -35,7 +35,7 @@ COPY <<'EOF' /app/docker-entrypoint.sh
 set -e
 
 # Initialize database if it doesn't exist
-if [ ! -f "/app/provinggrounds/data/provinggrounds.db" ]; then
+if [ ! -f "/data/provinggrounds.db" ]; then
   echo "Initializing database..."
   cd /app/provinggrounds && npm run db:init && npm run db:seed
 fi
@@ -45,10 +45,14 @@ EOF
 
 RUN chmod +x /app/docker-entrypoint.sh
 
+# Create data directory for all SQLite databases
+RUN mkdir -p /data
+
 # Environment defaults
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV DATABASE_PATH=/app/provinggrounds/data/provinggrounds.db
+ENV DATABASE_PATH=/data/provinggrounds.db
+ENV SESSION_DB_PATH=/data/sessions.db
 
 EXPOSE 3000
 
