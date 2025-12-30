@@ -1,0 +1,46 @@
+# Dependencies (will be installed fresh in container)
+node_modules
+*/node_modules
+*/*/node_modules
+
+# Build outputs (will be rebuilt in container)
+telengard/dist
+sabotage/sabotage-web/dist
+
+# Development files
+.git
+.gitignore
+*.md
+!README.md
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Environment files (configured in Coolify)
+.env
+.env.*
+
+# Database files (mounted as volume)
+provinggrounds/data/*.db
+provinggrounds/data/*.db-journal
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+**/*.test.js
+**/*.spec.js
+**/test/
+**/tests/
+
+# Railway config (not needed for Coolify)
+railway.json
