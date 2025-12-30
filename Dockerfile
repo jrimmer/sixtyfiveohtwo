@@ -9,17 +9,11 @@ RUN apk add --no-cache python3 make g++ git
 
 WORKDIR /app
 
-# Copy package files first for better caching
-COPY package*.json ./
-COPY telengard/package*.json ./telengard/
-COPY sabotage/sabotage-web/package*.json ./sabotage/sabotage-web/
-COPY provinggrounds/package*.json ./provinggrounds/
-
-# Install root dependencies (this triggers postinstall which builds games)
-RUN npm ci
-
-# Copy source files
+# Copy everything first (source files needed for postinstall build)
 COPY . .
+
+# Install dependencies (triggers postinstall which builds games)
+RUN npm ci
 
 # Production stage
 FROM node:20-alpine
