@@ -88,6 +88,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Security middleware with relaxed CSP for game apps
+const isHttps = process.env.HTTPS_ENABLED === 'true';
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
@@ -98,8 +99,15 @@ app.use(helmet({
             imgSrc: ["'self'", "data:", "blob:"],
             connectSrc: ["'self'", "ws:", "wss:"],
             workerSrc: ["'self'", "blob:"],
+            upgradeInsecureRequests: isHttps ? [] : null,
         }
-    }
+    },
+    // Disable HSTS when not using HTTPS (prevents browser forcing HTTPS)
+    strictTransportSecurity: isHttps,
+    // Disable cross-origin policies that cause issues over HTTP
+    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: false,
+    crossOriginResourcePolicy: false,
 }));
 
 // Middleware
