@@ -15,6 +15,10 @@ COPY . .
 # Install dependencies (triggers postinstall which builds games)
 RUN npm ci
 
+# Verify builds completed successfully
+RUN test -f telengard/dist/index.html || (echo "ERROR: Telengard build failed" && exit 1)
+RUN test -f sabotage/sabotage-web/dist/index.html || (echo "ERROR: Sabotage build failed" && exit 1)
+
 # Production stage
 FROM node:20-alpine
 
