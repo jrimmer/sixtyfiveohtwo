@@ -9,7 +9,11 @@
     "build:telengard": "cd telengard && npm install && npm run build",
     "build:sabotage": "cd sabotage/sabotage-web && npm install && npm run build",
     "dev": "node --watch server.js",
-    "postinstall": "npm run build"
+    "postinstall": "npm run build",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:chromium": "playwright test --project=chromium"
   },
   "keywords": [
     "6502",
@@ -31,5 +35,8 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0"
   }
 }

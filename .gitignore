@@ -41,3 +41,7 @@ npm-debug.log*
 # Beads (only track issues.jsonl)
 .beads/*
 !.beads/issues.jsonl
+
+# Playwright
+/playwright-report/
+/test-results/
