@@ -8,7 +8,7 @@ const router = express.Router();
 
 // Auth middleware
 const requireAuth = (req, res, next) => {
-    if (!req.session.userId) return res.redirect('/');
+    if (!req.session.userId) return res.redirect('/provinggrounds/');
     next();
 };
 
@@ -70,7 +70,7 @@ router.post('/fight-user/:id', (req, res) => {
 
     // Validate opponentId is positive
     if (!opponentId || opponentId <= 0) {
-        return res.redirect('/combat/proving-grounds');
+        return res.redirect('/provinggrounds/combat/proving-grounds');
     }
 
     const user = db.prepare(`
@@ -96,7 +96,7 @@ router.post('/fight-user/:id', (req, res) => {
     `).get(opponentId, req.session.userId, user.level, fightLevel, user.level);
 
     if (!opponent || user.fights_today >= 4) {
-        return res.redirect('/combat/proving-grounds');
+        return res.redirect('/provinggrounds/combat/proving-grounds');
     }
 
     // Combat simulation
@@ -202,7 +202,7 @@ router.post('/dungeon/search', (req, res) => {
         SELECT * FROM monsters WHERE level = ? ORDER BY RANDOM() LIMIT 1
     `).get(monsterLevel);
 
-    if (!monster) return res.redirect('/combat/dungeon');
+    if (!monster) return res.redirect('/provinggrounds/combat/dungeon');
 
     // Initialize battle state
     req.session.battle = {
@@ -214,13 +214,13 @@ router.post('/dungeon/search', (req, res) => {
         log: [{ text: `A wild ${monster.name} appears!`, type: '' }]
     };
 
-    res.redirect('/combat/battle');
+    res.redirect('/provinggrounds/combat/battle');
 });
 
 // Battle page (shared for monsters)
 router.get('/battle', (req, res) => {
     const battle = req.session.battle;
-    if (!battle) return res.redirect('/combat/dungeon');
+    if (!battle) return res.redirect('/provinggrounds/combat/dungeon');
 
     const db = req.app.get('db');
     const user = db.prepare(`
@@ -252,7 +252,7 @@ router.get('/battle', (req, res) => {
 // Attack action
 router.post('/battle/attack', (req, res) => {
     const battle = req.session.battle;
-    if (!battle || battle.status !== 'fighting') return res.redirect('/combat/dungeon');
+    if (!battle || battle.status !== 'fighting') return res.redirect('/provinggrounds/combat/dungeon');
 
     const db = req.app.get('db');
     const user = db.prepare(`
@@ -308,23 +308,23 @@ router.post('/battle/attack', (req, res) => {
         }
     }
 
-    res.redirect('/combat/battle');
+    res.redirect('/provinggrounds/combat/battle');
 });
 
 // Cast spell in battle
 router.post('/battle/spell/:id', (req, res) => {
     const battle = req.session.battle;
-    if (!battle || battle.status !== 'fighting') return res.redirect('/combat/dungeon');
+    if (!battle || battle.status !== 'fighting') return res.redirect('/provinggrounds/combat/dungeon');
 
     const db = req.app.get('db');
     const spellId = parseInt(req.params.id);
 
     // Validate spellId is positive
-    if (!spellId || spellId <= 0) return res.redirect('/combat/battle');
+    if (!spellId || spellId <= 0) return res.redirect('/provinggrounds/combat/battle');
 
     const spell = db.prepare('SELECT * FROM spells WHERE id = ?').get(spellId);
 
-    if (!spell) return res.redirect('/combat/battle');
+    if (!spell) return res.redirect('/provinggrounds/combat/battle');
 
     // Verify user owns this spell with quantity > 0
     const userSpell = db.prepare('SELECT quantity FROM user_spells WHERE user_id = ? AND spell_id = ? AND quantity > 0')
@@ -332,16 +332,16 @@ router.post('/battle/spell/:id', (req, res) => {
 
     if (!userSpell) {
         battle.log.push({ text: 'You do not have that spell!', type: 'combat-miss' });
-        return res.redirect('/combat/battle');
+        return res.redirect('/provinggrounds/combat/battle');
     }
 
     // Validate spell cost is positive (prevent negative cost exploits)
-    if (spell.cost <= 0) return res.redirect('/combat/battle');
+    if (spell.cost <= 0) return res.redirect('/provinggrounds/combat/battle');
 
     // Check power
     if (battle.userPower < spell.cost) {
         battle.log.push({ text: 'Not enough power to cast spell!', type: 'combat-miss' });
-        return res.redirect('/combat/battle');
+        return res.redirect('/provinggrounds/combat/battle');
     }
 
     battle.userPower -= spell.cost;
@@ -363,13 +363,13 @@ router.post('/battle/spell/:id', (req, res) => {
         battle.expReward = expReward;
     }
 
-    res.redirect('/combat/battle');
+    res.redirect('/provinggrounds/combat/battle');
 });
 
 // Run from battle
 router.post('/battle/run', (req, res) => {
     const battle = req.session.battle;
-    if (!battle || battle.status !== 'fighting') return res.redirect('/combat/dungeon');
+    if (!battle || battle.status !== 'fighting') return res.redirect('/provinggrounds/combat/dungeon');
 
     // 50% chance to escape
     if (Math.random() > 0.5) {
@@ -394,7 +394,7 @@ router.post('/battle/run', (req, res) => {
         }
     }
 
-    res.redirect('/combat/battle');
+    res.redirect('/provinggrounds/combat/battle');
 });
 
 // Corridor of Death
@@ -410,7 +410,7 @@ router.get('/corridor', (req, res) => {
 
 router.post('/corridor/enter', (req, res) => {
     // TODO: Implement corridor of death
-    res.redirect('/combat/corridor');
+    res.redirect('/provinggrounds/combat/corridor');
 });
 
 // Castle Attack
@@ -426,7 +426,7 @@ router.get('/castle', (req, res) => {
 
 router.post('/castle/attack', (req, res) => {
     // TODO: Implement castle attack
-    res.redirect('/combat/castle');
+    res.redirect('/provinggrounds/combat/castle');
 });
 
 module.exports = router;

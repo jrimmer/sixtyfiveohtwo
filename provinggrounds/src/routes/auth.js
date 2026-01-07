@@ -50,7 +50,7 @@ function generateCaptcha() {
 // Home/Login page
 router.get('/', (req, res) => {
     if (req.session.userId) {
-        return res.redirect('/main');
+        return res.redirect('/provinggrounds/main');
     }
     res.render('pages/login', {
         title: 'The Proving Grounds',
@@ -143,7 +143,7 @@ router.post('/login', async (req, res) => {
             VALUES (?, ?, ?)
         `).run(user.id, user.validation_level, usedExtraCall ? 1 : 0);
 
-        res.redirect('/main');
+        res.redirect('/provinggrounds/main');
     } catch (err) {
         console.error('Login error:', err);
         res.render('pages/login', {
@@ -268,7 +268,7 @@ router.get('/logout', (req, res) => {
     }
 
     req.session.destroy();
-    res.redirect('/');
+    res.redirect('/provinggrounds/');
 });
 
 module.exports = router;

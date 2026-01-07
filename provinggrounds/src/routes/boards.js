@@ -8,7 +8,7 @@ const router = express.Router();
 
 // Auth middleware
 const requireAuth = (req, res, next) => {
-    if (!req.session.userId) return res.redirect('/');
+    if (!req.session.userId) return res.redirect('/provinggrounds/');
     next();
 };
 
@@ -66,14 +66,14 @@ router.get('/:id', (req, res) => {
     const boardId = parseInt(req.params.id);
 
     // Validate boardId is positive
-    if (!boardId || boardId <= 0) return res.redirect('/boards');
+    if (!boardId || boardId <= 0) return res.redirect('/provinggrounds/boards');
 
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const limit = 15;
     const offset = (page - 1) * limit;
 
     const board = db.prepare('SELECT * FROM boards WHERE id = ? AND active = 1').get(boardId);
-    if (!board) return res.redirect('/boards');
+    if (!board) return res.redirect('/provinggrounds/boards');
 
     const messages = db.prepare(`
         SELECT * FROM messages
@@ -109,13 +109,13 @@ router.get('/:boardId/message/:msgId', (req, res) => {
     const msgId = parseInt(req.params.msgId);
 
     // Validate IDs are positive
-    if (!boardId || boardId <= 0 || !msgId || msgId <= 0) return res.redirect('/boards');
+    if (!boardId || boardId <= 0 || !msgId || msgId <= 0) return res.redirect('/provinggrounds/boards');
 
     const board = db.prepare('SELECT * FROM boards WHERE id = ? AND active = 1').get(boardId);
     const message = db.prepare('SELECT * FROM messages WHERE id = ? AND board_id = ?')
         .get(msgId, boardId);
 
-    if (!board || !message) return res.redirect('/boards');
+    if (!board || !message) return res.redirect('/provinggrounds/boards');
 
     res.render('pages/boards/message', {
         title: message.subject,
@@ -132,10 +132,10 @@ router.get('/:id/post', (req, res) => {
     const boardId = parseInt(req.params.id);
 
     // Validate boardId is positive
-    if (!boardId || boardId <= 0) return res.redirect('/boards');
+    if (!boardId || boardId <= 0) return res.redirect('/provinggrounds/boards');
 
     const board = db.prepare('SELECT * FROM boards WHERE id = ? AND active = 1').get(boardId);
-    if (!board) return res.redirect('/boards');
+    if (!board) return res.redirect('/provinggrounds/boards');
 
     res.render('pages/boards/post', {
         title: 'Post Message',
@@ -150,7 +150,7 @@ router.post('/:id/post', (req, res) => {
     const boardId = parseInt(req.params.id);
 
     // Validate boardId is positive
-    if (!boardId || boardId <= 0) return res.redirect('/boards');
+    if (!boardId || boardId <= 0) return res.redirect('/provinggrounds/boards');
 
     const { subject, body, anonymous } = req.body;
 
@@ -160,7 +160,7 @@ router.post('/:id/post', (req, res) => {
     }
 
     const board = db.prepare('SELECT * FROM boards WHERE id = ? AND active = 1').get(boardId);
-    if (!board) return res.redirect('/boards');
+    if (!board) return res.redirect('/provinggrounds/boards');
 
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.userId);
 

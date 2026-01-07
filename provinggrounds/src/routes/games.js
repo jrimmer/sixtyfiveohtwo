@@ -7,7 +7,7 @@ const express = require('express');
 const router = express.Router();
 
 const requireAuth = (req, res, next) => {
-    if (!req.session.userId) return res.redirect('/');
+    if (!req.session.userId) return res.redirect('/provinggrounds/');
     next();
 };
 
@@ -43,7 +43,7 @@ router.post('/slots/play', (req, res) => {
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.userId);
 
     if (bet <= 0 || bet > user.gold || wheels < 3 || wheels > 5) {
-        return res.redirect('/games/slots?error=1');
+        return res.redirect('/provinggrounds/games/slots?error=1');
     }
 
     // Spin the wheels
@@ -112,7 +112,7 @@ router.post('/blackjack/start', (req, res) => {
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.userId);
 
     if (bet <= 0 || bet > user.gold) {
-        return res.redirect('/games/blackjack?error=1');
+        return res.redirect('/provinggrounds/games/blackjack?error=1');
     }
 
     // Create deck and shuffle
@@ -144,7 +144,7 @@ router.post('/blackjack/start', (req, res) => {
         status: 'playing'
     };
 
-    res.redirect('/games/blackjack');
+    res.redirect('/provinggrounds/games/blackjack');
 });
 
 function getHandValue(hand) {
@@ -173,7 +173,7 @@ function getHandValue(hand) {
 router.post('/blackjack/hit', (req, res) => {
     const game = req.session.blackjackGame;
     if (!game || game.status !== 'playing') {
-        return res.redirect('/games/blackjack');
+        return res.redirect('/provinggrounds/games/blackjack');
     }
 
     game.playerHand.push(game.deck.pop());
@@ -184,13 +184,13 @@ router.post('/blackjack/hit', (req, res) => {
         db.prepare('UPDATE users SET gold = gold - ? WHERE id = ?').run(game.bet, req.session.userId);
     }
 
-    res.redirect('/games/blackjack');
+    res.redirect('/provinggrounds/games/blackjack');
 });
 
 router.post('/blackjack/stand', (req, res) => {
     const game = req.session.blackjackGame;
     if (!game || game.status !== 'playing') {
-        return res.redirect('/games/blackjack');
+        return res.redirect('/provinggrounds/games/blackjack');
     }
 
     // Dealer plays
@@ -213,7 +213,7 @@ router.post('/blackjack/stand', (req, res) => {
         game.status = 'push';
     }
 
-    res.redirect('/games/blackjack');
+    res.redirect('/provinggrounds/games/blackjack');
 });
 
 // Jousting
@@ -252,7 +252,7 @@ router.post('/joust/:id', (req, res) => {
 
     // Validate opponentId is positive
     if (!opponentId || opponentId <= 0) {
-        return res.redirect('/games/joust');
+        return res.redirect('/provinggrounds/games/joust');
     }
 
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.userId);
@@ -269,7 +269,7 @@ router.post('/joust/:id', (req, res) => {
     `).get(opponentId, req.session.userId, user.level, fightLevel, user.level);
 
     if (!opponent || user.jousts_today >= 2) {
-        return res.redirect('/games/joust');
+        return res.redirect('/provinggrounds/games/joust');
     }
 
     const userJoust = db.prepare('SELECT * FROM joust_records WHERE user_id = ?').get(req.session.userId);
@@ -427,7 +427,7 @@ router.post('/russian/play', (req, res) => {
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.userId);
 
     if (!confirm || bet <= 0 || bet > user.gold || chambers < 2 || chambers > 6) {
-        return res.redirect('/games/russian');
+        return res.redirect('/provinggrounds/games/russian');
     }
 
     // Pull the trigger

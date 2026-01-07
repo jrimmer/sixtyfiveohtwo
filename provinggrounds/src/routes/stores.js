@@ -7,7 +7,7 @@ const express = require('express');
 const router = express.Router();
 
 const requireAuth = (req, res, next) => {
-    if (!req.session.userId) return res.redirect('/');
+    if (!req.session.userId) return res.redirect('/provinggrounds/');
     next();
 };
 
@@ -50,13 +50,13 @@ router.post('/weapons/buy/:id', (req, res) => {
     const weapon = db.prepare('SELECT * FROM weapons WHERE id = ?').get(weaponId);
 
     if (!weapon || user.gold < weapon.price) {
-        return res.redirect('/stores/weapons?error=insufficient_gold');
+        return res.redirect('/provinggrounds/stores/weapons?error=insufficient_gold');
     }
 
     db.prepare('UPDATE users SET gold = gold - ?, weapon_id = ? WHERE id = ?')
         .run(weapon.price, weaponId, req.session.userId);
 
-    res.redirect('/stores/weapons?success=1');
+    res.redirect('/provinggrounds/stores/weapons?success=1');
 });
 
 // Armor shop
@@ -85,13 +85,13 @@ router.post('/armor/buy/:id', (req, res) => {
     const armor = db.prepare('SELECT * FROM armor WHERE id = ?').get(armorId);
 
     if (!armor || user.gold < armor.price) {
-        return res.redirect('/stores/armor?error=insufficient_gold');
+        return res.redirect('/provinggrounds/stores/armor?error=insufficient_gold');
     }
 
     db.prepare('UPDATE users SET gold = gold - ?, armor_id = ? WHERE id = ?')
         .run(armor.price, armorId, req.session.userId);
 
-    res.redirect('/stores/armor?success=1');
+    res.redirect('/provinggrounds/stores/armor?success=1');
 });
 
 // Spells shop
@@ -131,14 +131,14 @@ router.post('/spells/buy/:id', (req, res) => {
 
     // Validate quantity is positive
     if (quantity <= 0) {
-        return res.redirect('/stores/spells?error=invalid');
+        return res.redirect('/provinggrounds/stores/spells?error=invalid');
     }
 
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.userId);
     const spell = db.prepare('SELECT * FROM spells WHERE id = ?').get(spellId);
 
     if (!spell) {
-        return res.redirect('/stores/spells?error=1');
+        return res.redirect('/provinggrounds/stores/spells?error=1');
     }
 
     const currentQty = db.prepare('SELECT quantity FROM user_spells WHERE user_id = ? AND spell_id = ?')
@@ -147,14 +147,14 @@ router.post('/spells/buy/:id', (req, res) => {
     const totalCost = spell.price * quantity;
 
     if (user.gold < totalCost || currentQty + quantity > 9) {
-        return res.redirect('/stores/spells?error=1');
+        return res.redirect('/provinggrounds/stores/spells?error=1');
     }
 
     db.prepare('UPDATE users SET gold = gold - ? WHERE id = ?').run(totalCost, req.session.userId);
     db.prepare('UPDATE user_spells SET quantity = quantity + ? WHERE user_id = ? AND spell_id = ?')
         .run(quantity, req.session.userId, spellId);
 
-    res.redirect('/stores/spells?success=1');
+    res.redirect('/provinggrounds/stores/spells?success=1');
 });
 
 // Healing (Witch Hilda)
@@ -183,7 +183,7 @@ router.post('/healing/hp', (req, res) => {
 
     // Validate amount is positive
     if (amount <= 0) {
-        return res.redirect('/stores/healing?error=invalid');
+        return res.redirect('/provinggrounds/stores/healing?error=invalid');
     }
 
     const cost = amount * 50;
@@ -191,13 +191,13 @@ router.post('/healing/hp', (req, res) => {
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.userId);
 
     if (user.gold < cost || user.hp + amount > user.max_hp) {
-        return res.redirect('/stores/healing?error=1');
+        return res.redirect('/provinggrounds/stores/healing?error=1');
     }
 
     db.prepare('UPDATE users SET gold = gold - ?, hp = hp + ? WHERE id = ?')
         .run(cost, amount, req.session.userId);
 
-    res.redirect('/stores/healing?success=1');
+    res.redirect('/provinggrounds/stores/healing?success=1');
 });
 
 router.post('/healing/power', (req, res) => {
@@ -206,7 +206,7 @@ router.post('/healing/power', (req, res) => {
 
     // Validate amount is positive
     if (amount <= 0) {
-        return res.redirect('/stores/healing?error=invalid');
+        return res.redirect('/provinggrounds/stores/healing?error=invalid');
     }
 
     const cost = amount * 50;
@@ -214,13 +214,13 @@ router.post('/healing/power', (req, res) => {
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.userId);
 
     if (user.gold < cost || user.power + amount > user.max_power) {
-        return res.redirect('/stores/healing?error=1');
+        return res.redirect('/provinggrounds/stores/healing?error=1');
     }
 
     db.prepare('UPDATE users SET gold = gold - ?, power = power + ? WHERE id = ?')
         .run(cost, amount, req.session.userId);
 
-    res.redirect('/stores/healing?success=1');
+    res.redirect('/provinggrounds/stores/healing?success=1');
 });
 
 router.post('/healing/full', (req, res) => {
@@ -232,13 +232,13 @@ router.post('/healing/full', (req, res) => {
     const cost = (hpNeeded + powerNeeded) * 50;
 
     if (user.gold < cost) {
-        return res.redirect('/stores/healing?error=1');
+        return res.redirect('/provinggrounds/stores/healing?error=1');
     }
 
     db.prepare('UPDATE users SET gold = gold - ?, hp = max_hp, power = max_power WHERE id = ?')
         .run(cost, req.session.userId);
 
-    res.redirect('/stores/healing?success=1');
+    res.redirect('/provinggrounds/stores/healing?success=1');
 });
 
 // Food (Ronald's Roach Burgers)
@@ -260,20 +260,20 @@ router.post('/food/buy', (req, res) => {
 
     // Validate amount is positive
     if (amount <= 0) {
-        return res.redirect('/stores/food?error=invalid');
+        return res.redirect('/provinggrounds/stores/food?error=invalid');
     }
 
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.userId);
     const cost = user.level * 2 * amount;
 
     if (user.gold < cost) {
-        return res.redirect('/stores/food?error=1');
+        return res.redirect('/provinggrounds/stores/food?error=1');
     }
 
     db.prepare('UPDATE users SET gold = gold - ?, food = food + ? WHERE id = ?')
         .run(cost, amount, req.session.userId);
 
-    res.redirect('/stores/food?success=1');
+    res.redirect('/provinggrounds/stores/food?success=1');
 });
 
 module.exports = router;

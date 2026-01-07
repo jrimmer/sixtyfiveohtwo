@@ -9,7 +9,7 @@ const router = express.Router();
 // Auth middleware
 const requireAuth = (req, res, next) => {
     if (!req.session.userId) {
-        return res.redirect('/');
+        return res.redirect('/provinggrounds/');
     }
     next();
 };
@@ -31,7 +31,7 @@ const loadUser = (req, res, next) => {
 
     if (!user) {
         req.session.destroy();
-        return res.redirect('/');
+        return res.redirect('/provinggrounds/');
     }
 
     // Calculate time remaining
@@ -42,7 +42,7 @@ const loadUser = (req, res, next) => {
 
     // Check if time expired
     if (user.timeRemaining <= 0) {
-        return res.redirect('/logout');
+        return res.redirect('/provinggrounds/logout');
     }
 
     req.user = user;
@@ -189,13 +189,13 @@ router.post('/treasury/deposit', (req, res) => {
     const amount = parseInt(req.body.amount) || 0;
 
     if (amount <= 0 || amount > req.user.gold) {
-        return res.redirect('/main/treasury?error=invalid');
+        return res.redirect('/provinggrounds/main/treasury?error=invalid');
     }
 
     db.prepare('UPDATE users SET gold = gold - ?, treasury = treasury + ? WHERE id = ?')
         .run(amount, amount, req.session.userId);
 
-    res.redirect('/main/treasury?success=deposit');
+    res.redirect('/provinggrounds/main/treasury?success=deposit');
 });
 
 router.post('/treasury/withdraw', (req, res) => {
@@ -203,13 +203,13 @@ router.post('/treasury/withdraw', (req, res) => {
     const amount = parseInt(req.body.amount) || 0;
 
     if (amount <= 0 || amount > req.user.treasury) {
-        return res.redirect('/main/treasury?error=invalid');
+        return res.redirect('/provinggrounds/main/treasury?error=invalid');
     }
 
     db.prepare('UPDATE users SET gold = gold + ?, treasury = treasury - ? WHERE id = ?')
         .run(amount, amount, req.session.userId);
 
-    res.redirect('/main/treasury?success=withdraw');
+    res.redirect('/provinggrounds/main/treasury?success=withdraw');
 });
 
 // Voting booth
@@ -253,12 +253,12 @@ router.post('/vote/:topicId', (req, res) => {
         .get(req.session.userId, topicId);
 
     if (existingVote || req.user.voted_today) {
-        return res.redirect('/main/vote?error=already_voted');
+        return res.redirect('/provinggrounds/main/vote?error=already_voted');
     }
 
     const option = db.prepare('SELECT * FROM voting_options WHERE id = ? AND topic_id = ?').get(optionId, topicId);
     if (!option) {
-        return res.redirect('/main/vote?error=invalid');
+        return res.redirect('/provinggrounds/main/vote?error=invalid');
     }
 
     // Record vote
@@ -274,11 +274,11 @@ router.post('/vote/:topicId', (req, res) => {
     if (earnedExtraCall) {
         db.prepare('UPDATE users SET gold = gold + ?, experience = experience + ?, voted_today = 1, extra_calls = extra_calls + 1 WHERE id = ?')
             .run(reward, reward, req.session.userId);
-        res.redirect('/main/vote?success=' + reward + '&bonus=call');
+        res.redirect('/provinggrounds/main/vote?success=' + reward + '&bonus=call');
     } else {
         db.prepare('UPDATE users SET gold = gold + ?, experience = experience + ?, voted_today = 1 WHERE id = ?')
             .run(reward, reward, req.session.userId);
-        res.redirect('/main/vote?success=' + reward);
+        res.redirect('/provinggrounds/main/vote?success=' + reward);
     }
 });
 
@@ -325,13 +325,13 @@ router.post('/message', (req, res) => {
     db.prepare('UPDATE users SET user_message = ? WHERE id = ?')
         .run(message, req.session.userId);
 
-    res.redirect('/main');
+    res.redirect('/provinggrounds/main');
 });
 
 // Admin: Grant extra calls to a user (admin only)
 router.post('/admin/grant-calls', (req, res) => {
     if (!req.session.isAdmin && !req.user.is_admin) {
-        return res.redirect('/main?error=unauthorized');
+        return res.redirect('/provinggrounds/main?error=unauthorized');
     }
 
     const db = req.app.get('db');
@@ -341,25 +341,25 @@ router.post('/admin/grant-calls', (req, res) => {
 
     // Validate inputs are positive
     if (callsToGrant <= 0 || !targetUserId || targetUserId <= 0) {
-        return res.redirect('/main/members?error=invalid');
+        return res.redirect('/provinggrounds/main/members?error=invalid');
     }
 
     // Verify target user exists
     const targetUser = db.prepare('SELECT id FROM users WHERE id = ?').get(targetUserId);
     if (!targetUser) {
-        return res.redirect('/main/members?error=invalid');
+        return res.redirect('/provinggrounds/main/members?error=invalid');
     }
 
     db.prepare('UPDATE users SET extra_calls = extra_calls + ? WHERE id = ?')
         .run(callsToGrant, targetUserId);
 
-    res.redirect('/main/members?success=granted');
+    res.redirect('/provinggrounds/main/members?success=granted');
 });
 
 // Admin: Toggle admin status (admin only)
 router.post('/admin/toggle-admin', (req, res) => {
     if (!req.session.isAdmin && !req.user.is_admin) {
-        return res.redirect('/main?error=unauthorized');
+        return res.redirect('/provinggrounds/main?error=unauthorized');
     }
 
     const db = req.app.get('db');
@@ -368,24 +368,24 @@ router.post('/admin/toggle-admin', (req, res) => {
 
     // Validate userId is positive
     if (!targetUserId || targetUserId <= 0) {
-        return res.redirect('/main/members?error=invalid');
+        return res.redirect('/provinggrounds/main/members?error=invalid');
     }
 
     // Can't remove your own admin status
     if (targetUserId === req.session.userId) {
-        return res.redirect('/main/members?error=self');
+        return res.redirect('/provinggrounds/main/members?error=self');
     }
 
     // Verify target user exists
     const targetUser = db.prepare('SELECT id FROM users WHERE id = ?').get(targetUserId);
     if (!targetUser) {
-        return res.redirect('/main/members?error=invalid');
+        return res.redirect('/provinggrounds/main/members?error=invalid');
     }
 
     db.prepare('UPDATE users SET is_admin = CASE WHEN is_admin = 1 THEN 0 ELSE 1 END WHERE id = ?')
         .run(targetUserId);
 
-    res.redirect('/main/members?success=toggled');
+    res.redirect('/provinggrounds/main/members?success=toggled');
 });
 
 module.exports = router;
