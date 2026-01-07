@@ -19,6 +19,10 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
+// Trust proxy for reverse proxy deployments (Coolify, Railway, etc.)
+// Required for secure cookies to work behind a proxy
+app.set('trust proxy', 1);
+
 // Configuration
 const PORT = process.env.PORT || 3000;
 
