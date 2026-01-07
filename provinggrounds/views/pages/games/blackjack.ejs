@@ -33,7 +33,7 @@
         <% if (!game) { %>
         <!-- No active game, show bet form -->
         <h3>Place Your Bet</h3>
-        <form action="/games/blackjack/start" method="POST">
+        <form action="/provinggrounds/games/blackjack/start" method="POST">
             <div class="form-group">
                 <label for="bet">Bet Amount:</label>
                 <input type="number" name="bet" id="bet" min="1" max="<%= user.gold %>" value="10">
@@ -90,13 +90,13 @@
         <div class="menu" style="margin-top: 20px;">
             <div class="menu-item">
                 <span class="menu-key">H)</span>
-                <form action="/games/blackjack/hit" method="POST" style="display: inline;">
+                <form action="/provinggrounds/games/blackjack/hit" method="POST" style="display: inline;">
                     <button type="submit">Hit</button>
                 </form>
             </div>
             <div class="menu-item">
                 <span class="menu-key">S)</span>
-                <form action="/games/blackjack/stand" method="POST" style="display: inline;">
+                <form action="/provinggrounds/games/blackjack/stand" method="POST" style="display: inline;">
                     <button type="submit">Stand</button>
                 </form>
             </div>
@@ -118,7 +118,7 @@
             <% } %>
         </div>
 
-        <form action="/games/blackjack/start" method="POST" style="margin-top: 20px;">
+        <form action="/provinggrounds/games/blackjack/start" method="POST" style="margin-top: 20px;">
             <input type="hidden" name="bet" value="<%= game.bet %>">
             <button type="submit">Play Again (Same Bet)</button>
         </form>
@@ -128,7 +128,7 @@
         <div class="menu" style="margin-top: 20px;">
             <div class="menu-item">
                 <span class="menu-key">&lt;</span>
-                <a href="/games">Return to Gambling</a>
+                <a href="/provinggrounds/games">Return to Gambling</a>
             </div>
         </div>
 

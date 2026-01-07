@@ -48,7 +48,7 @@
         <div class="menu">
             <div class="menu-item">
                 <span class="menu-key">A)</span>
-                <form action="/combat/battle/attack" method="POST" style="display: inline;">
+                <form action="/provinggrounds/combat/battle/attack" method="POST" style="display: inline;">
                     <button type="submit">Attack</button>
                 </form>
             </div>
@@ -59,7 +59,7 @@
             </div>
             <% battleSpells.forEach(spell => { %>
             <div class="menu-item" style="margin-left: 30px;">
-                <form action="/combat/battle/spell/<%= spell.id %>" method="POST" style="display: inline;">
+                <form action="/provinggrounds/combat/battle/spell/<%= spell.id %>" method="POST" style="display: inline;">
                     <button type="submit"><%= spell.name %> (<%= spell.power %> pwr, costs <%= spell.cost %> power)</button>
                 </form>
             </div>
@@ -67,7 +67,7 @@
             <% } %>
             <div class="menu-item">
                 <span class="menu-key">R)</span>
-                <form action="/combat/battle/run" method="POST" style="display: inline;">
+                <form action="/provinggrounds/combat/battle/run" method="POST" style="display: inline;">
                     <button type="submit">Run Away</button>
                 </form>
             </div>
@@ -94,7 +94,7 @@
         <div class="menu" style="margin-top: 20px;">
             <div class="menu-item">
                 <span class="menu-key">&lt;</span>
-                <a href="/combat/dungeon">Return to Dungeon</a>
+                <a href="/provinggrounds/combat/dungeon">Return to Dungeon</a>
             </div>
         </div>
         <% } %>

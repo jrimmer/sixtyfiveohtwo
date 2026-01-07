@@ -23,7 +23,7 @@
         </div>
         <% } %>
 
-        <form action="/boards/<%= board.id %>/post" method="POST">
+        <form action="/provinggrounds/boards/<%= board.id %>/post" method="POST">
             <div class="form-group">
                 <label for="to">To (optional, leave blank for public):</label>
                 <input type="text" id="to" name="to" maxlength="20" value="<%= typeof replyTo !== 'undefined' ? replyTo : '' %>">
@@ -48,7 +48,7 @@
         <div class="menu" style="margin-top: 20px;">
             <div class="menu-item">
                 <span class="menu-key">&lt;</span>
-                <a href="/boards/<%= board.id %>">Cancel / Return to Board</a>
+                <a href="/provinggrounds/boards/<%= board.id %>">Cancel / Return to Board</a>
             </div>
         </div>
 

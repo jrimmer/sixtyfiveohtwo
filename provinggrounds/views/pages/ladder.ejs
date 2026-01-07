@@ -47,11 +47,11 @@
         <% if (totalPages > 1) { %>
         <div class="pagination">
             <% if (page > 1) { %>
-            <a href="/main/ladder?page=<%= page - 1 %>">&lt; Prev</a>
+            <a href="/provinggrounds/main/ladder?page=<%= page - 1 %>">&lt; Prev</a>
             <% } %>
             <span>Page <%= page %> of <%= totalPages %></span>
             <% if (page < totalPages) { %>
-            <a href="/main/ladder?page=<%= page + 1 %>">Next &gt;</a>
+            <a href="/provinggrounds/main/ladder?page=<%= page + 1 %>">Next &gt;</a>
             <% } %>
         </div>
         <% } %>
@@ -59,7 +59,7 @@
         <div class="menu" style="margin-top: 20px;">
             <div class="menu-item">
                 <span class="menu-key">&lt;</span>
-                <a href="/main">Return to Main Menu</a>
+                <a href="/provinggrounds/main">Return to Main Menu</a>
             </div>
         </div>
 

@@ -66,7 +66,7 @@
                         <% } else if (user.gold < weapon.price) { %>
                         <span style="color: var(--dim-color);">Can't Afford</span>
                         <% } else { %>
-                        <form action="/stores/weapons/buy/<%= weapon.id %>" method="POST" style="display: inline;">
+                        <form action="/provinggrounds/stores/weapons/buy/<%= weapon.id %>" method="POST" style="display: inline;">
                             <button type="submit">Buy</button>
                         </form>
                         <% } %>
@@ -79,11 +79,11 @@
         <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
         <div class="pagination">
             <% if (page > 1) { %>
-            <a href="/stores/weapons?page=<%= page - 1 %>">&lt; Prev</a>
+            <a href="/provinggrounds/stores/weapons?page=<%= page - 1 %>">&lt; Prev</a>
             <% } %>
             <span>Page <%= page %> of <%= totalPages %></span>
             <% if (page < totalPages) { %>
-            <a href="/stores/weapons?page=<%= page + 1 %>">Next &gt;</a>
+            <a href="/provinggrounds/stores/weapons?page=<%= page + 1 %>">Next &gt;</a>
             <% } %>
         </div>
         <% } %>
@@ -91,7 +91,7 @@
         <div class="menu" style="margin-top: 20px;">
             <div class="menu-item">
                 <span class="menu-key">&lt;</span>
-                <a href="/stores">Return to Bazaar</a>
+                <a href="/provinggrounds/stores">Return to Bazaar</a>
             </div>
         </div>
 

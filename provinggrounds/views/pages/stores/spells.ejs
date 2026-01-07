@@ -92,7 +92,7 @@
                         <% } else if (user.gold < spell.price) { %>
                         <span style="color: var(--dim-color);">Can't Afford</span>
                         <% } else { %>
-                        <form action="/stores/spells/buy/<%= spell.id %>" method="POST" style="display: inline;">
+                        <form action="/provinggrounds/stores/spells/buy/<%= spell.id %>" method="POST" style="display: inline;">
                             <button type="submit">Learn</button>
                         </form>
                         <% } %>
@@ -105,7 +105,7 @@
         <div class="menu" style="margin-top: 20px;">
             <div class="menu-item">
                 <span class="menu-key">&lt;</span>
-                <a href="/stores">Return to Bazaar</a>
+                <a href="/provinggrounds/stores">Return to Bazaar</a>
             </div>
         </div>
 

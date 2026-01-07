@@ -34,7 +34,7 @@
                 <% topic.options.forEach(option => { %>
                 <div style="margin: 10px 0; display: flex; align-items: center;">
                     <% if (!topic.hasVoted) { %>
-                    <form action="/main/vote/<%= topic.id %>" method="POST" style="display: inline;">
+                    <form action="/provinggrounds/main/vote/<%= topic.id %>" method="POST" style="display: inline;">
                         <input type="hidden" name="option" value="<%= option.id %>">
                         <button type="submit" style="margin-right: 10px;"><%= option.option_text %></button>
                     </form>
@@ -55,7 +55,7 @@
         <div class="menu" style="margin-top: 20px;">
             <div class="menu-item">
                 <span class="menu-key">&lt;</span>
-                <a href="/main">Return to Main Menu</a>
+                <a href="/provinggrounds/main">Return to Main Menu</a>
             </div>
         </div>
 

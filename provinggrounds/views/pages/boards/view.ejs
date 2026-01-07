@@ -29,7 +29,7 @@
                 <% messages.forEach((msg, index) => { %>
                 <tr>
                     <td><%= (page - 1) * 20 + index + 1 %></td>
-                    <td><a href="/boards/<%= board.id %>/message/<%= msg.id %>"><%= msg.subject %></a></td>
+                    <td><a href="/provinggrounds/boards/<%= board.id %>/message/<%= msg.id %>"><%= msg.subject %></a></td>
                     <td><%= msg.author_name %></td>
                     <td><%= new Date(msg.created_at).toLocaleDateString() %></td>
                 </tr>
@@ -44,11 +44,11 @@
         <% if (totalPages > 1) { %>
         <div class="pagination">
             <% if (page > 1) { %>
-            <a href="/boards/<%= board.id %>?page=<%= page - 1 %>">&lt; Prev</a>
+            <a href="/provinggrounds/boards/<%= board.id %>?page=<%= page - 1 %>">&lt; Prev</a>
             <% } %>
             <span>Page <%= page %> of <%= totalPages %></span>
             <% if (page < totalPages) { %>
-            <a href="/boards/<%= board.id %>?page=<%= page + 1 %>">Next &gt;</a>
+            <a href="/provinggrounds/boards/<%= board.id %>?page=<%= page + 1 %>">Next &gt;</a>
             <% } %>
         </div>
         <% } %>
@@ -56,11 +56,11 @@
         <div class="menu" style="margin-top: 20px;">
             <div class="menu-item">
                 <span class="menu-key">P)</span>
-                <a href="/boards/<%= board.id %>/post">Post New Message</a>
+                <a href="/provinggrounds/boards/<%= board.id %>/post">Post New Message</a>
             </div>
             <div class="menu-item">
                 <span class="menu-key">&lt;</span>
-                <a href="/boards">Return to Board List</a>
+                <a href="/provinggrounds/boards">Return to Board List</a>
             </div>
         </div>
 

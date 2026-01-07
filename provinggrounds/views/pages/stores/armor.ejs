@@ -66,7 +66,7 @@
                         <% } else if (user.gold < item.price) { %>
                         <span style="color: var(--dim-color);">Can't Afford</span>
                         <% } else { %>
-                        <form action="/stores/armor/buy/<%= item.id %>" method="POST" style="display: inline;">
+                        <form action="/provinggrounds/stores/armor/buy/<%= item.id %>" method="POST" style="display: inline;">
                             <button type="submit">Buy</button>
                         </form>
                         <% } %>
@@ -79,7 +79,7 @@
         <div class="menu" style="margin-top: 20px;">
             <div class="menu-item">
                 <span class="menu-key">&lt;</span>
-                <a href="/stores">Return to Bazaar</a>
+                <a href="/provinggrounds/stores">Return to Bazaar</a>
             </div>
         </div>
 

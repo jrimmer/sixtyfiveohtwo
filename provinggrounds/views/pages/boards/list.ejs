@@ -22,7 +22,7 @@
             <% boards.forEach((board, index) => { %>
             <div class="menu-item">
                 <span class="menu-key"><%= index + 1 %>)</span>
-                <a href="/boards/<%= board.id %>"><%= board.name %></a>
+                <a href="/provinggrounds/boards/<%= board.id %>"><%= board.name %></a>
                 <span style="color: var(--dim-color);"> (<%= board.message_count %> messages)</span>
             </div>
             <% }); %>
@@ -32,11 +32,11 @@
         <div class="menu">
             <div class="menu-item">
                 <span class="menu-key">Q)</span>
-                <a href="/boards/quickscan">Quickscan New Messages</a>
+                <a href="/provinggrounds/boards/quickscan">Quickscan New Messages</a>
             </div>
             <div class="menu-item">
                 <span class="menu-key">&lt;</span>
-                <a href="/main">Return to Main Menu</a>
+                <a href="/provinggrounds/main">Return to Main Menu</a>
             </div>
         </div>
 

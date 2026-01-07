@@ -49,7 +49,7 @@
                     <td><%= opp.kills %></td>
                     <td>
                         <% if (fightsRemaining > 0) { %>
-                        <form action="/combat/fight-user/<%= opp.id %>" method="POST" style="display: inline;">
+                        <form action="/provinggrounds/combat/fight-user/<%= opp.id %>" method="POST" style="display: inline;">
                             <button type="submit">Attack</button>
                         </form>
                         <% } else { %>
@@ -65,7 +65,7 @@
         <div class="menu" style="margin-top: 20px;">
             <div class="menu-item">
                 <span class="menu-key">&lt;</span>
-                <a href="/combat">Return to Combat Menu</a>
+                <a href="/provinggrounds/combat">Return to Combat Menu</a>
             </div>
         </div>
 

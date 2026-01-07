@@ -40,7 +40,7 @@
         </div>
 
         <h2>Deposit Gold</h2>
-        <form action="/main/treasury/deposit" method="POST" style="margin-bottom: 20px;">
+        <form action="/provinggrounds/main/treasury/deposit" method="POST" style="margin-bottom: 20px;">
             <div class="form-group">
                 <label for="deposit">Amount to Deposit:</label>
                 <input type="number" id="deposit" name="amount" min="1" max="<%= user.gold %>">
@@ -49,7 +49,7 @@
         </form>
 
         <h2>Withdraw Gold</h2>
-        <form action="/main/treasury/withdraw" method="POST">
+        <form action="/provinggrounds/main/treasury/withdraw" method="POST">
             <div class="form-group">
                 <label for="withdraw">Amount to Withdraw:</label>
                 <input type="number" id="withdraw" name="amount" min="1" max="<%= user.bank %>">
@@ -68,7 +68,7 @@
         <div class="menu" style="margin-top: 20px;">
             <div class="menu-item">
                 <span class="menu-key">&lt;</span>
-                <a href="/main">Return to Main Menu</a>
+                <a href="/provinggrounds/main">Return to Main Menu</a>
             </div>
         </div>
 

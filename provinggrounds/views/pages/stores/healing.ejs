@@ -52,7 +52,7 @@
                 <span class="menu-key">H)</span>
                 <span>Heal HP (<%= hpCost %> gold per point)</span>
             </div>
-            <form action="/stores/healing/hp" method="POST" style="margin: 10px 0 20px 30px;">
+            <form action="/provinggrounds/stores/healing/hp" method="POST" style="margin: 10px 0 20px 30px;">
                 <label>Amount to heal (max <%= user.max_hp - user.hp %>):</label>
                 <input type="number" name="amount" min="1" max="<%= user.max_hp - user.hp %>" value="<%= Math.min(user.max_hp - user.hp, Math.floor(user.gold / hpCost)) %>" style="width: 80px;">
                 <button type="submit">Heal</button>
@@ -68,7 +68,7 @@
                 <span class="menu-key">P)</span>
                 <span>Restore Power (<%= powerCost %> gold per point)</span>
             </div>
-            <form action="/stores/healing/power" method="POST" style="margin: 10px 0 20px 30px;">
+            <form action="/provinggrounds/stores/healing/power" method="POST" style="margin: 10px 0 20px 30px;">
                 <label>Amount to restore (max <%= user.max_power - user.power %>):</label>
                 <input type="number" name="amount" min="1" max="<%= user.max_power - user.power %>" value="<%= Math.min(user.max_power - user.power, Math.floor(user.gold / powerCost)) %>" style="width: 80px;">
                 <button type="submit">Restore</button>
@@ -82,7 +82,7 @@
             <% if (user.hp < user.max_hp || user.power < user.max_power) { %>
             <div class="menu-item">
                 <span class="menu-key">F)</span>
-                <form action="/stores/healing/full" method="POST" style="display: inline;">
+                <form action="/provinggrounds/stores/healing/full" method="POST" style="display: inline;">
                     Full Restoration (<%= fullCost %> gold)
                     <button type="submit">Restore All</button>
                 </form>
@@ -93,7 +93,7 @@
         <div class="menu" style="margin-top: 20px;">
             <div class="menu-item">
                 <span class="menu-key">&lt;</span>
-                <a href="/stores">Return to Bazaar</a>
+                <a href="/provinggrounds/stores">Return to Bazaar</a>
             </div>
         </div>
 
