@@ -231,7 +231,8 @@ router.get('/slots', requireAuth, (req, res) => {
         title: 'Slot Machine',
         user: req.user,
         result: null,
-        message: null
+        message: null,
+        lastBet: 10
     });
 });
 
@@ -244,7 +245,8 @@ router.post('/slots/spin', requireAuth, (req, res) => {
             title: 'Slot Machine',
             user: req.user,
             result: null,
-            message: 'Invalid bet amount'
+            message: 'Invalid bet amount',
+            lastBet: bet || 10
         });
     }
 
@@ -265,15 +267,15 @@ router.post('/slots/spin', requireAuth, (req, res) => {
         return symbols[0];
     }
 
-    const result = [pickSymbol(), pickSymbol(), pickSymbol()];
+    const reels = [pickSymbol(), pickSymbol(), pickSymbol()];
 
     // Calculate winnings
     let multiplier = 0;
-    if (result[0] === result[1] && result[1] === result[2]) {
+    if (reels[0] === reels[1] && reels[1] === reels[2]) {
         // Three of a kind
-        const symbolIndex = symbols.indexOf(result[0]);
+        const symbolIndex = symbols.indexOf(reels[0]);
         multiplier = [3, 5, 10, 20, 50, 100, 500][symbolIndex];
-    } else if (result[0] === result[1] || result[1] === result[2] || result[0] === result[2]) {
+    } else if (reels[0] === reels[1] || reels[1] === reels[2] || reels[0] === reels[2]) {
         // Two of a kind
         multiplier = 2;
     }
@@ -291,8 +293,9 @@ router.post('/slots/spin', requireAuth, (req, res) => {
     res.render('pages/games/slots', {
         title: 'Slot Machine',
         user: { ...req.user, gold: req.user.gold - bet + winnings },
-        result,
-        message
+        result: { reels, winnings, message },
+        message,
+        lastBet: bet
     });
 });
 
