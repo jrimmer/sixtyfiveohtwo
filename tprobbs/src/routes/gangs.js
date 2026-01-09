@@ -79,6 +79,7 @@ router.post('/create', requireAuth, (req, res) => {
     const db = req.app.get('tprodb');
     const { name, member2, member3, member4 } = req.body;
 
+    // Validate gang name (alphanumeric, spaces, and common punctuation only)
     if (!name || name.length < 3 || name.length > 25) {
         const eligibleUsers = db.prepare(`
             SELECT id, username, level FROM users
@@ -91,6 +92,22 @@ router.post('/create', requireAuth, (req, res) => {
             user: req.user,
             eligibleUsers,
             error: 'Gang name must be 3-25 characters'
+        });
+    }
+
+    // Sanitize gang name - only allow safe characters
+    if (!/^[a-zA-Z0-9\s\-_']+$/.test(name)) {
+        const eligibleUsers = db.prepare(`
+            SELECT id, username, level FROM users
+            WHERE id != ? AND gang_id IS NULL AND status = 1
+            ORDER BY level DESC LIMIT 50
+        `).all(req.user.id);
+
+        return res.render('pages/gangs/create', {
+            title: 'Create Gang',
+            user: req.user,
+            eligibleUsers,
+            error: 'Gang name can only contain letters, numbers, spaces, hyphens, underscores, and apostrophes'
         });
     }
 
@@ -247,11 +264,20 @@ router.get('/view/:gangId', requireAuth, (req, res) => {
         ORDER BY u.level DESC
     `).all(gangId);
 
+    // Calculate total gang power (sum of member levels)
+    const totalLevel = members.reduce((sum, m) => sum + m.level, 0);
+
+    // Check if current user is a member
+    const isMember = req.user.gang_id === gangId;
+
     res.render('pages/gangs/view', {
         title: gang.name,
         user: req.user,
-        gang,
-        members
+        gang: { ...gang, totalLevel },
+        members,
+        isMember,
+        message: req.query.message || null,
+        messageType: req.query.messageType || null
     });
 });
 

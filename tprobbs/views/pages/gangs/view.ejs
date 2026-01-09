@@ -29,7 +29,7 @@
             </div>
             <div class="stat">
                 <span class="stat-label">Treasury:</span>
-                <span class="stat-value"><%= Math.floor(gang.treasury).toLocaleString() %> gold</span>
+                <span class="stat-value"><%= Math.floor(gang.gold).toLocaleString() %> gold</span>
             </div>
             <div class="stat">
                 <span class="stat-label">Gang Power:</span>
@@ -49,13 +49,13 @@
                 </tr>
             </thead>
             <tbody>
-                <% gang.members.forEach(m => { %>
+                <% members.forEach(m => { %>
                 <tr>
                     <td><%= m.username %></td>
                     <td><%= m.level %></td>
                     <td><%= m.class_name || 'None' %></td>
-                    <td><%= m.user_id === gang.leader_id ? 'Leader' : 'Member' %></td>
-                    <td><%= m.accepted ? 'Active' : 'Pending' %></td>
+                    <td><%= m.id === gang.leader_id ? 'Leader' : 'Member' %></td>
+                    <td>Active</td>
                 </tr>
                 <% }) %>
             </tbody>
@@ -64,7 +64,7 @@
         <% if (isMember && gang.active) { %>
         <h3>Gang Treasury</h3>
         <p>Contribute gold to help your gang grow stronger!</p>
-        <form action="/tprobbs/gangs/<%= gang.id %>/deposit" method="POST">
+        <form action="/tprobbs/gangs/deposit" method="POST">
             <div class="form-group">
                 <label for="amount">Deposit Amount:</label>
                 <input type="number" id="amount" name="amount" min="1" max="<%= Math.floor(user.gold) %>" value="100">
