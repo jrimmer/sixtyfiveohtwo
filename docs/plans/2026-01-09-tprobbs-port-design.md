@@ -319,147 +319,402 @@ Update landing page (`views/index.ejs`) to include TPro BBS link.
 
 ## Game Systems
 
-### Character Classes
+### Character Creation (from GAME.BAS lines 24100-24200)
 
-| ID | Class | Stat Focus | Special |
-|----|-------|------------|---------|
-| 0 | No class | - | New character, must choose |
-| 1 | Fighter | Stamina | +damage |
-| 2 | Magician | Intellect | +spell power |
-| 3 | Thief | Agility | Stealing, trap detection |
-| 4 | Bard | Charisma | Balanced, social bonuses |
-| 5 | Cleric | Intellect | Healing spells |
-| 6 | Assassin | Agility | Critical hits |
-| 7 | Jester | Charisma | Random effects |
-| 8 | Barbarian | Stamina | High damage, low magic |
-| 9 | Sage | Intellect | Spell efficiency |
-| 10 | Alchemist | Intellect | Potion crafting |
-| 11 | Hero | All | Prestige class (high level) |
+New characters receive **200 ability points** to distribute between four stats:
+- Each stat must be between **20 and 80**
+- Starting HP: 15 (all classes)
+- Starting SP: 15 (spell-casting classes only: Magician, Bard, Cleric, Jester, Sage, Hero)
+- Starting equipment: Weapon #1 (Hands), Armor #1 (Skin)
+- Starting gold: weapon price (effectively 0 for Hands)
 
-### Spell System
+### Character Classes (from LOGON.BAS line 1520)
 
-| ID | Spell | Price | SP Cost | Effect |
-|----|-------|-------|---------|--------|
-| 1 | Charm | 10 | 10 | Pacify monster |
-| 2 | Intuition | 100 | 25 | Detect traps |
-| 3 | Strength | 1,000 | 50 | Boost damage |
-| 4 | Accuracy | 10,000 | 75 | Boost hit chance |
-| 5 | Shield | 100,000 | 100 | Reduce damage |
-| 6 | Hone | 1,000,000 | 250 | Sharpen weapon |
-| 7 | Teleport | 10,000,000 | 500 | Escape dungeon |
+| ID | Class | Spell Type | Can Backstab | Notes |
+|----|-------|------------|--------------|-------|
+| 0 | No class | None | No | Must choose class to fight |
+| 1 | Fighter | None | No | +damage bonus (classes 1,4,5,6,8,11) |
+| 2 | Magician | Spells | No | Full spell power, no combat bonus |
+| 3 | Thief | Poisons | Yes (3x) | Backstab multiplier 3x |
+| 4 | Bard | Scrolls | Yes (2x) | Scrolls consumed on cast, +damage bonus |
+| 5 | Cleric | Spells | No | Full spell power, +damage bonus |
+| 6 | Assassin | Poisons | Yes (2x) | Can backstab, +damage bonus |
+| 7 | Jester | Spells | Yes (2x) | Can backstab |
+| 8 | Barbarian | None | No | Highest +damage bonus, no magic |
+| 9 | Sage | Spells | No | Reduced SP cost (0.8x), reduced damage (0.8x) |
+| 10 | Alchemist | Poisons | No | No backstab |
+| 11 | Hero | Spells | Yes (3x) | Backstab 3x, +damage bonus, full magic |
+
+### Spell System (from LOGON.BAS lines 3000-3010)
+
+Spell prices scale with weapon[1] base price. SP costs modified by class (Sage gets 0.8x).
+
+| ID | Spell | Base Price Multiplier | SP Cost | Effect (from DUNGEON.BAS 12200-12750) |
+|----|-------|----------------------|---------|-------|
+| 1 | Charm | 10 | 10 | +RND(10) Charisma (max 100) |
+| 2 | Intuition | 100 | 25 | +RND(10) Intellect (max 100) |
+| 3 | Strength | 1,000 | 50 | +RND(10) Stamina (max 100) |
+| 4 | Accuracy | 10,000 | 75 | +RND(10) Agility (max 100) |
+| 5 | Shield | 100,000 | 100 | Reduce incoming damage |
+| 6 | Hone | 1,000,000 | 250 | Increase weapon effectiveness |
+| 7 | Teleport | 10,000,000 | 500 | Exit dungeon safely |
 | 8 | Heal | 100,000,000 | 750 | Restore HP |
-| 9 | Blast | 1,000,000,000 | 1000 | Magic damage |
-| 10 | Resurrect | 10,000,000,000 | 2500 | Revive from death |
-| 11 | Cure | 100,000,000,000 | 5000 | Remove poison |
-| 12 | Disintegrate | 1,000,000,000,000 | 7500 | Instant kill |
+| 9 | Blast | 1,000,000,000 | 1000 | Deal magic damage |
+| 10 | Resurrect | 10,000,000,000 | 2500 | Revive from death (self or other) |
+| 11 | Cure | 100,000,000,000 | 5000 | Cure poison status |
+| 12 | Disintegrate | 1,000,000,000,000 | 7500 | Attempt instant kill |
 
-### Dungeon System
+**Spell failure chance** (from DUNGEON.BAS line 12140): `RND(100) + 10 * (class != 2) - 20 * (class == 9 or class == 11) - 10 * (enemy_class == 8) > Intellect`
 
-The dungeon is a **7x7 grid** (49 rooms) with procedurally generated content per session.
+### Dungeon System (from DUNGEON.BAS)
 
-#### Room Types
+The dungeon uses **7 parallel arrays** (MA, MC, MD, MF, MN, MR, MS) representing 7 dungeon levels, each a **7x7 grid** (49 rooms). Teleporting up/down shifts arrays.
+
+#### Room Types (from lines 2000-10000)
 
 | Code | Type | Description |
 |------|------|-------------|
-| 1 | Empty | Empty chamber, chance of monster |
-| 2 | Cavern | Hidden cavern with potions/scrolls |
-| 3-4 | Monster | Guaranteed monster encounter |
-| 5 | Thief | Thief encounter (steal or drop gold) |
-| 6 | N-S Passage | North-south corridor only |
-| 7 | E-W Passage | East-west corridor only |
-| 8 | Trapdoor | Agility check or fall down level |
-| 9 | Teleport | Choose: up, down, out, random, stay |
-| 10 | Clear | Safe room |
+| 1 | Empty | "empty/barren/quiet chamber" - 5% monster chance |
+| 2 | Cavern | Hidden cavern - 10% potion, else chance of spell scroll |
+| 3-4 | Monster | "something lurking" - guaranteed monster encounter |
+| 5 | Thief | 33% chance thief drops gold, else steals gold/4 |
+| 6 | N-S Passage | North-south corridor only (locks if entered E/W) |
+| 7 | E-W Passage | East-west corridor only (locks if entered N/S) |
+| 8 | Trapdoor | Agility check (RND(100)+20 > AG) or fall down 1 level |
+| 9 | Teleport | Choose: Up, Down, Out, Random, Stay |
+| 10 | Cleric | Safe room - offers healing for gold (HP-Z1) * 2^((LV+1)/(100/BW)) * WP[1] * 250 / HP |
 
-#### Dungeon Generation
+#### Dungeon Generation (from lines 100-270)
 
 ```javascript
 function generateDungeon(playerLevel) {
-    const grid = [];
-    for (let i = 0; i < 49; i++) {
-        grid[i] = {
-            type: Math.floor(Math.random() * 8) + 1,
-            visited: false
-        };
+    // 7 levels, each 49 rooms
+    const levels = [[], [], [], [], [], [], []];
+    for (let lvl = 0; lvl < 7; lvl++) {
+        levels[lvl][0] = 0; // Room 0 unused
+        for (let i = 1; i <= 49; i++) {
+            levels[lvl][i] = Math.floor(Math.random() * 8) + 1; // Types 1-8
+        }
+        // Place teleporter and cleric on each level
+        levels[lvl][Math.floor(Math.random() * 49) + 1] = 10; // Cleric
+        levels[lvl][Math.floor(Math.random() * 49) + 1] = 9;  // Teleporter
     }
-    // Place special rooms
-    grid[Math.floor(Math.random() * 49)].type = 9;  // Teleporter
-    grid[Math.floor(Math.random() * 49)].type = 10; // Clear room
-    return grid;
+    return {
+        currentLevel: playerLevel + Math.floor(Math.random() * 11) - 6, // LL = LV + RND(11) - 6
+        levels,
+        currentRoom: 25, // Start center (ML = 25)
+        previousRoom: 18  // MX = 18
+    };
 }
 ```
 
-#### Movement
+#### Movement (from lines 1200-1370)
 
-- N/S/E/W navigation with wall detection
-- Corridors restrict movement direction
-- Map available if player has purchased one
+- N/S/E/W navigation with wall detection at grid edges
+- N-S passages (type 6) block E/W movement
+- E-W passages (type 7) block N/S movement
+- Secret doors: entering corridor from blocked direction locks behind you
+- Map shows room codes if player has found one (type 10 room grants map)
 
-### Combat System
+#### Navigation Controls
 
+`<N>orth, <S>outh, <E>ast, <W>est, <C>ast, <P>oison, <M>ap, <Y>our stats`
+
+### Combat System (from DUNGEON.BAS lines 11000-11400)
+
+#### Initiative (line 11010)
+```javascript
+// Monster gets first swing if: RND(Agility) > RND(monsterAgility) OR player name == sysop
+const monsterFirst = (Math.random() * 100 > player.agility + Math.random() * 100 - monster.agility);
+```
+
+#### Backstab (lines 11030-11070)
+Classes 3 (Thief), 4 (Bard), 6 (Assassin), 7 (Jester), 11 (Hero) can attempt backstab:
+```javascript
+// Backstab available for: CL=3, CL=4, CL=6, CL=7, CL=11
+const canBackstab = [3, 4, 6, 7, 11].includes(player.class);
+
+// Backstab attempt: RND(100) > Agility = fail
+if (Math.random() * 100 > player.agility) {
+    // Fail - monster gets first swing
+} else {
+    // Success - damage * 2 (or *3 for class 3 or 11)
+    // Line 11060: AA = AA * (2 + (CL=3 OR CL=11) * 2)
+    const multiplier = (player.class === 3 || player.class === 11) ? 3 : 2;
+    damage *= multiplier;
+}
+```
+
+#### Damage Formula (line 11050, 11110)
 ```javascript
 function calculateDamage(attacker, defender) {
-    const weaponPower = weapons[attacker.weapon].power;
-    const armorReduction = armor[defender.armor].protection;
-    const baseDamage = Math.floor(Math.random() * weaponPower) + 1;
-    const strengthBonus = Math.floor(attacker.stamina / 5);
-    return Math.max(1, baseDamage + strengthBonus - armorReduction);
-}
+    // Base damage: (4 * weaponLevel + level + stamina/10 - defenderArmor) / 2
+    let base = (4 * attacker.weapon + attacker.level + attacker.stamina / 10 - defender.armor) / 2;
+    // Add random variance
+    let damage = base + Math.random() * (Math.abs(base) + 1);
+    damage = Math.max(1, Math.floor(damage));
 
-function combatRound(player, monster) {
-    // Player attacks
-    const playerDamage = calculateDamage(player, monster);
-    monster.hp -= playerDamage;
-
-    if (monster.hp <= 0) {
-        return { winner: 'player', damage: playerDamage };
+    // Class bonuses (lines 11120-11126)
+    if ([1, 4, 5, 6, 8, 11].includes(attacker.class)) {
+        const bonus = 1 + 2 * ([1, 8, 11].includes(attacker.class)) + ([8, 11].includes(attacker.class));
+        damage += Math.random() * attacker.level * bonus;
     }
+    if (attacker.class === 9) damage *= 0.8; // Sage penalty
 
-    // Monster attacks
-    const monsterDamage = calculateDamage(monster, player);
-    player.hit_points -= monsterDamage;
-
-    if (player.hit_points <= 0) {
-        return { winner: 'monster', damage: monsterDamage };
-    }
-
-    return { winner: null, playerDamage, monsterDamage };
+    // Spell effects (Shield spell reduces by 0.8, Hone increases by 1.2)
+    return Math.max(1, Math.floor(damage));
 }
 ```
 
-### Casino Games
+#### Hit Chance (line 11100, 11200)
+```javascript
+// Miss if: RND(100) > (Agility/2 + 50)
+const missChance = Math.random() * 100 > (attacker.agility / 2 + 50);
+```
 
-#### Blackjack
-- Standard rules
-- Dealer stands on 16+
-- 5-card automatic win
-- Blackjack pays 2:1
-- Bust loses bet
+#### Combat Options
+`<A> Attack, <C> Cast spell, <R> Retreat, <S> Status`
 
-#### Craps
-- 7 or 11 on first roll wins
-- 2, 3, or 12 on first roll loses
-- Otherwise establish point, roll until point (win) or 7 (lose)
+#### Monster Stats Generation (lines 20100-20160)
+```javascript
+function generateMonster(dungeonLevel, monsterIndex, monsterClass) {
+    const level = Math.min(99, dungeonLevel);
 
-#### In-Between
-- Two cards dealt face up
-- Bet that third card falls between them
-- Ace can be high or low
-- Pot system with partial betting
+    // HP formula (line 20110)
+    let hp = 15;
+    for (let i = 2; i <= level; i++) {
+        hp += 9 - (i > 5) - (i > 15) - (i > 25) + Math.random() * i + i;
+    }
+    hp = Math.floor(hp / 4);
+    if (dungeonLevel === 1) hp = 4;
 
-#### Slots
-- Three reels with symbols
-- Matching symbols pay multipliers
-- Jackpot for three 7s
+    // SP only for spell-casting classes
+    let sp = 0;
+    if ([2, 4, 5, 7, 9, 11].includes(monsterClass)) {
+        sp = 15;
+        for (let i = 2; i <= level; i++) {
+            sp += 9 - (i > 5) - (i > 15) - (i > 25) + Math.random() * i + i;
+        }
+        sp = Math.floor(sp / 4);
+        if (dungeonLevel === 1) sp = 4;
+    }
 
-### Gang System
+    // Gold reward (line 20150)
+    const baseGold = weapons[player.weapon].price / 10;
+    const gold = baseGold + Math.random() * baseGold;
 
-- Create gang (costs gold)
-- Join existing gang
-- Gang treasury (shared gold)
-- Gang wars (PvP between gangs)
-- Leader can kick members
-- Disband gang returns treasury to leader
+    return { hp, sp, gold, level, class: monsterClass || player.class };
+}
+```
+
+#### Monster Table (from DUNGEON.BAS lines 59000-59100)
+
+100 monsters with format: `name, class`. Class determines spell-casting ability:
+- Class 0: No abilities (doppleganger)
+- Class 1: Fighter-type (no spells)
+- Class 4: Spell-caster (Blast, Heal)
+- Class 5: Powerful magic users
+- Class 8: Brute/Barbarian (+damage bonus)
+- Class 9: Sage-type (reduced SP cost)
+
+| # | Monster | Class | # | Monster | Class |
+|---|---------|-------|---|---------|-------|
+| 1 | goblin | 1 | 51 | carrion crawler | 1 |
+| 2 | orc | 1 | 52 | manticore | 1 |
+| 3 | kobold | 1 | 53 | troll | 4 |
+| 4 | hobgoblin | 1 | 54 | wight | 4 |
+| 5 | bullywug | 1 | 55 | wraith | 4 |
+| 6 | xvart | 1 | 56 | basilisk | 1 |
+| 7 | caveman | 1 | 57 | wyvern | 8 |
+| 8 | norker | 1 | 58 | medusa | 4 |
+| 9 | skeleton | 1 | 59 | drider | 1 |
+| 10 | zombie | 1 | 60 | ogre mage | 4 |
+| 11 | giant centipede | 1 | 61 | hill giant | 8 |
+| 12 | gnoll | 1 | 62 | tunnel worm | 1 |
+| 13 | stirge | 1 | 63 | hydra | 8 |
+| 14 | troglodyte | 1 | 64 | mimic | 1 |
+| 15 | lizard man | 1 | 65 | succubus | 5 |
+| 16 | crabman | 1 | 66 | mind flayer | 5 |
+| 17 | mongrelman | 1 | 67 | mummy | 4 |
+| 18 | ogrillon | 8 | 68 | neo-otyugh | 8 |
+| 19 | githzerai | 5 | 69 | roper | 1 |
+| 20 | kuo-toa | 5 | 70 | umber hulk | 8 |
+| 21 | bugbear | 8 | 71 | pyrohydra | 8 |
+| 22 | ghoul | 4 | 72 | will-o-wisp | 4 |
+| 23 | ogre | 8 | 73 | vampire | 5 |
+| 24 | firedrake | 4 | 74 | ghost | 4 |
+| 25 | drow | 4 | 75 | dracolisk | 5 |
+| 26 | firenewt | 4 | 76 | naga | 4 |
+| 27 | harpy | 1 | 77 | xag-ya | 4 |
+| 28 | ophidian | 1 | 78 | xeg-yi | 4 |
+| 29 | phantom | 4 | 79 | minor demon | 4 |
+| 30 | worg | 1 | 80 | green dragon | 5 |
+| 31 | gargoyle | 4 | 81 | red dragon | 5 |
+| 32 | rust monster | 1 | 82 | stone golem | 8 |
+| 33 | ghast | 4 | 83 | nycadaemon | 5 |
+| 34 | werewolf | 4 | 84 | titan | 8 |
+| 35 | owlbear | 1 | 85 | demilich | 9 |
+| 36 | firetoad | 4 | 86 | pit fiend | 5 |
+| 37 | hall hound | 4 | 87 | lernaean hydra | 8 |
+| 38 | hook horror | 1 | 88 | major demon | 5 |
+| 39 | anhkheg | 8 | 89 | mist dragon | 5 |
+| 40 | githyanki | 5 | 90 | grey slaad | 4 |
+| 41 | cave bear | 8 | 91 | beholder | 5 |
+| 42 | cockatrice | 4 | 92 | iron golem | 8 |
+| 43 | minotaur | 8 | 93 | death slaad | 4 |
+| 44 | displacer beast | 1 | 94 | cloud dragon | 5 |
+| 45 | doppleganger | 0 | 95 | lich | 9 |
+| 46 | imp | 4 | 96 | elder titan | 8 |
+| 47 | quasit | 4 | 97 | slaad lord | 5 |
+| 48 | ice lizard | 1 | 98 | demon prince | 5 |
+| 49 | svirfneblin | 1 | 99 | arch devil | 5 |
+| 50 | yeti | 1 | 100 | elemental prince | 5 |
+
+Monster selection in dungeon (line 20100): `monsterIndex = RND(100) + 1`
+
+#### XP Reward (line 20500)
+```javascript
+const xp = Math.floor(Math.pow(2, monsterLevel + 2) * 1000 / 15);
+```
+
+### Arena PvP Combat (from ARENA.BAS)
+
+#### Fight Limits
+- **2 fights per call** (line 10000: `F1+2`)
+- Access level check: bit 7 in access flags must allow fighting
+
+#### Target Restrictions (line 10130)
+```javascript
+// Can only attack players higher level or up to 3 levels below
+if (targetLevel + 3 < playerLevel) {
+    return "You can only attack someone higher or up to three levels below you.";
+}
+```
+
+#### Death Check (line 10140)
+Before combat, system checks if target was recently killed:
+```javascript
+// KO% = day*2 + hour/12 timestamp of last death
+// If target was killed within last ~12 hours, show who killed them
+if (target.KO === currentDay * 2 + Math.floor(currentHour / 12)) {
+    return `${target.name} was killed by ${killer.name}`;
+}
+```
+
+#### Combat Flow (lines 11000-11400)
+Same damage formulas as dungeon combat:
+- Initiative: `RND(playerAgility) > RND(targetAgility)` = player first
+- Backstab: Classes 3, 4, 6, 7, 11 can attempt (same as dungeon)
+- Hit chance: `RND(100) > Agility/2 + 50` = miss
+- Damage: `(4*weaponLevel + level + stamina/10 - targetArmor) / 2 + variance`
+
+#### Victory Rewards (lines 10500-10560)
+```javascript
+// Winner gets loser's gold
+winner.gold += loser.gold;
+loser.gold = 0;
+
+// Winner gets XP based on loser's level
+const xp = Math.floor(Math.pow(2, loserLevel + 2) * 1000 / 3);
+winner.xp += xp;
+
+// Weapon: if loser's weapon > winner's, winner takes it
+// Otherwise, winner sells it for (price * (50 + charisma/2) / 100)
+
+// Armor: same logic as weapon
+```
+
+#### Top 20 Leaderboard (lines 200-240, 10600-10680)
+- Sorted by total XP earned in arena
+- Updated after each kill
+- Stored in `TOP` file with user number and XP
+
+#### Kill History (lines 300-340, 13000-13080)
+- Last 50 kills recorded with timestamp
+- Format: `"PlayerA killed PlayerB at HH:MM on MM/DD/YY"`
+
+### Casino Games (from CASINO.BAS)
+
+#### Blackjack (lines 1000-1220)
+- Cards 1-13 (Ace=1 or 14, 2-10, J=11, Q=12, K=13)
+- Dealer blackjack (Ace + face card) = player loses **double**
+- Player blackjack = player wins **double**
+- Bust (>21) = lose
+- 5-card hand without busting = automatic win
+- Dealer stands on **16+** (not 17)
+- Tie = no winner, bet returned
+
+#### Craps (lines 2000-2240)
+- 7 or 11 on first roll = "Natural", win bet
+- 2, 3, or 12 on first roll = "Craps", lose bet
+- Any other value = establish "point"
+- Keep rolling until point (win) or 7 (lose)
+
+#### In-Between (lines 3000-3290)
+- Two cards dealt, determine low/high
+- Ace is low if other card ≤7, else high
+- Bet on third card falling strictly between
+- Pot system: player contributes 2x bet to pot
+- Win = take bet from pot
+- Lose = add bet to pot
+- Dealer also plays (bets pot * (spread-1) / 13)
+
+#### Slots (lines 4000-4110)
+- 3 reels, 6 symbols each
+- All 3 match = **5x** jackpot
+- Left 2 match OR right 2 match OR outsides match = **1x** bet
+
+#### Roulette (lines 5000-5160)
+- 38 slots (1-36 + 0 + 00)
+- Bet on number = **36x** payout
+- Bet on Odd/Even = **1x** payout
+
+#### Horse Racing (lines 6000-6210)
+- 11 horses (names from DATA)
+- Pick a horse, place bet
+- Winner pays **10x**
+
+#### Russian Roulette (line 7000+)
+- High-risk gambling game
+
+### Gang System (from GANGS.BAS)
+
+#### Gang Structure
+- **4 members per gang** (leader + 3 others)
+- Leader creates gang and invites 3 others by username
+- Gang name: 3-25 characters
+- No creation cost (free to form)
+
+#### Gang Activation (lines 2050-2300)
+1. Leader creates gang, specifying 3 other member usernames
+2. System sends notes to invited members
+3. Each invited member must log on and accept invitation via "Join" menu
+4. Gang becomes **active** only when all 4 members have accepted
+5. Until active, gang cannot participate in gang fights
+
+#### Gang Menu Options
+- **J) Join** - Accept invitation to an existing gang
+- **R) Resign** - Leave current gang (leader cannot resign without transferring or dissolving)
+- **S) Start** - Create new gang (must not be in one already)
+- **L) List** - View all gangs and their members
+- **F) Fight** - Gang war (once per call, line 10015: `F5=1`)
+- **E) Edit** - Leader-only: Replace member, Dissolve gang, Transfer leadership
+
+#### Gang Fight Mechanics (lines 10000-14000)
+- **Once per call limit**: Each user can only initiate one gang fight per session
+- Both gangs' members loaded with full stats (HP, SP, weapon, armor, class, level)
+- Combat is **round-by-round** with random attack order
+- Each round, each living member attacks a random enemy
+- Hit/miss and damage use same formulas as arena combat
+- Victory when all 4 opposing members reach 0 HP
+- **Rewards**: Winning gang splits XP and gold from losing gang
+- **XP formula** (line 12010): `2^(loserLevel + 2) * 1000 / 3` per winner
+- **Gold formula**: Equal split of losers' combined gold
+
+#### Member Resignation (lines 8000-8070)
+- Non-leaders can resign freely
+- Resigned member slot marked "Resigned" with member number = 0
+- Gang status recalculated (may become inactive if not enough members)
 
 ## Visual Design
 
@@ -663,17 +918,14 @@ CREATE INDEX idx_sessions_user_date ON sessions(user_id, date);
 
 ### Monsters Table
 ```sql
+-- Monsters from DUNGEON.BAS lines 59000-59100
+-- Stats are generated dynamically based on dungeon level, not stored
 CREATE TABLE monsters (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY,         -- 1-100
     name TEXT NOT NULL,
-    min_level INTEGER DEFAULT 1,    -- Minimum dungeon level to appear
-    max_hp INTEGER NOT NULL,
-    damage INTEGER NOT NULL,        -- Base damage
-    armor INTEGER DEFAULT 0,        -- Damage reduction
-    xp_reward INTEGER NOT NULL,
-    gold_min INTEGER DEFAULT 0,
-    gold_max INTEGER DEFAULT 100
+    class INTEGER NOT NULL          -- Determines spell casting: 0=none, 1=fighter, 4=caster, 5=powerful, 8=brute, 9=sage
 );
+-- HP, SP, gold are calculated at encounter time based on dungeon level (see Monster Stats Generation)
 ```
 
 ### Items Table (for dungeon pickups)
@@ -689,29 +941,57 @@ CREATE TABLE items (
 
 ## Game Mechanics Details
 
-### Experience & Leveling
+### Experience & Leveling (from GAME.BAS line 30020)
+
 ```javascript
-// XP required for each level (exponential curve)
-function xpForLevel(level) {
-    return Math.floor(100 * Math.pow(1.5, level - 1));
+// XP required for next level (from source: 2^(LV+1) * (1100 + IN*2))
+// Note: Higher intellect = MORE XP needed to level up
+function xpForNextLevel(currentLevel, intellect) {
+    return Math.floor(Math.pow(2, currentLevel + 1) * (1100 + intellect * 2));
 }
 
-// XP from monster kill
-function monsterXP(monster, playerLevel) {
-    const base = monster.xp_reward;
-    const levelDiff = monster.min_level - playerLevel;
-    const multiplier = Math.max(0.1, 1 + (levelDiff * 0.1));
-    return Math.floor(base * multiplier);
+// Level up check
+function canLevelUp(player) {
+    return player.xp > xpForNextLevel(player.level, player.intellect);
+}
+
+// XP from monster kill (DUNGEON.BAS line 20500)
+function monsterXP(dungeonLevel) {
+    return Math.floor(Math.pow(2, dungeonLevel + 2) * 1000 / 15);
+}
+
+// XP from PvP kill (ARENA.BAS line 10500)
+function pvpXP(loserLevel) {
+    return Math.floor(Math.pow(2, loserLevel + 2) * 1000 / 3);
 }
 ```
 
-### Death & Resurrection
-1. **On death**: Status set to 0 (dead), cannot enter dungeon or arena
-2. **Resurrection options**:
-   - Self-cast Resurrect spell (if owned, costs 2500 SP)
-   - Pay gold at Temple (cost = level * 1000)
-   - Another player casts Resurrect on you
-3. **On resurrection**: HP restored to 50%, SP restored to 25%
+### Death & Resurrection (from ARENA.BAS, DUNGEON.BAS)
+
+**Death timestamp** (KO% field):
+```javascript
+// KO% = day * 2 + Math.floor(hour / 12)
+// Non-zero KO% matching current timestamp = dead
+const deathTimestamp = dayOfYear * 2 + Math.floor(hour / 12);
+```
+
+**Death check** (line 10140):
+```javascript
+function isDead(player) {
+    const currentTimestamp = dayOfYear * 2 + Math.floor(hour / 12);
+    return player.KO === currentTimestamp;
+}
+```
+
+**Resurrection** (spell 10, line 12650-12680):
+- Cannot be cast during battle (must be outside combat)
+- Target player by user number
+- Sets KO% = 0 (clears death status)
+- No HP/SP restoration - use Heal spell (8) or Cure spell (11) after
+
+**Cure spell** (spell 11, line 12700):
+- Restores HP to full max (`Z1 = HP`)
+- Different from Heal which adds HP up to max
 
 ### Daily Call Limits
 ```javascript
@@ -733,17 +1013,12 @@ function canPlay(user, session) {
 
 ### Combat Flow (Web UI)
 
-**Option A: Auto-resolve with log**
-- Single POST to `/combat/fight`
-- Server runs all rounds, returns full combat log
-- Display log with CSS animation (typewriter effect)
-
-**Option B: Round-by-round (more faithful)**
-- Each round is a POST with action choice (Attack, Cast, Flee)
-- Combat state stored in session
-- More interactive but more requests
-
-Recommend **Option A** for simplicity, with flee option before combat starts.
+**Round-by-round** (matches original source behavior):
+- Each round is a POST with action choice: `(A) Attack, (C) Cast spell, (R) Retreat, (Y) Your status`
+- Combat state stored in session (current HP, SP, monster HP, monster SP)
+- Player chooses action each round
+- Monster may cast spells (Heal, Blast) if it has SP and appropriate class
+- Continue until one side reaches 0 HP or player retreats
 
 ## Web Usability Enhancements
 
