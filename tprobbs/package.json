@@ -1,0 +1,11 @@
+{
+  "name": "tprobbs",
+  "version": "1.0.0",
+  "description": "TPro BBS - Classic Apple II BBS Ported to Web",
+  "main": "src/app.js",
+  "scripts": {
+    "db:init": "node src/db/init.js",
+    "db:seed": "node src/db/seed.js"
+  },
+  "dependencies": {}
+}
