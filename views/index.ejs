@@ -418,16 +418,16 @@
                                 <p class="game-desc">Classic BBS door game recreation</p>
                             </li>
                             <li class="game-item">
-                                <a href="/sabotage/" class="game-link">
-                                    <span class="game-number">3.</span> SABOTAGE <span style="color: var(--phosphor-dim);">[UNDER CONSTRUCTION]</span>
-                                </a>
-                                <p class="game-desc">Defend your base from paratroopers</p>
-                            </li>
-                            <li class="game-item">
                                 <a href="/tprobbs/" class="game-link">
-                                    <span class="game-number">4.</span> LOST GONZO BBS
+                                    <span class="game-number">3.</span> LOST GONZO BBS
                                 </a>
                                 <p class="game-desc">Classic BBS door game (TPro BBS port)</p>
+                            </li>
+                            <li class="game-item">
+                                <a href="/sabotage/" class="game-link">
+                                    <span class="game-number">4.</span> SABOTAGE <span style="color: var(--phosphor-dim);">[UNDER CONSTRUCTION]</span>
+                                </a>
+                                <p class="game-desc">Defend your base from paratroopers</p>
                             </li>
                         </ul>
                     </nav>
@@ -626,10 +626,10 @@
                 window.location.href = '/provinggrounds/';
             } else if (key === '3') {
                 playClick();
-                window.location.href = '/sabotage/';
+                window.location.href = '/tprobbs/';
             } else if (key === '4') {
                 playClick();
-                window.location.href = '/tprobbs/';
+                window.location.href = '/sabotage/';
             } else if (key === 'g' && config.greets.enabled) {
                 playClick();
                 const overlay = document.getElementById('greets-overlay');
