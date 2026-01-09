@@ -13,7 +13,9 @@ const Database = require('better-sqlite3');
 const fs = require('fs');
 const path = require('path');
 
-const DB_PATH = process.env.TPROBBS_DATABASE_PATH || path.join(__dirname, '../../data/tprobbs.db');
+// Use same path logic as server.js to ensure consistency
+const DB_PATH = process.env.TPROBBS_DATABASE_PATH ||
+    (process.env.NODE_ENV === 'production' ? '/data/tprobbs.db' : path.join(__dirname, '../../data/tprobbs.db'));
 
 function ensureDatabase() {
     const dbDir = path.dirname(DB_PATH);
