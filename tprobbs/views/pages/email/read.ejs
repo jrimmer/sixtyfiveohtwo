@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= email.subject || 'No Subject' %> - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                      LOST GONZO BBS
+                      Read Message
+===============================================================
+</pre>
+        </div>
+
+        <div class="post">
+            <div class="post-header">
+                <h2><%= email.subject || 'No Subject' %></h2>
+                <div class="post-meta">
+                    <span>From: <strong><%= email.from_username %></strong></span>
+                    <span>To: <strong><%= email.to_username %></strong></span>
+                    <span>Date: <%= new Date(email.created_at).toLocaleString() %></span>
+                </div>
+            </div>
+            <div class="post-body">
+                <pre><%= email.body %></pre>
+            </div>
+        </div>
+
+        <div class="menu">
+            <% if (email.to_id === user.id) { %>
+            <div class="menu-item">
+                <span class="menu-key">R)</span>
+                <a href="/tprobbs/email/compose?replyTo=<%= email.id %>">Reply</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">D)</span>
+                <form action="/tprobbs/email/delete/<%= email.id %>" method="POST" style="display:inline">
+                    <button type="submit" class="link-button">Delete</button>
+                </form>
+            </div>
+            <% } %>
+            <div class="menu-item">
+                <span class="menu-key">I)</span>
+                <a href="/tprobbs/email">Back to Inbox</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/main">Back to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

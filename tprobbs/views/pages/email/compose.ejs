@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compose Email - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                      LOST GONZO BBS
+                     Compose Message
+===============================================================
+</pre>
+        </div>
+
+        <% if (error) { %>
+        <div class="message message-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+        <form action="/tprobbs/email/send" method="POST">
+            <div class="form-group">
+                <label for="to">To (username):</label>
+                <input type="text" id="to" name="to" value="<%= to %>" required>
+            </div>
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" value="<%= subject %>" maxlength="80">
+            </div>
+            <div class="form-group">
+                <label for="body">Message:</label>
+                <textarea id="body" name="body" rows="10" maxlength="4000" required><%= body %></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit">Send Message</button>
+            </div>
+        </form>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">I)</span>
+                <a href="/tprobbs/email">Back to Inbox</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/main">Back to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

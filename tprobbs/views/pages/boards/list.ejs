@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                      LOST GONZO BBS
+                      Message Boards
+===============================================================
+</pre>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Board Name</th>
+                    <th>Posts</th>
+                    <th>Last Activity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% boards.forEach((b, i) => { %>
+                <tr>
+                    <td><%= i + 1 %></td>
+                    <td><a href="/tprobbs/boards/<%= b.id %>"><%= b.name %></a></td>
+                    <td><%= b.post_count %></td>
+                    <td><%= b.last_post ? new Date(b.last_post).toLocaleDateString() : 'Never' %></td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/main">Back to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>
