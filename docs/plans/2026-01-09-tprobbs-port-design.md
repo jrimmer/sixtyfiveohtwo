@@ -604,6 +604,188 @@ Follow Proving Grounds pattern:
 | GANGS.BAS | routes/gangs.js | list, create, manage |
 | GAME.BAS | routes/games.js | game menu hub |
 
+## Security Requirements
+
+### Authentication & Sessions
+- **Password hashing**: Use bcrypt with cost factor 10 (match Proving Grounds)
+- **Session cookies**: httpOnly, secure (in production), sameSite: 'strict'
+- **Session secret**: From environment variable, never hardcoded
+
+### Input Validation
+- **Username**: 3-25 chars, alphanumeric + underscore only
+- **Password**: Minimum 6 chars
+- **Message content**: Max 4000 chars for posts, 2000 for emails
+- **All inputs**: Trim whitespace, reject null bytes
+
+### Output Encoding
+- **EJS templates**: Use `<%= %>` (escaped) for all user content, never `<%- %>`
+- **JSON responses**: Properly escaped by default
+
+### SQL Injection Prevention
+- **All queries**: Use parameterized statements via better-sqlite3
+- **Never**: String concatenation for SQL
+
+### CSRF Protection
+- Add CSRF tokens to all POST forms (use csurf middleware or manual tokens)
+
+### Rate Limiting
+- **Login**: Max 5 attempts per 15 minutes per IP
+- **Registration**: Max 3 per hour per IP
+- **Message posting**: Max 10 per minute per user
+
+## Performance Requirements
+
+### Database Indexes
+
+Add to schema:
+```sql
+CREATE INDEX idx_posts_board_id ON posts(board_id);
+CREATE INDEX idx_posts_created_at ON posts(created_at DESC);
+CREATE INDEX idx_emails_to_id ON emails(to_id);
+CREATE INDEX idx_emails_from_id ON emails(from_id);
+CREATE INDEX idx_users_gang_id ON users(gang_id);
+CREATE INDEX idx_users_level ON users(level DESC);
+CREATE INDEX idx_sessions_user_date ON sessions(user_id, date);
+```
+
+### Pagination
+- **Message boards**: 20 posts per page
+- **Members list**: 25 users per page
+- **Email inbox**: 20 emails per page
+- Use LIMIT/OFFSET with total count for page navigation
+
+### Dungeon State
+- Store dungeon grid in session (JSON, ~2KB max)
+- Clear on dungeon exit or logout
+- Timeout after 30 minutes of inactivity
+
+## Missing Schema Additions
+
+### Monsters Table
+```sql
+CREATE TABLE monsters (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    min_level INTEGER DEFAULT 1,    -- Minimum dungeon level to appear
+    max_hp INTEGER NOT NULL,
+    damage INTEGER NOT NULL,        -- Base damage
+    armor INTEGER DEFAULT 0,        -- Damage reduction
+    xp_reward INTEGER NOT NULL,
+    gold_min INTEGER DEFAULT 0,
+    gold_max INTEGER DEFAULT 100
+);
+```
+
+### Items Table (for dungeon pickups)
+```sql
+CREATE TABLE items (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL,             -- 'map', 'potion', 'scroll'
+    effect TEXT,                    -- JSON description of effect
+    price INTEGER DEFAULT 0
+);
+```
+
+## Game Mechanics Details
+
+### Experience & Leveling
+```javascript
+// XP required for each level (exponential curve)
+function xpForLevel(level) {
+    return Math.floor(100 * Math.pow(1.5, level - 1));
+}
+
+// XP from monster kill
+function monsterXP(monster, playerLevel) {
+    const base = monster.xp_reward;
+    const levelDiff = monster.min_level - playerLevel;
+    const multiplier = Math.max(0.1, 1 + (levelDiff * 0.1));
+    return Math.floor(base * multiplier);
+}
+```
+
+### Death & Resurrection
+1. **On death**: Status set to 0 (dead), cannot enter dungeon or arena
+2. **Resurrection options**:
+   - Self-cast Resurrect spell (if owned, costs 2500 SP)
+   - Pay gold at Temple (cost = level * 1000)
+   - Another player casts Resurrect on you
+3. **On resurrection**: HP restored to 50%, SP restored to 25%
+
+### Daily Call Limits
+```javascript
+// Check if user can play today
+function canPlay(user, session) {
+    const today = new Date().toISOString().split('T')[0];
+    if (session.date !== today) {
+        // New day, reset
+        return { allowed: true, callsToday: 1 };
+    }
+    const accessLevel = accessLevels[user.access_level];
+    const maxCalls = accessLevel.calls_per_day || 3;
+    return {
+        allowed: session.calls_today < maxCalls,
+        callsToday: session.calls_today + 1
+    };
+}
+```
+
+### Combat Flow (Web UI)
+
+**Option A: Auto-resolve with log**
+- Single POST to `/combat/fight`
+- Server runs all rounds, returns full combat log
+- Display log with CSS animation (typewriter effect)
+
+**Option B: Round-by-round (more faithful)**
+- Each round is a POST with action choice (Attack, Cast, Flee)
+- Combat state stored in session
+- More interactive but more requests
+
+Recommend **Option A** for simplicity, with flee option before combat starts.
+
+## Web Usability Enhancements
+
+### Responsive Design
+```css
+/* Add to terminal.css or tprobbs-specific CSS */
+@media (max-width: 480px) {
+    .terminal {
+        padding: 5px;
+        font-size: 12px;
+    }
+    .stats {
+        grid-template-columns: 1fr;
+    }
+    .dungeon-map {
+        font-size: 10px;
+    }
+}
+```
+
+### Dungeon Map Display
+```html
+<!-- Use CSS grid for cleaner 7x7 display -->
+<div class="dungeon-map" style="display: grid; grid-template-columns: repeat(7, 1fr);">
+    <% for (let i = 0; i < 49; i++) { %>
+        <div class="room <%= i === currentRoom ? 'current' : '' %> <%= grid[i].visited ? 'visited' : '' %>">
+            <%= roomSymbol(grid[i].type) %>
+        </div>
+    <% } %>
+</div>
+```
+
+### Navigation
+- Every page includes "Back" link to previous logical page
+- Main menu always accessible via header link
+- Breadcrumbs for nested pages (Stores > Weapons)
+
+### Error Pages
+- `views/pages/error.ejs` - Generic error with message
+- 404: "You've wandered into an empty void..."
+- 500: "The dungeon has collapsed! Try again."
+
 ## Notes
 
 - File transfer functionality will NOT be ported (not relevant to web)
