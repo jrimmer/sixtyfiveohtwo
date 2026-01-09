@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                      LOST GONZO BBS
+                      Members List
+===============================================================
+</pre>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Level</th>
+                    <th>Class</th>
+                    <th>Status</th>
+                    <th>Kills</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% members.forEach(m => { %>
+                <tr>
+                    <td><%= m.username %></td>
+                    <td><%= m.level %></td>
+                    <td><%= m.class_name || 'None' %></td>
+                    <td><%= m.status ? 'Alive' : 'Dead' %></td>
+                    <td><%= m.kills %></td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+
+        <% if (totalPages > 1) { %>
+        <div class="pagination">
+            <% for (let i = 1; i <= totalPages; i++) { %>
+            <a href="/tprobbs/main/members?page=<%= i %>" class="<%= i === page ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+        </div>
+        <% } %>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/main">Back to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

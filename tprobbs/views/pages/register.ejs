@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                      LOST GONZO BBS
+                   New User Registration
+===============================================================
+</pre>
+        </div>
+
+        <% if (error) { %>
+        <div class="message message-error">
+            <%= error %>
+        </div>
+        <% } %>
+
+        <form action="/tprobbs/register" method="POST">
+            <div class="form-group">
+                <label for="username">Username (3-25 chars, letters/numbers/_):</label>
+                <input type="text" id="username" name="username" required minlength="3" maxlength="25" pattern="[a-zA-Z0-9_]+">
+            </div>
+            <div class="form-group">
+                <label for="password">Password (min 6 chars):</label>
+                <input type="password" id="password" name="password" required minlength="6">
+            </div>
+            <div class="form-group">
+                <label for="classId">Character Class:</label>
+                <select id="classId" name="classId" required>
+                    <% classes.forEach(c => { %>
+                    <option value="<%= c.id %>"><%= c.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <h2>Distribute 200 Points (each stat 20-80)</h2>
+
+            <div class="stats">
+                <div class="stat">
+                    <label for="stamina">Stamina:</label>
+                    <input type="number" id="stamina" name="stamina" value="50" min="20" max="80" required>
+                </div>
+                <div class="stat">
+                    <label for="intellect">Intellect:</label>
+                    <input type="number" id="intellect" name="intellect" value="50" min="20" max="80" required>
+                </div>
+                <div class="stat">
+                    <label for="agility">Agility:</label>
+                    <input type="number" id="agility" name="agility" value="50" min="20" max="80" required>
+                </div>
+                <div class="stat">
+                    <label for="charisma">Charisma:</label>
+                    <input type="number" id="charisma" name="charisma" value="50" min="20" max="80" required>
+                </div>
+            </div>
+
+            <p id="statTotal">Total: 200</p>
+
+            <div class="form-group">
+                <button type="submit">Create Character</button>
+            </div>
+        </form>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/">Back to Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inputs = ['stamina', 'intellect', 'agility', 'charisma'];
+        const totalEl = document.getElementById('statTotal');
+
+        function updateTotal() {
+            let total = 0;
+            inputs.forEach(id => {
+                total += parseInt(document.getElementById(id).value, 10) || 0;
+            });
+            totalEl.textContent = `Total: ${total}`;
+            totalEl.style.color = total === 200 ? '#00ff00' : '#ff0000';
+        }
+
+        inputs.forEach(id => {
+            document.getElementById(id).addEventListener('input', updateTotal);
+        });
+    </script>
+</body>
+</html>
