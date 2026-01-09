@@ -465,43 +465,78 @@ function combatRound(player, monster) {
 
 ### BBS Aesthetic
 
-- Monospace font (Courier New, similar to Proving Grounds)
-- ANSI-inspired color scheme
-- ASCII box drawing for menus
-- No modern UI elements - pure text interface
+**Must match Proving Grounds exactly:**
 
-### Color Scheme
+- Monospace font: Courier New, 14px
+- Green monochrome color scheme (same as Proving Grounds)
+- Simple ASCII box drawing with `═` characters
+- CRT scanline effect overlay
+- 80ch max-width terminal container
+- Status bar at bottom with user stats
+- Keyboard navigation for menu items
+
+### Color Scheme (from Proving Grounds terminal.css)
 
 ```css
 :root {
-    --bg-color: #000;
-    --text-color: #aaa;
-    --header-color: #0ff;      /* Cyan */
-    --prompt-color: #ff0;      /* Yellow */
-    --error-color: #f00;       /* Red */
-    --success-color: #0f0;     /* Green */
-    --highlight-color: #fff;   /* White */
+    --bg-color: #000000;
+    --text-color: #00ff00;      /* Green */
+    --dim-color: #008800;       /* Dim green */
+    --bright-color: #88ff88;    /* Bright green */
+    --border-color: #00aa00;    /* Border green */
+    --link-color: #00ffff;      /* Cyan for links */
+    --error-color: #ff0000;     /* Red */
+    --warning-color: #ffff00;   /* Yellow */
+    --highlight-bg: #003300;    /* Highlight background */
 }
 ```
 
-### Sample Menu Layout
+### CSS Strategy
+
+**Share the existing `terminal.css`** from Proving Grounds rather than creating new styles. TPro BBS will link to the same stylesheet:
+
+```html
+<link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+```
+
+Or copy/symlink the CSS to `/tprobbs/public/css/terminal.css` for independence.
+
+### Sample Menu Layout (matching Proving Grounds style)
 
 ```
-╔════════════════════════════════════════╗
-║         LOST GONZO BBS - Main          ║
-╠════════════════════════════════════════╣
-║  [B] Message Boards                    ║
-║  [E] Electronic Mail                   ║
-║  [G] Game Section                      ║
-║  [I] Information Section               ║
-║  [M] Members List                      ║
-║  [S] Settings                          ║
-║  [V] Voting Booth                      ║
-║  [Q] Quit / Logoff                     ║
-╚════════════════════════════════════════╝
+═══════════════════════════════════════════════════════
+                    LOST GONZO BBS
+                      Main Menu
+═══════════════════════════════════════════════════════
 
-Option: _
+Character: Brad                    Level: 5 (Elite User)
+Gold: 1,234                        HP: 45/50
+
+Commands
+
+B)  Message Boards
+E)  Electronic Mail
+G)  Game Section
+I)  Information Section
+M)  Members List
+S)  Settings
+V)  Voting Booth
+Q)  Quit / Logoff
+
+> _
+
+[Brad] Level: 5 Gold: 1234 HP: 45/50 Time: 58m
 ```
+
+### Template Structure
+
+Follow Proving Grounds pattern:
+- Each page is a standalone HTML document (no layout partials initially)
+- ASCII header box using `<pre>` in `.ascii-box` div
+- Menu items using `.menu` and `.menu-item` classes
+- Stats grid using `.stats` and `.stat` classes
+- Status bar at bottom using `.status-bar` class
+- Keyboard navigation script for single-key menu access
 
 ## Implementation Order
 
