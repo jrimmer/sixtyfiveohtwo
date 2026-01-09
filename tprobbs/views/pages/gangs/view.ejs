@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= gang.name %> - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                    <%= gang.name.toUpperCase() %>
+===============================================================
+</pre>
+        </div>
+
+        <% if (message) { %>
+        <div class="message <%= messageType === 'error' ? 'message-error' : 'message-success' %>">
+            <p><%= message %></p>
+        </div>
+        <% } %>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Status:</span>
+                <span class="stat-value"><%= gang.active ? 'Active' : 'Forming' %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Treasury:</span>
+                <span class="stat-value"><%= Math.floor(gang.gold).toLocaleString() %> gold</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Gang Power:</span>
+                <span class="stat-value"><%= gang.totalLevel %></span>
+            </div>
+        </div>
+
+        <h3>Members</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Level</th>
+                    <th>Class</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% members.forEach(m => { %>
+                <tr>
+                    <td><%= m.username %></td>
+                    <td><%= m.level %></td>
+                    <td><%= m.class_name || 'None' %></td>
+                    <td><%= m.id === gang.leader_id ? 'Leader' : 'Member' %></td>
+                    <td>Active</td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+
+        <% if (isMember && gang.active) { %>
+        <h3>Gang Treasury</h3>
+        <p>Contribute gold to help your gang grow stronger!</p>
+        <form action="/tprobbs/gangs/deposit" method="POST">
+            <div class="form-group">
+                <label for="amount">Deposit Amount:</label>
+                <input type="number" id="amount" name="amount" min="1" max="<%= Math.floor(user.gold) %>" value="100">
+            </div>
+            <button type="submit" class="link-button">Deposit Gold</button>
+        </form>
+        <% } %>
+
+        <% if (!gang.active) { %>
+        <div class="message message-warning">
+            <p>This gang is still forming. All invited members must accept for the gang to become active.</p>
+        </div>
+        <% } %>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/gangs">Back to Gang HQ</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

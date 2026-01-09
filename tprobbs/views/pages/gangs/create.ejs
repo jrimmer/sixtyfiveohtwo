@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Gang - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                    CREATE A GANG
+              Recruit 3 Members to Activate
+===============================================================
+</pre>
+        </div>
+
+        <% if (error) { %>
+        <div class="message message-error">
+            <p><%= error %></p>
+        </div>
+        <% } %>
+
+        <div class="info">
+            <h3>Gang Requirements</h3>
+            <ul>
+                <li>Choose a gang name (3-20 characters)</li>
+                <li>Invite exactly 3 other players</li>
+                <li>All invitees must accept for gang to become active</li>
+                <li>Cost: <%= creationCost.toLocaleString() %> gold</li>
+            </ul>
+        </div>
+
+        <form action="/tprobbs/gangs/create" method="POST">
+            <div class="form-group">
+                <label for="name">Gang Name:</label>
+                <input type="text" id="name" name="name" minlength="3" maxlength="20" required>
+            </div>
+
+            <h3>Select 3 Members to Invite</h3>
+            <p>Available players (must not be in another gang):</p>
+
+            <% if (availablePlayers.length < 3) { %>
+            <div class="message message-warning">
+                <p>Not enough available players to form a gang. Need at least 3 players who aren't in a gang.</p>
+            </div>
+            <% } else { %>
+            <div class="player-selection">
+                <% availablePlayers.forEach(p => { %>
+                <div class="player-option">
+                    <label>
+                        <input type="checkbox" name="members" value="<%= p.id %>">
+                        <%= p.username %> (Level <%= p.level %> <%= p.class_name || '' %>)
+                    </label>
+                </div>
+                <% }) %>
+            </div>
+
+            <button type="submit" class="link-button">Create Gang (<%= creationCost.toLocaleString() %> gold)</button>
+            <% } %>
+        </form>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/gangs">Back to Gang HQ</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

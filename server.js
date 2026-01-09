@@ -274,6 +274,56 @@ if (db) {
     app.use('/provinggrounds/games', pgGameRoutes);
 }
 
+// -----------------------------
+// TPro BBS - Express App
+// -----------------------------
+
+// Database connection for TPro BBS
+// Uses ensure.js which safely creates schema/seeds if needed without destroying data
+const TPRO_DB_PATH = process.env.TPROBBS_DATABASE_PATH ||
+    (process.env.NODE_ENV === 'production' ? '/data/tprobbs.db' : './tprobbs/data/tprobbs.db');
+let tprodb;
+
+try {
+    // Ensure database exists and is seeded (safe to run every startup)
+    const ensureDatabase = require('./tprobbs/src/db/ensure');
+    ensureDatabase();
+
+    tprodb = new Database(TPRO_DB_PATH);
+    tprodb.pragma('foreign_keys = ON');
+    app.set('tprodb', tprodb);
+} catch (err) {
+    console.error('TPro BBS database error:', err.message);
+}
+
+// Mount TPro BBS routes with /tprobbs prefix
+if (tprodb) {
+    const { loadUser } = require('./tprobbs/src/middleware/auth');
+
+    // Override render for tprobbs routes
+    app.use('/tprobbs', (req, res, next) => {
+        const originalRender = res.render.bind(res);
+        res.render = (view, options) => {
+            originalRender(view, {
+                ...options,
+                settings: {
+                    ...req.app.settings,
+                    views: path.join(__dirname, 'tprobbs/views')
+                }
+            });
+        };
+        req.app.set('views', path.join(__dirname, 'tprobbs/views'));
+        next();
+    });
+
+    // Load user middleware
+    app.use('/tprobbs', loadUser(tprodb));
+
+    // Mount routes
+    const tproBbsRoutes = require('./tprobbs/src/routes/index');
+    app.use('/tprobbs', tproBbsRoutes);
+}
+
 // Socket.IO for Proving Grounds
 io.on('connection', (socket) => {
     const session = socket.request.session;
@@ -339,6 +389,7 @@ httpServer.listen(PORT, () => {
     ║   - Telengard      → /telengard/                              ║
     ║   - Sabotage       → /sabotage/                               ║
     ║   - Proving Grounds→ /provinggrounds/                         ║
+    ║   - TPro BBS       → /tprobbs/                                ║
     ╚═══════════════════════════════════════════════════════════════╝
     `);
 });
@@ -347,6 +398,7 @@ httpServer.listen(PORT, () => {
 process.on('SIGINT', () => {
     console.log('\nShutting down...');
     if (db) db.close();
+    if (tprodb) tprodb.close();
     process.exit(0);
 });
 

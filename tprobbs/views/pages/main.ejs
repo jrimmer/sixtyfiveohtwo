@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Menu - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                      LOST GONZO BBS
+                        Main Menu
+===============================================================
+</pre>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Character:</span>
+                <span class="stat-value"><%= user.username %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Class:</span>
+                <span class="stat-value"><%= user.class_name || 'No class' %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Level:</span>
+                <span class="stat-value"><%= user.level %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Gold:</span>
+                <span class="stat-value"><%= Math.floor(user.gold).toLocaleString() %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">HP:</span>
+                <span class="stat-value"><%= user.hit_points %>/<%= user.max_hp %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">SP:</span>
+                <span class="stat-value"><%= user.spell_power %>/<%= user.max_sp %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Time Left:</span>
+                <span class="stat-value"><%= user.timeRemaining %> minutes</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Status:</span>
+                <span class="stat-value"><%= user.status ? 'Alive' : 'Dead' %></span>
+            </div>
+        </div>
+
+        <% if (unreadMail > 0) { %>
+        <div class="message message-warning">
+            You have <%= unreadMail %> unread message(s)!
+        </div>
+        <% } %>
+
+        <h2>Commands</h2>
+
+        <div class="menu">
+            <h3>Communication</h3>
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/boards" data-key="b">Message Boards</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">E)</span>
+                <a href="/tprobbs/email" data-key="e">Electronic Mail</a>
+            </div>
+        </div>
+
+        <div class="menu">
+            <h3>Adventure</h3>
+            <div class="menu-item">
+                <span class="menu-key">C)</span>
+                <a href="/tprobbs/combat" data-key="c">Combat Menu</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">T)</span>
+                <a href="/tprobbs/stores" data-key="t">Town Square (Stores)</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">N)</span>
+                <a href="/tprobbs/gangs" data-key="n">Gang Headquarters</a>
+            </div>
+        </div>
+
+        <div class="menu">
+            <h3>Entertainment</h3>
+            <div class="menu-item">
+                <span class="menu-key">G)</span>
+                <a href="/tprobbs/games" data-key="g">Casino</a>
+            </div>
+        </div>
+
+        <div class="menu">
+            <h3>System</h3>
+            <div class="menu-item">
+                <span class="menu-key">I)</span>
+                <a href="/tprobbs/main/info" data-key="i">Information Section</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">M)</span>
+                <a href="/tprobbs/main/members" data-key="m">Members List</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">S)</span>
+                <a href="/tprobbs/main/settings" data-key="s">Settings</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">V)</span>
+                <a href="/tprobbs/main/vote" data-key="v">Voting Booth</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">Q)</span>
+                <a href="/tprobbs/logout" data-key="q">Quit / Logoff</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            const link = document.querySelector(`a[data-key="${e.key.toLowerCase()}"]`);
+            if (link) {
+                e.preventDefault();
+                window.location.href = link.href;
+            }
+        });
+    </script>
+</body>
+</html>

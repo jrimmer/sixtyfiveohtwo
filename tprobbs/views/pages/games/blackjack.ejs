@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                      BLACKJACK
+                    Goal: Beat 21
+===============================================================
+</pre>
+        </div>
+
+        <% if (!game) { %>
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Your Gold:</span>
+                <span class="stat-value"><%= Math.floor(user.gold).toLocaleString() %></span>
+            </div>
+        </div>
+
+        <form action="/tprobbs/games/blackjack/bet" method="POST">
+            <div class="form-group">
+                <label for="bet">Place Your Bet (1-1000):</label>
+                <input type="number" id="bet" name="bet" min="1" max="1000" value="10" required>
+            </div>
+            <button type="submit" class="link-button">Deal Cards</button>
+        </form>
+
+        <% } else { %>
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Bet:</span>
+                <span class="stat-value"><%= game.bet %> gold</span>
+            </div>
+        </div>
+
+        <div class="card-display">
+            <h3>Dealer's Hand (<%= game.dealerTotal %><%= game.status === 'playing' ? '+?' : '' %>)</h3>
+            <pre class="cards">
+<% game.dealerHand.forEach((card, i) => { %>
+<% if (i === 1 && game.status === 'playing') { %>
+[???]
+<% } else { %>
+[<%= card %>]
+<% } %>
+<% }) %>
+            </pre>
+        </div>
+
+        <div class="card-display">
+            <h3>Your Hand (<%= game.playerTotal %>)</h3>
+            <pre class="cards">
+<% game.playerHand.forEach(card => { %>
+[<%= card %>]
+<% }) %>
+            </pre>
+        </div>
+
+        <% if (game.status === 'playing') { %>
+        <div class="menu">
+            <div class="menu-item">
+                <form action="/tprobbs/games/blackjack/hit" method="POST" style="display:inline">
+                    <button type="submit" class="link-button">H) Hit</button>
+                </form>
+            </div>
+            <div class="menu-item">
+                <form action="/tprobbs/games/blackjack/stand" method="POST" style="display:inline">
+                    <button type="submit" class="link-button">S) Stand</button>
+                </form>
+            </div>
+        </div>
+        <% } else { %>
+        <div class="message <%= game.status === 'win' || game.status === 'blackjack' ? 'message-success' : (game.status === 'push' ? 'message-warning' : 'message-error') %>">
+            <% if (game.status === 'blackjack') { %>
+            <p>BLACKJACK! You win <%= Math.floor(game.bet * 1.5) %> gold!</p>
+            <% } else if (game.status === 'win') { %>
+            <p>You win <%= game.bet %> gold!</p>
+            <% } else if (game.status === 'push') { %>
+            <p>Push! Your bet is returned.</p>
+            <% } else if (game.status === 'bust') { %>
+            <p>BUST! You lose <%= game.bet %> gold.</p>
+            <% } else { %>
+            <p>Dealer wins. You lose <%= game.bet %> gold.</p>
+            <% } %>
+        </div>
+
+        <div class="menu">
+            <div class="menu-item">
+                <a href="/tprobbs/games/blackjack">Play Again</a>
+            </div>
+        </div>
+        <% } %>
+        <% } %>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/games">Back to Casino</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

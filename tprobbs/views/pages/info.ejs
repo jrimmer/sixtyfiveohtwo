@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Information - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                    SYSTEM INFORMATION
+                     Lost Gonzo BBS
+===============================================================
+</pre>
+        </div>
+
+        <h3>System Statistics</h3>
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Total Users:</span>
+                <span class="stat-value"><%= stats.users.toLocaleString() %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Total Posts:</span>
+                <span class="stat-value"><%= stats.posts.toLocaleString() %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Total Emails:</span>
+                <span class="stat-value"><%= stats.emails.toLocaleString() %></span>
+            </div>
+        </div>
+
+        <h3>About Lost Gonzo BBS</h3>
+        <p>Welcome to the Lost Gonzo BBS, a recreation of classic Apple II BBS door games!</p>
+        <p>This system is based on TPro BBS, originally written in AppleSoft BASIC.</p>
+
+        <h3>Game Features</h3>
+        <ul>
+            <li><strong>Dungeon:</strong> Explore 7 levels of a dangerous dungeon</li>
+            <li><strong>Arena:</strong> Fight other players in PvP combat</li>
+            <li><strong>Casino:</strong> Try your luck at Blackjack, Slots, Craps, and High-Low</li>
+            <li><strong>Stores:</strong> Buy weapons, armor, spells, and property</li>
+            <li><strong>Gangs:</strong> Form a group with 3 other players</li>
+            <li><strong>Voting:</strong> Vote for the ruler of the BBS</li>
+        </ul>
+
+        <h3>Tips for New Players</h3>
+        <ul>
+            <li>Start by exploring the first dungeon level to gain gold and XP</li>
+            <li>Buy better weapons and armor from the Town Square</li>
+            <li>Store gold in the bank to protect it from thieves</li>
+            <li>Visit the healer if you die or need HP/SP restored</li>
+            <li>Form a gang for additional protection and power</li>
+        </ul>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/main">Back to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

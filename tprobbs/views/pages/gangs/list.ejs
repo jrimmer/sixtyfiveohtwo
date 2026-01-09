@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gangs - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                      GANG HQ
+                 "Strength in Numbers"
+===============================================================
+</pre>
+        </div>
+
+        <% if (message) { %>
+        <div class="message <%= messageType === 'error' ? 'message-error' : 'message-success' %>">
+            <p><%= message %></p>
+        </div>
+        <% } %>
+
+        <% if (userGang) { %>
+        <div class="your-gang">
+            <h3>Your Gang: <%= userGang.name %></h3>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-label">Members:</span>
+                    <span class="stat-value"><%= userGang.members.length %>/4</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Treasury:</span>
+                    <span class="stat-value"><%= Math.floor(userGang.treasury).toLocaleString() %> gold</span>
+                </div>
+            </div>
+            <p><a href="/tprobbs/gangs/<%= userGang.id %>">View Gang Details</a></p>
+        </div>
+        <% } else if (pendingInvites.length > 0) { %>
+        <div class="invites">
+            <h3>Pending Invitations</h3>
+            <% pendingInvites.forEach(invite => { %>
+            <div class="invite">
+                <p><%= invite.gang_name %> has invited you to join!</p>
+                <form action="/tprobbs/gangs/invite/<%= invite.id %>/accept" method="POST" style="display:inline">
+                    <button type="submit" class="link-button">Accept</button>
+                </form>
+                <form action="/tprobbs/gangs/invite/<%= invite.id %>/decline" method="POST" style="display:inline">
+                    <button type="submit" class="link-button">Decline</button>
+                </form>
+            </div>
+            <% }) %>
+        </div>
+        <% } else { %>
+        <p>You are not in a gang.</p>
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">C)</span>
+                <a href="/tprobbs/gangs/create">Create a Gang</a>
+            </div>
+        </div>
+        <% } %>
+
+        <h3>Active Gangs</h3>
+        <% if (gangs.length === 0) { %>
+        <p>No active gangs yet. Be the first to create one!</p>
+        <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Gang Name</th>
+                    <th>Leader</th>
+                    <th>Members</th>
+                    <th>Power</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% gangs.forEach(g => { %>
+                <tr>
+                    <td><a href="/tprobbs/gangs/<%= g.id %>"><%= g.name %></a></td>
+                    <td><%= g.leader_name %></td>
+                    <td><%= g.member_count %>/4</td>
+                    <td><%= g.total_level %></td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <% } %>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/main">Back to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>
