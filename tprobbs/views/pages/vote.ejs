@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Booth - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                    VOTING BOOTH
+                 "Choose Your Leader"
+===============================================================
+</pre>
+        </div>
+
+        <% if (message) { %>
+        <div class="message <%= messageType === 'error' ? 'message-error' : 'message-success' %>">
+            <p><%= message %></p>
+        </div>
+        <% } %>
+
+        <% if (ruler) { %>
+        <div class="ruler">
+            <h3>Current Ruler</h3>
+            <p><strong><%= ruler.username %></strong> - Level <%= ruler.level %> <%= ruler.class_name || '' %></p>
+            <p>Votes: <%= ruler.votes %></p>
+        </div>
+        <% } %>
+
+        <% if (canVote) { %>
+        <h3>Cast Your Daily Vote</h3>
+        <p>Vote for who you think should rule the BBS!</p>
+
+        <% if (candidates.length === 0) { %>
+        <p>No other users to vote for yet.</p>
+        <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Level</th>
+                    <th>Class</th>
+                    <th>Votes</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% candidates.forEach(c => { %>
+                <tr>
+                    <td><%= c.username %></td>
+                    <td><%= c.level %></td>
+                    <td><%= c.class_name || 'None' %></td>
+                    <td><%= c.votes %></td>
+                    <td>
+                        <form action="/tprobbs/main/vote/<%= c.id %>" method="POST" style="display:inline">
+                            <button type="submit" class="link-button">Vote</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <% } %>
+        <% } else { %>
+        <div class="message message-warning">
+            <p>You have already voted today. Come back tomorrow!</p>
+        </div>
+        <% } %>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/main">Back to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

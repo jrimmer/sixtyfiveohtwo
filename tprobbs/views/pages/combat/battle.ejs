@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combat - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                        COMBAT
+===============================================================
+</pre>
+        </div>
+
+        <div class="combat-log">
+            <% results.forEach(r => { %>
+            <% if (r.type === 'player') { %>
+            <p class="combat-hit">You hit <%= r.target %> for <%= r.damage %> damage!</p>
+            <% } else if (r.type === 'monster') { %>
+            <p class="combat-damage">The monster hits you for <%= r.damage %> damage!</p>
+            <% } else if (r.type === 'flee') { %>
+            <p class="combat-miss">You failed to flee!</p>
+            <% } %>
+            <% }) %>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Your HP:</span>
+                <span class="stat-value"><%= user.hit_points %>/<%= user.max_hp %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label"><%= dungeon.monster.name %> HP:</span>
+                <span class="stat-value"><%= dungeon.monster.hp %>/<%= dungeon.monster.maxHp %></span>
+            </div>
+        </div>
+
+        <div class="menu">
+            <form action="/tprobbs/combat/dungeon/attack" method="POST" style="display:inline">
+                <button type="submit" class="menu-button">Attack</button>
+            </form>
+            <form action="/tprobbs/combat/dungeon/flee" method="POST" style="display:inline">
+                <button type="submit" class="menu-button">Flee</button>
+            </form>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

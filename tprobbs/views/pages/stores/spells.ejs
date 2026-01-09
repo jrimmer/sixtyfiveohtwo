@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic Shop - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                    MAGIC SHOP
+                 "Arcane Knowledge"
+===============================================================
+</pre>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Gold:</span>
+                <span class="stat-value"><%= Math.floor(user.gold).toLocaleString() %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Spell Points:</span>
+                <span class="stat-value"><%= user.spell_power %>/<%= user.max_sp %></span>
+            </div>
+        </div>
+
+        <% if (message) { %>
+        <div class="message message-success">
+            <p><%= message %></p>
+        </div>
+        <% } %>
+
+        <% const ownedSpells = spells.filter(s => s.owned); %>
+        <% const availableSpells = spells.filter(s => !s.owned); %>
+
+        <h3>Your Spells</h3>
+        <% if (ownedSpells.length === 0) { %>
+        <p>You don't know any spells yet.</p>
+        <% } else { %>
+        <ul>
+            <% ownedSpells.forEach(s => { %>
+            <li><%= s.name %> (Cost: <%= s.sp_cost %> SP)</li>
+            <% }) %>
+        </ul>
+        <% } %>
+
+        <h3>Available Spells</h3>
+        <% if (availableSpells.length === 0) { %>
+        <p>You have learned all available spells!</p>
+        <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Spell</th>
+                    <th>SP Cost</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% availableSpells.forEach(s => { %>
+                <tr>
+                    <td><%= s.name %></td>
+                    <td><%= s.sp_cost %></td>
+                    <td><%= s.price.toLocaleString() %></td>
+                    <td>
+                        <% if (user.gold >= s.price) { %>
+                        <form action="/tprobbs/stores/spells/buy/<%= s.id %>" method="POST" style="display:inline">
+                            <button type="submit" class="link-button">Learn</button>
+                        </form>
+                        <% } else { %>
+                        <span class="insufficient">Insufficient</span>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <% } %>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/stores">Back to Stores</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

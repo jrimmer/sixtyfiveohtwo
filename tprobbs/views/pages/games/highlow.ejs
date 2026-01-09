@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High-Low - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                      HIGH-LOW
+               Guess Higher or Lower!
+===============================================================
+</pre>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Your Gold:</span>
+                <span class="stat-value"><%= Math.floor(user.gold).toLocaleString() %></span>
+            </div>
+            <% if (game) { %>
+            <div class="stat">
+                <span class="stat-label">Streak:</span>
+                <span class="stat-value"><%= game.streak %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Pot:</span>
+                <span class="stat-value"><%= game.pot.toLocaleString() %> gold</span>
+            </div>
+            <% } %>
+        </div>
+
+        <% if (game) { %>
+        <div class="card-display">
+            <h3>Current Card</h3>
+<pre>
++-------+
+|       |
+|  <%= game.currentCard %>  |
+|       |
++-------+
+</pre>
+        </div>
+
+        <% if (result) { %>
+        <div class="message <%= result.correct ? 'message-success' : 'message-error' %>">
+            <p>The card was <%= result.newCard %>.</p>
+            <% if (result.correct) { %>
+            <p>Correct! Your pot doubles to <%= game.pot.toLocaleString() %> gold!</p>
+            <% } else { %>
+            <p>Wrong! You lost <%= result.lostAmount.toLocaleString() %> gold.</p>
+            <% } %>
+        </div>
+        <% } %>
+
+        <% if (!result || result.correct) { %>
+        <p>Will the next card be Higher or Lower?</p>
+        <p>(Aces are low, Kings are high)</p>
+
+        <div class="menu">
+            <div class="menu-item">
+                <form action="/tprobbs/games/highlow/guess" method="POST" style="display:inline">
+                    <input type="hidden" name="guess" value="high">
+                    <button type="submit" class="link-button">H) Higher</button>
+                </form>
+            </div>
+            <div class="menu-item">
+                <form action="/tprobbs/games/highlow/guess" method="POST" style="display:inline">
+                    <input type="hidden" name="guess" value="low">
+                    <button type="submit" class="link-button">L) Lower</button>
+                </form>
+            </div>
+            <div class="menu-item">
+                <form action="/tprobbs/games/highlow/cashout" method="POST" style="display:inline">
+                    <button type="submit" class="link-button">C) Cash Out (<%= game.pot.toLocaleString() %> gold)</button>
+                </form>
+            </div>
+        </div>
+        <% } else { %>
+        <div class="menu">
+            <div class="menu-item">
+                <a href="/tprobbs/games/highlow">Play Again</a>
+            </div>
+        </div>
+        <% } %>
+
+        <% } else { %>
+        <h3>Rules</h3>
+        <p>Guess if the next card will be higher or lower.</p>
+        <p>Each correct guess doubles your pot!</p>
+        <p>Cash out anytime to keep your winnings.</p>
+        <p>Wrong guess loses everything.</p>
+
+        <form action="/tprobbs/games/highlow/bet" method="POST">
+            <div class="form-group">
+                <label for="bet">Starting Bet (1-100):</label>
+                <input type="number" id="bet" name="bet" min="1" max="100" value="10" required>
+            </div>
+            <button type="submit" class="link-button">Start Game</button>
+        </form>
+        <% } %>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/games">Back to Casino</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

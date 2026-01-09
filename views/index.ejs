@@ -423,11 +423,17 @@
                                 </a>
                                 <p class="game-desc">Defend your base from paratroopers</p>
                             </li>
+                            <li class="game-item">
+                                <a href="/tprobbs/" class="game-link">
+                                    <span class="game-number">4.</span> LOST GONZO BBS
+                                </a>
+                                <p class="game-desc">Classic BBS door game (TPro BBS port)</p>
+                            </li>
                         </ul>
                     </nav>
 
                     <div class="prompt">
-                        ENTER SELECTION (1-3):<span class="cursor"></span>
+                        ENTER SELECTION (1-4):<span class="cursor"></span>
                     </div>
 
                     <% if (intro.marquee.enabled) { %>
@@ -621,6 +627,9 @@
             } else if (key === '3') {
                 playClick();
                 window.location.href = '/sabotage/';
+            } else if (key === '4') {
+                playClick();
+                window.location.href = '/tprobbs/';
             } else if (key === 'g' && config.greets.enabled) {
                 playClick();
                 const overlay = document.getElementById('greets-overlay');

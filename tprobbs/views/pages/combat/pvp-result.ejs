@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= won ? 'Victory!' : 'Defeat' %> - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                    ARENA <%= won ? 'VICTORY' : 'DEFEAT' %>
+===============================================================
+</pre>
+        </div>
+
+        <% if (won) { %>
+        <div class="message message-success">
+            <h3>You defeated <%= opponent.username %>!</h3>
+            <p>You dealt <%= playerDamage %> damage vs their <%= opponentDamage %>.</p>
+            <p>Gained <%= xpGain.toLocaleString() %> XP</p>
+            <p>Looted <%= goldGain.toLocaleString() %> gold</p>
+        </div>
+        <% } else { %>
+        <div class="message message-error">
+            <h3><%= opponent.username %> defeated you!</h3>
+            <p>They dealt <%= opponentDamage %> damage vs your <%= playerDamage %>.</p>
+            <p>Lost <%= goldLost.toLocaleString() %> gold</p>
+            <p>You are now dead. Visit the healer to resurrect.</p>
+        </div>
+        <% } %>
+
+        <div class="menu">
+            <% if (won) { %>
+            <div class="menu-item">
+                <span class="menu-key">A)</span>
+                <a href="/tprobbs/combat/arena">Back to Arena</a>
+            </div>
+            <% } else { %>
+            <div class="menu-item">
+                <span class="menu-key">H)</span>
+                <a href="/tprobbs/stores/healer">Visit Healer</a>
+            </div>
+            <% } %>
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/main">Back to Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span><%= user.status ? '' : 'DEAD' %></span>
+        </div>
+    </div>
+</body>
+</html>

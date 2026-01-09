@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                    GONZO BANK
+                  "Safe & Secure"
+===============================================================
+</pre>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Gold on Hand:</span>
+                <span class="stat-value"><%= Math.floor(user.gold).toLocaleString() %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Gold in Bank:</span>
+                <span class="stat-value"><%= Math.floor(user.bank).toLocaleString() %></span>
+            </div>
+        </div>
+
+        <% if (message) { %>
+        <div class="message <%= messageType === 'error' ? 'message-error' : 'message-success' %>">
+            <p><%= message %></p>
+        </div>
+        <% } %>
+
+        <p>Gold stored in the bank is 100% safe from thieves!</p>
+        <p>But you cannot spend banked gold directly.</p>
+
+        <div class="bank-forms">
+            <div class="form-section">
+                <h3>Deposit Gold</h3>
+                <form action="/tprobbs/stores/bank/deposit" method="POST">
+                    <div class="form-group">
+                        <label for="deposit">Amount:</label>
+                        <input type="number" id="deposit" name="amount" min="1" max="<%= Math.floor(user.gold) %>" value="<%= Math.floor(user.gold) %>">
+                    </div>
+                    <button type="submit" class="link-button">Deposit</button>
+                </form>
+            </div>
+
+            <div class="form-section">
+                <h3>Withdraw Gold</h3>
+                <form action="/tprobbs/stores/bank/withdraw" method="POST">
+                    <div class="form-group">
+                        <label for="withdraw">Amount:</label>
+                        <input type="number" id="withdraw" name="amount" min="1" max="<%= Math.floor(user.bank) %>" value="<%= Math.floor(user.bank) %>">
+                    </div>
+                    <button type="submit" class="link-button">Withdraw</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/stores">Back to Stores</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

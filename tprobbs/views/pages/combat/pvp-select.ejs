@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Opponent - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                    SELECT OPPONENT
+===============================================================
+</pre>
+        </div>
+
+        <p>Fights remaining today: <%= fightsRemaining %></p>
+
+        <% if (opponents.length === 0) { %>
+        <p>No eligible opponents found within your level range.</p>
+        <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Level</th>
+                    <th>Class</th>
+                    <th>K/D</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% opponents.forEach(o => { %>
+                <tr>
+                    <td><%= o.username %></td>
+                    <td><%= o.level %></td>
+                    <td><%= o.class_name || 'None' %></td>
+                    <td><%= o.kills %>/<%= o.killed %></td>
+                    <td>
+                        <form action="/tprobbs/combat/arena/fight/<%= o.id %>" method="POST" style="display:inline">
+                            <button type="submit" class="link-button">Fight</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <% } %>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/combat/arena">Back to Arena</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

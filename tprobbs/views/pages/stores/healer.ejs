@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healer - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                     THE HEALER
+                  "Rest and Recover"
+===============================================================
+</pre>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Gold:</span>
+                <span class="stat-value"><%= Math.floor(user.gold).toLocaleString() %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">HP:</span>
+                <span class="stat-value"><%= user.hit_points %>/<%= user.max_hp %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">SP:</span>
+                <span class="stat-value"><%= user.spell_power %>/<%= user.max_sp %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Status:</span>
+                <span class="stat-value"><%= user.status ? 'Alive' : 'DEAD' %></span>
+            </div>
+        </div>
+
+        <% if (message) { %>
+        <div class="message <%= messageType === 'error' ? 'message-error' : 'message-success' %>">
+            <p><%= message %></p>
+        </div>
+        <% } %>
+
+        <% if (!user.status) { %>
+        <div class="message message-error">
+            <p>You are dead! You must be resurrected before you can continue.</p>
+        </div>
+
+        <div class="service">
+            <h3>Resurrection</h3>
+            <p>Cost: <%= resurrectionCost.toLocaleString() %> gold</p>
+            <% if (user.gold >= resurrectionCost) { %>
+            <form action="/tprobbs/stores/healer/resurrect" method="POST">
+                <button type="submit" class="link-button">Resurrect Me</button>
+            </form>
+            <% } else { %>
+            <p class="insufficient">You don't have enough gold. Beg on the streets or wait for charity.</p>
+            <% } %>
+        </div>
+        <% } else { %>
+
+        <% if (user.hit_points < user.max_hp) { %>
+        <div class="service">
+            <h3>Heal Wounds</h3>
+            <p>Restore HP to full for <%= healCost.toLocaleString() %> gold</p>
+            <p>(<%= user.max_hp - user.hit_points %> HP to restore)</p>
+            <% if (user.gold >= healCost) { %>
+            <form action="/tprobbs/stores/healer/heal" method="POST">
+                <button type="submit" class="link-button">Heal Me</button>
+            </form>
+            <% } else { %>
+            <p class="insufficient">Insufficient gold</p>
+            <% } %>
+        </div>
+        <% } else { %>
+        <p>Your HP is full!</p>
+        <% } %>
+
+        <% if (user.spell_power < user.max_sp) { %>
+        <div class="service">
+            <h3>Restore Mana</h3>
+            <p>Restore SP to full for <%= manaCost.toLocaleString() %> gold</p>
+            <p>(<%= user.max_sp - user.spell_power %> SP to restore)</p>
+            <% if (user.gold >= manaCost) { %>
+            <form action="/tprobbs/stores/healer/restore" method="POST">
+                <button type="submit" class="link-button">Restore Mana</button>
+            </form>
+            <% } else { %>
+            <p class="insufficient">Insufficient gold</p>
+            <% } %>
+        </div>
+        <% } else { %>
+        <p>Your SP is full!</p>
+        <% } %>
+
+        <% if (user.hit_points >= user.max_hp && user.spell_power >= user.max_sp) { %>
+        <div class="message message-success">
+            <p>You are in perfect health!</p>
+        </div>
+        <% } %>
+
+        <% } %>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/stores">Back to Stores</a>
+            </div>
+            <div class="menu-item">
+                <span class="menu-key">M)</span>
+                <a href="/tprobbs/main">Main Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span><%= user.status ? '' : 'DEAD' %></span>
+        </div>
+    </div>
+</body>
+</html>

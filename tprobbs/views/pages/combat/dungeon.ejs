@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dungeon - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                      THE DUNGEON
+                    Level <%= dungeon.level %>, Room <%= dungeon.room + 1 %>
+===============================================================
+</pre>
+        </div>
+
+        <% if (dungeon.inCombat && dungeon.monster) { %>
+        <div class="message message-warning">
+            A <%= dungeon.monster.name %> appears! (HP: <%= dungeon.monster.hp %>/<%= dungeon.monster.maxHp %>)
+        </div>
+
+        <div class="menu">
+            <form action="/tprobbs/combat/dungeon/attack" method="POST" style="display:inline">
+                <button type="submit" class="menu-button">Attack</button>
+            </form>
+            <form action="/tprobbs/combat/dungeon/flee" method="POST" style="display:inline">
+                <button type="submit" class="menu-button">Flee</button>
+            </form>
+        </div>
+        <% } else { %>
+        <p>The dungeon is dark and cold. Strange sounds echo in the distance.</p>
+
+        <div class="menu">
+            <div class="menu-item">
+                <form action="/tprobbs/combat/dungeon/move" method="POST" style="display:inline">
+                    <input type="hidden" name="direction" value="forward">
+                    <button type="submit" class="link-button">F) Move Forward</button>
+                </form>
+            </div>
+            <% if (dungeon.level < 7) { %>
+            <div class="menu-item">
+                <form action="/tprobbs/combat/dungeon/move" method="POST" style="display:inline">
+                    <input type="hidden" name="direction" value="deeper">
+                    <button type="submit" class="link-button">D) Go Deeper</button>
+                </form>
+            </div>
+            <% } %>
+            <% if (dungeon.level > 1) { %>
+            <div class="menu-item">
+                <form action="/tprobbs/combat/dungeon/move" method="POST" style="display:inline">
+                    <input type="hidden" name="direction" value="up">
+                    <button type="submit" class="link-button">U) Go Up a Level</button>
+                </form>
+            </div>
+            <% } %>
+            <div class="menu-item">
+                <span class="menu-key">L)</span>
+                <a href="/tprobbs/combat/dungeon/leave">Leave Dungeon</a>
+            </div>
+        </div>
+        <% } %>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

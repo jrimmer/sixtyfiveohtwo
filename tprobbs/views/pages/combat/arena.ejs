@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Arena - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                      THE ARENA
+                   Player vs Player
+===============================================================
+</pre>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Fights Today:</span>
+                <span class="stat-value"><%= user.arena_fights_today %>/<%= maxFights %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Your Kills:</span>
+                <span class="stat-value"><%= user.kills %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Deaths:</span>
+                <span class="stat-value"><%= user.killed %></span>
+            </div>
+        </div>
+
+        <% if (fightsRemaining > 0) { %>
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">F)</span>
+                <a href="/tprobbs/combat/arena/fight">Find Opponent</a>
+            </div>
+        </div>
+        <% } else { %>
+        <div class="message message-warning">
+            You have used all your arena fights for today.
+        </div>
+        <% } %>
+
+        <h3>Top Fighters</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Level</th>
+                    <th>Class</th>
+                    <th>Kills</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% topFighters.forEach((f, i) => { %>
+                <tr>
+                    <td><%= i + 1 %></td>
+                    <td><%= f.username %></td>
+                    <td><%= f.level %></td>
+                    <td><%= f.class_name || 'None' %></td>
+                    <td><%= f.kills %></td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+
+        <% if (recentKills.length > 0) { %>
+        <h3>Recent Kills</h3>
+        <ul>
+            <% recentKills.forEach(k => { %>
+            <li><%= k.killer_name %> killed <%= k.victim_name %></li>
+            <% }) %>
+        </ul>
+        <% } %>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/combat">Back to Combat Menu</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

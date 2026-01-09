@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Craps - Lost Gonzo BBS</title>
+    <link rel="stylesheet" href="/provinggrounds/css/terminal.css">
+</head>
+<body>
+    <div class="terminal">
+        <div class="ascii-box">
+<pre>
+===============================================================
+                       CRAPS
+                   Roll the Dice!
+===============================================================
+</pre>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Your Gold:</span>
+                <span class="stat-value"><%= Math.floor(user.gold).toLocaleString() %></span>
+            </div>
+            <% if (game && game.point) { %>
+            <div class="stat">
+                <span class="stat-label">Point:</span>
+                <span class="stat-value"><%= game.point %></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Bet:</span>
+                <span class="stat-value"><%= game.bet %> gold</span>
+            </div>
+            <% } %>
+        </div>
+
+        <% if (roll) { %>
+        <div class="dice-display">
+<pre>
++-------+   +-------+
+|       |   |       |
+|   <%= roll.die1 %>   |   |   <%= roll.die2 %>   |
+|       |   |       |
++-------+   +-------+
+
+Total: <%= roll.total %>
+</pre>
+        </div>
+        <% } %>
+
+        <% if (result) { %>
+        <div class="message <%= result.won ? 'message-success' : 'message-error' %>">
+            <p><%= result.message %></p>
+            <% if (result.won) { %>
+            <p>You won <%= result.winnings.toLocaleString() %> gold!</p>
+            <% } else if (result.lost) { %>
+            <p>You lost <%= result.lostAmount.toLocaleString() %> gold.</p>
+            <% } %>
+        </div>
+        <% } %>
+
+        <% if (!game || !game.point) { %>
+        <h3>Rules</h3>
+        <p>Come Out Roll: 7 or 11 wins, 2, 3, or 12 loses.</p>
+        <p>Any other number becomes the "point".</p>
+        <p>Roll the point again before a 7 to win!</p>
+
+        <form action="/tprobbs/games/craps/bet" method="POST">
+            <div class="form-group">
+                <label for="bet">Place Your Bet (1-500):</label>
+                <input type="number" id="bet" name="bet" min="1" max="500" value="10" required>
+            </div>
+            <button type="submit" class="link-button">Roll Come Out</button>
+        </form>
+        <% } else { %>
+        <p>Your point is <%= game.point %>. Roll it again to win!</p>
+        <p>Roll a 7 and you lose.</p>
+
+        <form action="/tprobbs/games/craps/roll" method="POST">
+            <button type="submit" class="link-button">Roll Dice</button>
+        </form>
+        <% } %>
+
+        <div class="menu">
+            <div class="menu-item">
+                <span class="menu-key">B)</span>
+                <a href="/tprobbs/games">Back to Casino</a>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>[<%= user.username %>]</span>
+            <span>Level: <%= user.level %></span>
+            <span>Gold: <%= Math.floor(user.gold).toLocaleString() %></span>
+            <span>HP: <%= user.hit_points %>/<%= user.max_hp %></span>
+            <span>Time: <%= user.timeRemaining %>m</span>
+        </div>
+    </div>
+</body>
+</html>

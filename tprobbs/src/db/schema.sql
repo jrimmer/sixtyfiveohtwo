@@ -49,6 +49,9 @@ CREATE TABLE IF NOT EXISTS users (
     joust_losses INTEGER DEFAULT 0,
     kills INTEGER DEFAULT 0,
     killed INTEGER DEFAULT 0,
+    -- Voting
+    votes INTEGER DEFAULT 0,        -- Votes received for ruler
+    voted_date TEXT,                -- Date of last vote cast
     -- Death tracking
     ko_timestamp INTEGER DEFAULT 0, -- day*2 + hour/12 when killed
     ko_killer_id INTEGER,           -- Who killed them
