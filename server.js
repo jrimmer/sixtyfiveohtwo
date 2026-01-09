@@ -249,18 +249,9 @@ if (db) {
     const pgStoreRoutes = require('./provinggrounds/src/routes/stores');
     const pgGameRoutes = require('./provinggrounds/src/routes/games');
 
-    // Override render for provinggrounds routes (don't use app.set - causes race conditions)
+    // Set views directory for provinggrounds routes
     app.use('/provinggrounds', (req, res, next) => {
-        const originalRender = res.render.bind(res);
-        res.render = (view, options) => {
-            originalRender(view, {
-                ...options,
-                settings: {
-                    ...req.app.settings,
-                    views: path.join(__dirname, 'provinggrounds/views')
-                }
-            });
-        };
+        req.app.set('views', path.join(__dirname, 'provinggrounds/views'));
         next();
     });
 
@@ -298,18 +289,9 @@ try {
 if (tprodb) {
     const { loadUser } = require('./tprobbs/src/middleware/auth');
 
-    // Override render for tprobbs routes (don't use app.set - causes race conditions)
+    // Set views directory for tprobbs routes
     app.use('/tprobbs', (req, res, next) => {
-        const originalRender = res.render.bind(res);
-        res.render = (view, options) => {
-            originalRender(view, {
-                ...options,
-                settings: {
-                    ...req.app.settings,
-                    views: path.join(__dirname, 'tprobbs/views')
-                }
-            });
-        };
+        req.app.set('views', path.join(__dirname, 'tprobbs/views'));
         next();
     });
 
@@ -358,20 +340,20 @@ app.use((err, req, res, next) => {
 
     // Render error page for tprobbs routes
     if (req.path.startsWith('/tprobbs')) {
+        app.set('views', path.join(__dirname, 'tprobbs/views'));
         return res.status(500).render('pages/error', {
             title: 'Error',
-            error: errorMessage,
-            settings: { views: path.join(__dirname, 'tprobbs', 'views') }
+            error: errorMessage
         });
     }
 
     // Render error page for provinggrounds routes
     if (req.path.startsWith('/provinggrounds')) {
+        app.set('views', path.join(__dirname, 'provinggrounds/views'));
         return res.status(500).render('pages/error', {
             title: 'Error',
             status: 500,
-            message: errorMessage,
-            settings: { views: path.join(__dirname, 'provinggrounds', 'views') }
+            message: errorMessage
         });
     }
 
@@ -381,10 +363,8 @@ app.use((err, req, res, next) => {
 
 // 404 handler - render index with intro config
 app.use((req, res) => {
-    res.status(404).render('index', {
-        ...getIntroRenderData(req.session),
-        settings: { views: path.join(__dirname, 'views') }
-    });
+    app.set('views', path.join(__dirname, 'views'));
+    res.status(404).render('index', getIntroRenderData(req.session));
 });
 
 // Start server
