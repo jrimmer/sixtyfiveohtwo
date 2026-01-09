@@ -274,6 +274,71 @@ if (db) {
     app.use('/provinggrounds/games', pgGameRoutes);
 }
 
+// -----------------------------
+// TPro BBS - Express App
+// -----------------------------
+
+// Database connection for TPro BBS
+const TPRO_DB_PATH = process.env.TPROBBS_DATABASE_PATH ||
+    (process.env.NODE_ENV === 'production' ? '/data/tprobbs.db' : './tprobbs/data/tprobbs.db');
+let tprodb;
+
+// Auto-initialize TPro BBS database if it doesn't exist
+const tproDbDir = path.dirname(TPRO_DB_PATH);
+if (!fs.existsSync(tproDbDir)) {
+    fs.mkdirSync(tproDbDir, { recursive: true });
+}
+
+try {
+    const tproDbExists = fs.existsSync(TPRO_DB_PATH);
+    tprodb = new Database(TPRO_DB_PATH);
+    tprodb.pragma('foreign_keys = ON');
+
+    if (!tproDbExists) {
+        console.log('Initializing TPro BBS database...');
+        const tproSchemaPath = path.join(__dirname, 'tprobbs/src/db/schema.sql');
+        const tproSchema = fs.readFileSync(tproSchemaPath, 'utf8');
+        tprodb.exec(tproSchema);
+
+        const tproSeedPath = path.join(__dirname, 'tprobbs/src/db/seed.sql');
+        const tproSeed = fs.readFileSync(tproSeedPath, 'utf8');
+        tprodb.exec(tproSeed);
+        console.log('TPro BBS database initialized.');
+    }
+
+    app.set('tprodb', tprodb);
+} catch (err) {
+    console.error('TPro BBS database error:', err.message);
+}
+
+// Mount TPro BBS routes with /tprobbs prefix
+if (tprodb) {
+    const { loadUser } = require('./tprobbs/src/middleware/auth');
+
+    // Override render for tprobbs routes
+    app.use('/tprobbs', (req, res, next) => {
+        const originalRender = res.render.bind(res);
+        res.render = (view, options) => {
+            originalRender(view, {
+                ...options,
+                settings: {
+                    ...req.app.settings,
+                    views: path.join(__dirname, 'tprobbs/views')
+                }
+            });
+        };
+        req.app.set('views', path.join(__dirname, 'tprobbs/views'));
+        next();
+    });
+
+    // Load user middleware
+    app.use('/tprobbs', loadUser(tprodb));
+
+    // Mount routes
+    const tproBbsRoutes = require('./tprobbs/src/routes/index');
+    app.use('/tprobbs', tproBbsRoutes);
+}
+
 // Socket.IO for Proving Grounds
 io.on('connection', (socket) => {
     const session = socket.request.session;
@@ -339,6 +404,7 @@ httpServer.listen(PORT, () => {
     ║   - Telengard      → /telengard/                              ║
     ║   - Sabotage       → /sabotage/                               ║
     ║   - Proving Grounds→ /provinggrounds/                         ║
+    ║   - TPro BBS       → /tprobbs/                                ║
     ╚═══════════════════════════════════════════════════════════════╝
     `);
 });
@@ -347,6 +413,7 @@ httpServer.listen(PORT, () => {
 process.on('SIGINT', () => {
     console.log('\nShutting down...');
     if (db) db.close();
+    if (tprodb) tprodb.close();
     process.exit(0);
 });
 
