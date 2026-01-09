@@ -279,33 +279,18 @@ if (db) {
 // -----------------------------
 
 // Database connection for TPro BBS
+// Uses ensure.js which safely creates schema/seeds if needed without destroying data
 const TPRO_DB_PATH = process.env.TPROBBS_DATABASE_PATH ||
     (process.env.NODE_ENV === 'production' ? '/data/tprobbs.db' : './tprobbs/data/tprobbs.db');
 let tprodb;
 
-// Auto-initialize TPro BBS database if it doesn't exist
-const tproDbDir = path.dirname(TPRO_DB_PATH);
-if (!fs.existsSync(tproDbDir)) {
-    fs.mkdirSync(tproDbDir, { recursive: true });
-}
-
 try {
-    const tproDbExists = fs.existsSync(TPRO_DB_PATH);
+    // Ensure database exists and is seeded (safe to run every startup)
+    const ensureDatabase = require('./tprobbs/src/db/ensure');
+    ensureDatabase();
+
     tprodb = new Database(TPRO_DB_PATH);
     tprodb.pragma('foreign_keys = ON');
-
-    if (!tproDbExists) {
-        console.log('Initializing TPro BBS database...');
-        const tproSchemaPath = path.join(__dirname, 'tprobbs/src/db/schema.sql');
-        const tproSchema = fs.readFileSync(tproSchemaPath, 'utf8');
-        tprodb.exec(tproSchema);
-
-        const tproSeedPath = path.join(__dirname, 'tprobbs/src/db/seed.sql');
-        const tproSeed = fs.readFileSync(tproSeedPath, 'utf8');
-        tprodb.exec(tproSeed);
-        console.log('TPro BBS database initialized.');
-    }
-
     app.set('tprodb', tprodb);
 } catch (err) {
     console.error('TPro BBS database error:', err.message);

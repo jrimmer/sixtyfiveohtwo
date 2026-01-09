@@ -72,6 +72,37 @@ const sellPrice = itemPrice * (50 + charisma / 2) / 100;
 
 Uses separate SQLite database from Proving Grounds (`tprobbs/data/tprobbs.db`).
 
+### Auto-Initialization
+
+The database is automatically initialized on server startup via `src/db/ensure.js`:
+- Creates schema if tables don't exist
+- Seeds game data (weapons, monsters, classes) if empty
+- **Preserves existing user data** (safe for production restarts)
+
+### Scripts
+
+| Script | Purpose | Safe for Production? |
+|--------|---------|---------------------|
+| `node src/db/ensure.js` | Create/seed if needed | Yes - preserves data |
+| `node src/db/init.js` | Reset everything | No - deletes all data |
+
+### Coolify/Docker Deployment
+
+The database auto-seeds on first startup. For persistent data:
+
+1. **Set environment variable** for database path:
+   ```
+   TPROBBS_DATABASE_PATH=/data/tprobbs.db
+   ```
+
+2. **Mount a persistent volume** at `/data` in Coolify:
+   - Go to your service → Storage → Add Volume
+   - Mount path: `/data`
+
+3. **No manual seeding required** - `ensure.js` runs automatically on every startup
+
+The server detects production mode and defaults to `/data/tprobbs.db` when `NODE_ENV=production`.
+
 ## Testing
 
 ### E2E Tests (Playwright)
