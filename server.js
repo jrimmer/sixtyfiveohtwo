@@ -357,9 +357,19 @@ io.on('connection', (socket) => {
 // Error handling
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({
-        error: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong!'
-    });
+    const errorMessage = process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong!';
+
+    // Render error page for tprobbs routes
+    if (req.path.startsWith('/tprobbs')) {
+        req.app.set('views', path.join(__dirname, 'tprobbs', 'views'));
+        return res.status(500).render('pages/error', {
+            title: 'Error',
+            error: errorMessage
+        });
+    }
+
+    // JSON response for API routes
+    res.status(500).json({ error: errorMessage });
 });
 
 // 404 handler - render index with intro config
