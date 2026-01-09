@@ -118,3 +118,23 @@ TPro BBS shares `terminal.css` from Proving Grounds for a consistent BBS aesthet
 - Monospace fonts
 - ASCII-art borders
 - Retro terminal feel
+
+### Terminal Features
+
+All pages include `terminal.js` (from Proving Grounds) which provides:
+
+**Screen Themes** - Dropdown in bottom-right corner:
+- Native (green), Green Phosphor, Amber Phosphor, White Phosphor
+- CSS variables update dynamically
+- Persisted in localStorage
+
+**Baud Rate Simulation**:
+- 300, 1200, 2400, 9600, 14400, 28800 baud, or Unlimited
+- Character-by-character rendering with authentic block cursor
+- Skippable via any keypress or click
+- Persisted in localStorage
+
+**Keyboard Shortcuts**:
+- Press menu key letters (e.g., `B` for "B) Back")
+- `<` or `,` for back navigation
+- Auto-focus on first input field

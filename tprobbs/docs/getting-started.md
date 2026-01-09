@@ -54,7 +54,33 @@ Once logged in, you can:
 - **Town Square** - Buy weapons, armor, spells, heal, bank
 - **Casino** - Gamble your gold
 - **Gang HQ** - Create or join gangs
+- **Voting Booth** - Vote for your favorite player
 - **Settings** - Customize your experience
+
+## Terminal Features
+
+The BBS includes authentic terminal emulation features accessible via the selector in the bottom-right corner:
+
+### Screen Themes
+- **Native** - Default green on black
+- **Green Phosphor** - Classic green CRT look
+- **Amber Phosphor** - Warm amber monochrome
+- **White Phosphor** - White on black monochrome
+
+### Baud Rate Simulation
+Experience authentic dial-up speeds:
+- 300 baud (30 CPS) - Original acoustic coupler speed
+- 1200 baud - Early modem speed
+- 2400 baud - Standard 1980s modem
+- 9600 baud - Fast for the era
+- 14.4k / 28.8k baud - 1990s speeds
+- Unlimited - Instant display
+
+Press any key or click to skip baud simulation on any page.
+
+### Keyboard Shortcuts
+- Press the letter shown in parentheses (e.g., `B` for "B) Back") to select menu items
+- `<` or `,` - Return to previous menu
 
 ## Next Steps
 

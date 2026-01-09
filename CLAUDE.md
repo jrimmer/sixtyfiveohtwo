@@ -27,17 +27,23 @@ cd sabotage/sabotage-web && npm run lint   # ESLint
 cd provinggrounds && npm run db:init  # Initialize database (required before first run)
 cd provinggrounds && npm run db:seed  # Seed game data
 cd provinggrounds && npm test         # Run tests (node --test)
+
+# TPro BBS (Express + SQLite)
+cd tprobbs && node src/db/init.js     # Reset database (deletes all data)
+cd tprobbs && node src/db/ensure.js   # Safe init (creates/seeds only if needed)
+npx playwright test tprobbs/tests/e2e.spec.js  # E2E tests
 ```
 
 ## Architecture
 
-This is a monorepo containing three classic Apple II games ported to modern web:
+This is a monorepo containing four classic Apple II games ported to modern web:
 
 ```
 server.js                 # Express server routing to all games
 ├── /telengard/          # React SPA (dungeon crawler RPG)
 ├── /sabotage/           # React SPA (arcade shooter)
-└── /provinggrounds/     # Express SSR (BBS door game)
+├── /provinggrounds/     # Express SSR (BBS door game)
+└── /tprobbs/            # Express SSR (BBS system recreation)
 ```
 
 ### Server Routing (`server.js`)
@@ -46,6 +52,7 @@ server.js                 # Express server routing to all games
 - `GET /telengard/*` - Static SPA serving from `telengard/dist/`
 - `GET /sabotage/*` - Static SPA serving from `sabotage/sabotage-web/dist/`
 - `/provinggrounds/*` - Express routes + Socket.IO
+- `/tprobbs/*` - Express routes for TPro BBS
 - `GET /health` - Health check endpoint
 
 ### Telengard (React Game)
@@ -71,6 +78,14 @@ Database: SQLite via better-sqlite3, schema in `src/db/schema.sql`
 Templates: EJS in `views/`
 Real-time: Socket.IO for WebSocket features
 
+### TPro BBS (Express App)
+
+Routes: `src/routes/` - auth, main, boards, email, combat, games, stores, gangs
+Database: Separate SQLite database (`tprobbs/data/tprobbs.db`)
+Templates: EJS in `views/pages/`
+Styling: Shared `terminal.css` from Proving Grounds
+Features: Screen themes (green/amber/white phosphor), baud rate simulation, keyboard shortcuts
+
 ## Tech Stack
 
 | Game | Frontend | State | Build |
@@ -78,6 +93,7 @@ Real-time: Socket.IO for WebSocket features
 | Telengard | React 19 + TS | Zustand | Vite 7 |
 | Sabotage | React 19 + TS + Canvas | Local state | Vite 7 |
 | Proving Grounds | EJS templates | Express session | N/A |
+| TPro BBS | EJS templates | Express session | N/A |
 
 Shared: Express 5, better-sqlite3, Socket.IO, Helmet
 
@@ -89,6 +105,7 @@ Run tests per-game only, not the full suite:
 cd telengard && npm run lint && npm run build      # Lint + build check
 cd sabotage/sabotage-web && npm run lint && npm run build
 cd provinggrounds && npm test                       # Node.js test runner
+npx playwright test tprobbs/tests/e2e.spec.js      # TPro BBS E2E tests
 ```
 
 ## Game-Specific Guidance
@@ -96,6 +113,7 @@ cd provinggrounds && npm test                       # Node.js test runner
 Each game has its own `CLAUDE.md` with detailed architecture:
 - `telengard/CLAUDE.md` - Dungeon algorithms, spell system, combat formulas
 - `sabotage/CLAUDE.md` - Memory layout, 6502 entry points, copy protection details
+- `tprobbs/CLAUDE.md` - Combat formulas, XP system, database schema, testing guide
 
 ## Environment Variables
 
@@ -106,6 +124,7 @@ PORT=3000
 NODE_ENV=development
 SESSION_SECRET=your-secret-key-here  # Required in production
 DATABASE_PATH=./provinggrounds/data/provinggrounds.db
+TPROBBS_DATABASE_PATH=./tprobbs/data/tprobbs.db
 ```
 
 ## Deployment

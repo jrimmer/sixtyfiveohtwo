@@ -62,6 +62,26 @@ A web recreation of the legendary Apple II BBS door game. Create a character, ba
 
 ---
 
+### TPro BBS (Lost Gonzo BBS)
+
+A web recreation of an Apple II BBS system, faithfully ported from AppleSoft BASIC. Full classic BBS experience with RPG elements, gangs, and casino games.
+
+**Features:**
+- Character creation with 8 classes and 200-point stat allocation
+- 7-level dungeon with 49 rooms per level and 100 unique monsters
+- Town Square: Weapon shop (55 weapons), armor shop (28 armors), magic shop (12 spells), healer, bank
+- Casino: Blackjack, slots, craps, and high-low card games
+- Gang system with up to 4 members per gang
+- Message boards and private email system
+- Voting booth for player popularity
+- Screen themes: Native, Green Phosphor, Amber Phosphor, White Phosphor
+- Baud rate simulation: 300 to unlimited (for authentic retro experience)
+- Keyboard shortcuts for menu navigation
+
+**Tech Stack:** Express 5, EJS, SQLite (better-sqlite3)
+
+---
+
 ## Quick Start
 
 ### Prerequisites
@@ -79,11 +99,14 @@ cd sixtyfiveohtwo
 # Install dependencies (also builds sub-apps)
 npm install
 
-# Initialize Proving Grounds database
-cd provinggrounds && npm run db:init && cd ..
-
-# Start the server
+# Start the server (databases auto-initialize on first run)
 npm start
+```
+
+Note: Both Proving Grounds and TPro BBS databases auto-initialize on first startup. For manual reset:
+```bash
+cd provinggrounds && npm run db:init && cd ..  # Reset Proving Grounds
+cd tprobbs && node src/db/init.js && cd ..     # Reset TPro BBS
 ```
 
 The server runs at `http://localhost:3000` by default.
@@ -107,10 +130,11 @@ npm run build:sabotage
 Copy `.env.example` to `.env` and configure:
 
 ```bash
-PORT=3000                                    # Server port
-NODE_ENV=development                         # Environment (development/production)
-SESSION_SECRET=your-secret-key-here          # Required in production
-DATABASE_PATH=./provinggrounds/data/provinggrounds.db
+PORT=3000                                              # Server port
+NODE_ENV=development                                   # Environment (development/production)
+SESSION_SECRET=your-secret-key-here                    # Required in production
+DATABASE_PATH=./provinggrounds/data/provinggrounds.db  # Proving Grounds database
+TPROBBS_DATABASE_PATH=./tprobbs/data/tprobbs.db        # TPro BBS database
 ```
 
 ## Project Structure
@@ -135,12 +159,20 @@ sixtyfiveohtwo/
 │   │   │   ├── constants/ # Values from 6502 disassembly
 │   │   │   └── audio/     # Sound effects
 │   └── Sabotage.dis65     # SourceGen disassembly project
-└── provinggrounds/
+├── provinggrounds/
+│   ├── src/
+│   │   ├── routes/        # Express route handlers
+│   │   └── db/            # SQLite schema and seeds
+│   ├── views/             # EJS templates
+│   └── original-disks/    # Original Apple II disk images
+└── tprobbs/               # TPro BBS (Lost Gonzo BBS)
     ├── src/
     │   ├── routes/        # Express route handlers
-    │   └── db/            # SQLite schema and seeds
+    │   ├── db/            # SQLite schema and seeds
+    │   └── middleware/    # Auth and user loading
     ├── views/             # EJS templates
-    └── original-disks/    # Original Apple II disk images
+    ├── docs/              # Documentation
+    └── tests/             # Playwright E2E tests
 ```
 
 ## Deployment
@@ -174,6 +206,7 @@ The health check endpoint is available at `/health`.
 | `/telengard/` | Telengard dungeon crawler |
 | `/sabotage/` | Sabotage arcade game |
 | `/provinggrounds/` | Proving Grounds BBS |
+| `/tprobbs/` | TPro BBS (Lost Gonzo BBS) |
 | `/health` | Health check endpoint |
 
 ## Historical Context
@@ -187,6 +220,7 @@ The MOS Technology 6502 was an 8-bit microprocessor that powered the Apple II, C
 - **Telengard** (1982) - Created by Daniel Lawrence, inspired by the mainframe game DND. One of the first commercial dungeon crawlers.
 - **Sabotage** (1981) - A fast-paced arcade shooter that showcased the Apple II's hi-res graphics capabilities.
 - **The Proving Grounds** - A classic BBS door game where players created characters and battled for supremacy on the combat ladder.
+- **TPro BBS** - A classic Apple II BBS system recreation with RPG elements, gang warfare, casino games, and authentic terminal emulation including phosphor screen themes and baud rate simulation.
 
 ## Contributing
 

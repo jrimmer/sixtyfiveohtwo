@@ -24,6 +24,8 @@ TPro BBS recreates the classic BBS experience with:
 - **Gangs** - Form and manage player gangs
 - **Message Boards** - Classic BBS communication
 - **Private Email** - Player-to-player messaging
+- **Voting Booth** - Vote for your favorite players
+- **Terminal Emulation** - Screen themes (green/amber/white phosphor), baud rate simulation, keyboard shortcuts
 
 ## Tech Stack
 

@@ -155,3 +155,20 @@ npx playwright test tprobbs/tests/e2e.spec.js --project=webkit
 ## Styling
 
 Shares `terminal.css` from Proving Grounds for consistent BBS aesthetic.
+
+### Terminal Features (via terminal.js)
+
+All pages include `terminal.js` which provides:
+
+**Screen Themes** - Selectable via dropdown in bottom-right corner:
+- Native (green), Green Phosphor, Amber Phosphor, White Phosphor
+- Persisted in localStorage as `screenTheme`
+
+**Baud Rate Simulation** - Authentic character-by-character rendering:
+- 300, 1200, 2400, 9600, 14400, 28800 baud, or Unlimited
+- Persisted in localStorage as `baudRate`
+- Press any key or click to skip
+
+**Keyboard Shortcuts**:
+- Press menu key letters (e.g., `B` for "B) Back")
+- `<` or `,` for back navigation
