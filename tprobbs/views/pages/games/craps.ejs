@@ -34,28 +34,23 @@
             <% } %>
         </div>
 
-        <% if (roll) { %>
+        <% if (result && result.die1) { %>
         <div class="dice-display">
 <pre>
 +-------+   +-------+
 |       |   |       |
-|   <%= roll.die1 %>   |   |   <%= roll.die2 %>   |
+|   <%= result.die1 %>   |   |   <%= result.die2 %>   |
 |       |   |       |
 +-------+   +-------+
 
-Total: <%= roll.total %>
+Total: <%= result.total %>
 </pre>
         </div>
         <% } %>
 
-        <% if (result) { %>
-        <div class="message <%= result.won ? 'message-success' : 'message-error' %>">
-            <p><%= result.message %></p>
-            <% if (result.won) { %>
-            <p>You won <%= result.winnings.toLocaleString() %> gold!</p>
-            <% } else if (result.lost) { %>
-            <p>You lost <%= result.lostAmount.toLocaleString() %> gold.</p>
-            <% } %>
+        <% if (message) { %>
+        <div class="message <%= message.includes('win') || message.includes('hit') ? 'message-success' : (message.includes('lose') || message.includes('Craps') ? 'message-error' : '') %>">
+            <p><%= message %></p>
         </div>
         <% } %>
 
@@ -65,7 +60,7 @@ Total: <%= roll.total %>
         <p>Any other number becomes the "point".</p>
         <p>Roll the point again before a 7 to win!</p>
 
-        <form action="/tprobbs/games/craps/bet" method="POST">
+        <form action="/tprobbs/games/craps/roll" method="POST">
             <div class="form-group">
                 <label for="bet">Place Your Bet (1-500):</label>
                 <input type="number" id="bet" name="bet" min="1" max="500" value="10" required>

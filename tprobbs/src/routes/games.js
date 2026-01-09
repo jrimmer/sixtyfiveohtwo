@@ -312,20 +312,26 @@ router.get('/craps', requireAuth, (req, res) => {
 
 router.post('/craps/roll', requireAuth, (req, res) => {
     const db = req.app.get('tprodb');
-    const bet = parseInt(req.body.bet, 10) || 0;
+    let game = req.session.craps || { point: null, bet: 0 };
 
-    if (bet <= 0 || bet > req.user.gold) {
-        return res.render('pages/games/craps', {
-            title: 'Craps',
-            user: req.user,
-            game: req.session.craps || { point: null },
-            result: null,
-            message: 'Invalid bet amount'
-        });
+    // For come out roll, get bet from form. For point rolls, use stored bet.
+    let bet;
+    if (game.point === null) {
+        bet = parseInt(req.body.bet, 10) || 0;
+        if (bet <= 0 || bet > req.user.gold) {
+            return res.render('pages/games/craps', {
+                title: 'Craps',
+                user: req.user,
+                game,
+                result: null,
+                message: 'Invalid bet amount'
+            });
+        }
+        // Deduct bet on come out
+        db.prepare('UPDATE users SET gold = gold - ? WHERE id = ?').run(bet, req.user.id);
+    } else {
+        bet = game.bet; // Use stored bet for point rolls
     }
-
-    // Deduct bet
-    db.prepare('UPDATE users SET gold = gold - ? WHERE id = ?').run(bet, req.user.id);
 
     // Roll dice
     const die1 = Math.floor(Math.random() * 6) + 1;
@@ -334,34 +340,39 @@ router.post('/craps/roll', requireAuth, (req, res) => {
 
     let message;
     let winnings = 0;
-    let game = req.session.craps || { point: null };
+    let goldChange = -bet; // Track net gold change for display
 
     if (game.point === null) {
         // Come out roll
         if (total === 7 || total === 11) {
             winnings = bet * 2;
             message = `Natural ${total}! You win ${winnings} gold!`;
+            goldChange = winnings - bet;
         } else if (total === 2 || total === 3 || total === 12) {
             message = `Craps! You lose ${bet} gold.`;
+            goldChange = -bet;
         } else {
             game.point = total;
-            // Return bet for point phase
-            db.prepare('UPDATE users SET gold = gold + ? WHERE id = ?').run(bet, req.user.id);
+            game.bet = bet; // Store bet for point phase
             message = `Point is ${total}. Roll again to hit your point!`;
+            goldChange = 0; // No change yet - bet is riding
         }
     } else {
-        // Point roll
+        // Point roll (bet already deducted on come out, now riding)
         if (total === game.point) {
             winnings = bet * 2;
             message = `You hit your point! You win ${winnings} gold!`;
             game.point = null;
+            game.bet = 0;
+            goldChange = bet; // Net win is bet amount (2x - original bet)
         } else if (total === 7) {
             message = `Seven out! You lose ${bet} gold.`;
             game.point = null;
+            game.bet = 0;
+            goldChange = 0; // Already lost on come out
         } else {
-            // Continue rolling
-            db.prepare('UPDATE users SET gold = gold + ? WHERE id = ?').run(bet, req.user.id);
             message = `Rolled ${total}. Keep rolling for ${game.point}!`;
+            goldChange = 0; // No change - still rolling
         }
     }
 
@@ -371,9 +382,12 @@ router.post('/craps/roll', requireAuth, (req, res) => {
 
     req.session.craps = game;
 
+    // Refresh user gold from DB
+    const updatedUser = db.prepare('SELECT gold FROM users WHERE id = ?').get(req.user.id);
+
     res.render('pages/games/craps', {
         title: 'Craps',
-        user: { ...req.user, gold: req.user.gold - bet + winnings },
+        user: { ...req.user, gold: updatedUser.gold },
         game,
         result: { die1, die2, total },
         message
