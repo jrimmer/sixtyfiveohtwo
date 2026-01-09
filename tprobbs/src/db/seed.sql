@@ -8,7 +8,7 @@ INSERT INTO access_levels (id, name, level, calls_per_day, time_limit) VALUES
 (2, 'New User', 2, 2, 15),
 (3, 'Prisoner', 3, 1, 15),
 (4, 'Probation', 4, 2, 20),
-(5, 'Normal', 5, 5, 60),
+(5, 'Normal', 5, 10000, 60),
 (6, 'Elite User', 6, 6, 90),
 (7, 'Contributor', 7, 7, 90),
 (8, 'Visiting Sysop', 8, 8, 90),
@@ -288,3 +288,18 @@ INSERT INTO config (key, value) VALUES
 ('bbs_name', 'Lost Gonzo BBS'),
 ('sysop_name', 'Sysop'),
 ('version', '1.0.0');
+
+-- E2E Test User (password: testpass123)
+INSERT INTO users (
+    username, password_hash, class, access_level,
+    stamina, intellect, agility, charisma,
+    hit_points, max_hp, spell_power, max_sp,
+    weapon, armor, gold
+) VALUES (
+    'E2ETestUser',
+    '$2b$10$l13y7yRkrKnguVhGRRxON.Jj8E0MAVH4pCTEIPls0SzOPUPlsy7ZC',
+    8, 5,
+    50, 50, 50, 50,
+    15, 15, 0, 0,
+    1, 1, 1000
+);

@@ -230,3 +230,6 @@ CREATE INDEX IF NOT EXISTS idx_users_level ON users(level DESC);
 CREATE INDEX IF NOT EXISTS idx_sessions_user_date ON sessions(user_id, date);
 CREATE INDEX IF NOT EXISTS idx_arena_top_xp ON arena_top(xp_earned DESC);
 CREATE INDEX IF NOT EXISTS idx_arena_kills_time ON arena_kills(killed_at DESC);
+CREATE INDEX IF NOT EXISTS idx_arena_kills_killer ON arena_kills(killer_id);
+CREATE INDEX IF NOT EXISTS idx_arena_kills_victim ON arena_kills(victim_id);
+CREATE INDEX IF NOT EXISTS idx_gangs_leader ON gangs(leader_id);
