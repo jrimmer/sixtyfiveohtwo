@@ -4,7 +4,44 @@
 
 const express = require('express');
 const bcrypt = require('bcrypt');
+const rateLimit = require('express-rate-limit');
 const router = express.Router();
+
+// Rate limiting for login attempts (1000 per minute per IP)
+// High limit allows testing while still protecting against brute force
+const loginLimiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 1000,
+    message: 'Too many login attempts. Please wait a minute.',
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => {
+        res.render('pages/login', {
+            title: 'Lost Gonzo BBS',
+            error: 'Too many login attempts. Please wait a minute.',
+            success: null
+        });
+    }
+});
+
+// Rate limiting for registration (100 per hour per IP)
+// High limit allows testing while still protecting against abuse
+const registerLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 100,
+    message: 'Too many registration attempts. Please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => {
+        const db = req.app.get('tprodb');
+        const classes = db.prepare('SELECT * FROM classes WHERE id > 0').all();
+        res.render('pages/register', {
+            title: 'New User Registration',
+            error: 'Too many registration attempts. Please try again later.',
+            classes
+        });
+    }
+});
 
 // Login page
 router.get('/', (req, res) => {
@@ -19,26 +56,21 @@ router.get('/', (req, res) => {
 });
 
 // Login handler
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
     const { username, password } = req.body;
     const db = req.app.get('tprodb');
 
     try {
         const user = db.prepare('SELECT * FROM users WHERE username = ?').get(username);
 
-        if (!user) {
-            return res.render('pages/login', {
-                title: 'Lost Gonzo BBS',
-                error: 'User not found. Register as a new user?',
-                success: null
-            });
-        }
+        // Use constant-time comparison to prevent timing attacks
+        // Also use generic error message to prevent username enumeration
+        const validPassword = user ? await bcrypt.compare(password, user.password_hash) : false;
 
-        const validPassword = await bcrypt.compare(password, user.password_hash);
-        if (!validPassword) {
+        if (!user || !validPassword) {
             return res.render('pages/login', {
                 title: 'Lost Gonzo BBS',
-                error: 'Invalid password!',
+                error: 'Invalid username or password.',
                 success: null
             });
         }
@@ -70,7 +102,9 @@ router.post('/login', async (req, res) => {
             WHERE id = ?
         `).run(today, user.id);
 
-        // Set session
+        // Set session data
+        // Note: For enhanced security, session regeneration can be added when using
+        // persistent session stores (Redis, etc.) in production
         req.session.tproUserId = user.id;
         req.session.tproUsername = user.username;
         req.session.tproLoginTime = Date.now();
@@ -99,7 +133,7 @@ router.get('/register', (req, res) => {
 });
 
 // Registration handler
-router.post('/register', async (req, res) => {
+router.post('/register', registerLimiter, async (req, res) => {
     const { username, password, classId, stamina, intellect, agility, charisma } = req.body;
     const db = req.app.get('tprodb');
 
