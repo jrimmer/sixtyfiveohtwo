@@ -204,28 +204,28 @@ CREATE TABLE classes (
     description TEXT
 );
 
--- Weapons (54 items from CONFIG)
+-- Weapons (54 items from CONFIG - see Complete Equipment Tables)
 CREATE TABLE weapons (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     price REAL NOT NULL
 );
 
--- Armor (27 items from CONFIG)
+-- Armor (27 items from CONFIG - see Complete Equipment Tables)
 CREATE TABLE armor (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     price REAL NOT NULL
 );
 
--- Homes (16 items from CONFIG)
+-- Homes (16 items from CONFIG - see Complete Equipment Tables)
 CREATE TABLE homes (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     price REAL NOT NULL
 );
 
--- Security (16 items from CONFIG)
+-- Security (16 items from CONFIG - see Complete Equipment Tables)
 CREATE TABLE security (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
@@ -1060,6 +1060,359 @@ function canPlay(user, session) {
 - `views/pages/error.ejs` - Generic error with message
 - 404: "You've wandered into an empty void..."
 - 500: "The dungeon has collapsed! Try again."
+
+## Complete Equipment Tables (from CONFIG)
+
+### Weapons (54 items)
+
+| ID | Name | Price |
+|----|------|-------|
+| 1 | Hands | 0 |
+| 2 | Dart | 1 |
+| 3 | Sling | 2 |
+| 4 | Dagger | 5 |
+| 5 | Staff | 10 |
+| 6 | Club | 25 |
+| 7 | Hammer | 50 |
+| 8 | Mace | 100 |
+| 9 | Flail | 250 |
+| 10 | Spear | 500 |
+| 11 | Axe | 1,000 |
+| 12 | Harpoon | 2,500 |
+| 13 | Short Bow | 5,000 |
+| 14 | War Hammer | 10,000 |
+| 15 | Battle Axe | 25,000 |
+| 16 | Light Crossbow | 50,000 |
+| 17 | Javelin | 100,000 |
+| 18 | Short Sword | 250,000 |
+| 19 | Long Bow | 500,000 |
+| 20 | Long Sword | 1,000,000 |
+| 21 | Heavy Crossbow | 2,500,000 |
+| 22 | Scimitar | 5,000,000 |
+| 23 | Pole Arm | 10,000,000 |
+| 24 | Broad Sword | 25,000,000 |
+| 25 | Trident | 50,000,000 |
+| 26 | Two-Handed Sword | 100,000,000 |
+| 27 | Gloves of Strength | 250,000,000 |
+| 28 | Dart of Homing | 500,000,000 |
+| 29 | Sling of Seeking | 1E+09 |
+| 30 | Dagger of Venom | 2.5E+09 |
+| 31 | Staff of Striking | 5E+09 |
+| 32 | Hammer of Throwing | 1E+10 |
+| 33 | Mace of Disruption | 2.5E+10 |
+| 34 | Axe of Hurling | 5E+10 |
+| 35 | Hammer of Thunderbolts | 1E+11 |
+| 36 | Axe of Lords | 2.5E+11 |
+| 37 | Crossbow of Distance | 5E+11 |
+| 38 | Sword of Quickness | 1E+12 |
+| 39 | Arrows of Slaying | 2.5E+12 |
+| 40 | Sword of Sharpness | 5E+12 |
+| 41 | Crossbow of Accuracy | 1E+13 |
+| 42 | Scimitar of Speed | 2.5E+13 |
+| 43 | Sword of Wounding | 5E+13 |
+| 44 | Trident of Submission | 1E+14 |
+| 45 | Vorpal Sword | 2.5E+14 |
+| 46 | Wand of Wonder | 5E+14 |
+| 47 | Rod of Smiting | 1E+15 |
+| 48 | Sword of Life Stealing | 2.5E+15 |
+| 49 | Wand of Lightning | 5E+15 |
+| 50 | Ring of Shooting Stars | 1E+16 |
+| 51 | Staff of the Magi | 2.5E+16 |
+| 52 | S.K.U.D. Missle | 5E+16 |
+| 53 | Conventional Warhead Missle | 1E+17 |
+| 54 | Chemical Warhead Missle | 2.5E+17 |
+| 55 | Nuclear Warhead Missle | 5E+17 |
+
+**Note:** Weapon #1 (Hands, price=0) is the base weapon. WP(1) is used in formulas.
+
+### Armor (27 items)
+
+| ID | Name | Price |
+|----|------|-------|
+| 1 | Skin | 0 |
+| 2 | Wooden Shield | 1 |
+| 3 | Small Shield | 5 |
+| 4 | Large Shield | 10 |
+| 5 | Leather | 50 |
+| 6 | Padded Leather | 100 |
+| 7 | Studded Leather | 500 |
+| 8 | Ring Mail | 1,000 |
+| 9 | Scale Mail | 5,000 |
+| 10 | Chain Mail | 10,000 |
+| 11 | Splint Mail | 50,000 |
+| 12 | Banded Mail | 100,000 |
+| 13 | Bronze Plate Mail | 500,000 |
+| 14 | Normal Plate Mail | 1,000,000 |
+| 15 | Field Plate Armor | 5,000,000 |
+| 16 | Full Plate Armor | 10,000,000 |
+| 17 | Dancing Shield | 50,000,000 |
+| 18 | Dragon Scale Mail | 100,000,000 |
+| 19 | Elfin Chain Mail | 500,000,000 |
+| 20 | Minthral Plate Armor | 1E+09 |
+| 21 | Cloak of Elvenkind | 5E+09 |
+| 22 | Robe of Blending | 1E+10 |
+| 23 | Adamantite Plate Mail | 5E+10 |
+| 24 | Cloak of Displacement | 1E+11 |
+| 25 | Cube of Force | 5E+11 |
+| 26 | Ring of Invisibility | 1E+12 |
+| 27 | Patriot Missles | 5E+12 |
+| 28 | Nuclear Proof Bunker | 1E+13 |
+
+### Homes (16 items)
+
+| ID | Name | Price |
+|----|------|-------|
+| 0 | Alley | 0 |
+| 1 | Cardboard box | 100 |
+| 2 | Cave | 1,000 |
+| 3 | Stable | 10,000 |
+| 4 | Shed | 100,000 |
+| 5 | Shack | 1,000,000 |
+| 6 | Barn | 10,000,000 |
+| 7 | Cabin | 100,000,000 |
+| 8 | Room above tavern | 1E+09 |
+| 9 | Apartment | 1E+10 |
+| 10 | House | 1E+11 |
+| 11 | Tower | 1E+12 |
+| 12 | Mansion | 1E+13 |
+| 13 | Castle | 1E+14 |
+| 14 | Palace | 1E+15 |
+| 15 | Fortress | 1E+16 |
+
+### Security Items (16 items)
+
+| ID | Name | Price |
+|----|------|-------|
+| 0 | Whisky bottle | 0 |
+| 1 | Baseball bat | 100 |
+| 2 | Padlock | 1,000 |
+| 3 | Dead bolt lock | 10,000 |
+| 4 | Trip-wire trap | 100,000 |
+| 5 | Dog | 1,000,000 |
+| 6 | Fence | 10,000,000 |
+| 7 | Barbed wire fence | 100,000,000 |
+| 8 | Brick wall | 1E+09 |
+| 9 | Shotgun | 1E+10 |
+| 10 | Burglar alarm | 1E+11 |
+| 11 | Security guard | 1E+12 |
+| 12 | Guard tower | 1E+13 |
+| 13 | Moat | 1E+14 |
+| 14 | Troops | 1E+15 |
+| 15 | Magical barrier | 1E+16 |
+
+### Access Levels (11 levels, from CONFIG)
+
+| ID | Name | Calls/Day | Time Limit (min) |
+|----|------|-----------|------------------|
+| 0 | Deceased | 0 | 0 |
+| 1 | Guest User | 1 | 10 |
+| 2 | New User | 2 | 15 |
+| 3 | Prisoner | 1 | 15 |
+| 4 | Probation | 2 | 20 |
+| 5 | Normal | 5 | 60 |
+| 6 | Elite User | 6 | 90 |
+| 7 | Contributor | 7 | 90 |
+| 8 | Visiting Sysop | 8 | 90 |
+| 9 | Co-Sysop | 9 | 240 |
+| 10 | Sysop | 9 | 1440 |
+
+## Level-Up Mechanics (from GAME.BAS lines 40000-40200)
+
+### Level-Up Requirements
+
+```javascript
+// XP needed for next level (line 30020)
+function xpForNextLevel(level, intellect) {
+    return Math.pow(2, level + 1) * (1100 + intellect * 2);
+}
+```
+
+**Note:** Higher intellect = MORE XP required to level up (intellect affects learning curve).
+
+### Level-Up HP Gain (line 40040)
+
+```javascript
+// HP gain formula: INT(Stamina/10) + RND(Level) + Level
+function hpGainOnLevelUp(stamina, level) {
+    const gain = Math.floor(stamina / 10) + Math.floor(Math.random() * level) + level;
+    return Math.min(gain, 9999 - currentHP); // Cap total at 9999
+}
+```
+
+### Level-Up SP Gain (line 40080)
+
+Only for spell-casting classes (2=Magician, 4=Bard, 5=Cleric, 7=Jester, 9=Sage, 11=Hero):
+
+```javascript
+// SP gain formula: INT(Intellect/10) + RND(Level) + Level
+function spGainOnLevelUp(intellect, level, playerClass) {
+    if (![2, 4, 5, 7, 9, 11].includes(playerClass)) return 0;
+    const gain = Math.floor(intellect / 10) + Math.floor(Math.random() * level) + level;
+    return Math.min(gain, 9999 - currentSP); // Cap total at 9999
+}
+```
+
+### Stat Bonuses Per Level (lines 40110-40140)
+
+Each level grants +1 to specific stats based on class:
+
+| Class | Stamina | Intellect | Agility | Charisma |
+|-------|---------|-----------|---------|----------|
+| 1 - Fighter | +1 | - | - | - |
+| 2 - Magician | - | +1 | - | - |
+| 3 - Thief | - | - | +1 | - |
+| 4 - Bard | - | - | - | - |
+| 5 - Cleric | - | - | - | - |
+| 6 - Assassin | - | - | - | - |
+| 7 - Jester | - | - | - | - |
+| 8 - Barbarian | +1 | - | - | - |
+| 9 - Sage | - | +1 | - | - |
+| 10 - Alchemist | - | - | +1 | - |
+| 11 - Hero | +1 | +1 | +1 | +1 |
+
+**Code:**
+```javascript
+function applyStatBonuses(player) {
+    const cl = player.class;
+    if ([1, 8, 11].includes(cl)) player.stamina = Math.min(99, player.stamina + 1);
+    if ([2, 9, 11].includes(cl)) player.intellect = Math.min(99, player.intellect + 1);
+    if ([3, 10, 11].includes(cl)) player.agility = Math.min(99, player.agility + 1);
+    if (cl === 11) player.charisma = Math.min(99, player.charisma + 1);
+}
+```
+
+## Complete Spell Effects (from DUNGEON.BAS lines 12200-12750)
+
+| ID | Spell | SP Cost | Effect Formula |
+|----|-------|---------|----------------|
+| 1 | Charm | 10 | `Charisma += RND(10)`, cap 100 |
+| 2 | Intuition | 25 | `Intellect += RND(10)`, cap 100 |
+| 3 | Strength | 50 | `Stamina += RND(10)`, cap 100 |
+| 4 | Accuracy | 75 | `Agility += RND(10)`, cap 100 |
+| 5 | Shield | 100 | `Armor += 1` (temporary) |
+| 6 | Hone | 250 | `Weapon += 1` (temporary) |
+| 7 | Teleport | 500 | Exit combat/dungeon safely |
+| 8 | Heal | 750 | `HP += SUM(RND(15) for i=1..Level)`, cap Max HP |
+| 9 | Blast | 1000 | Damage = `SUM(RND(17 - 3*(enemy is Barbarian)) for i=1..Level)` |
+| 10 | Resurrect | 2500 | Clear KO% flag on target player (must be outside combat) |
+| 11 | Cure | 5000 | `HP = Max HP` (full restore) |
+| 12 | Disintegrate | 7500 | Enemy HP = 0 (instant kill, can fail) |
+
+### SP Cost Modifier (Sage/Hero)
+
+Classes 9 (Sage) and 11 (Hero) get reduced SP cost:
+
+```javascript
+function getSpellCost(baseSpCost, playerClass) {
+    if (playerClass === 9 || playerClass === 11) {
+        return Math.floor(baseSpCost * 0.8); // 20% discount
+    }
+    return baseSpCost;
+}
+```
+
+### Spell Failure Chance (line 12140)
+
+```javascript
+function spellFails(caster, enemy) {
+    const roll = Math.floor(Math.random() * 100);
+    let threshold = roll + 10 * (caster.class !== 2);  // +10 if not Magician
+    threshold -= 20 * (caster.class === 9 || caster.class === 11); // -20 for Sage/Hero
+    threshold -= 10 * (enemy.class === 8); // -10 if enemy is Barbarian
+    return threshold > caster.intellect;
+}
+```
+
+## Store Buy/Sell Mechanics (from GAME.BAS)
+
+### Buying Equipment
+
+Players can buy equipment if they have enough gold.
+
+### Selling Equipment
+
+Sell price is based on charisma (line 10550 in ARENA.BAS):
+
+```javascript
+function getSellPrice(itemPrice, charisma) {
+    return Math.floor(itemPrice * (50 + charisma / 2) / 100);
+}
+```
+
+- Minimum sell price: 50% of item price (at 0 Charisma)
+- Maximum sell price: 100% of item price (at 100 Charisma)
+
+### Equipment Transfer in PvP (ARENA.BAS lines 10500-10560)
+
+When killing another player:
+1. If loser's weapon > winner's weapon → winner takes weapon
+2. Otherwise → winner sells it for `itemPrice * (50 + charisma/2) / 100`
+3. Same logic for armor
+
+## Poison System (from DUNGEON.BAS lines 40000-40200)
+
+### Classes That Can Use Poison
+
+Only classes 3 (Thief), 6 (Assassin), and 10 (Alchemist) can use poison.
+
+### Poison Types
+
+12 poison types, stored in the same SP bitmask as spells (can own each type via bitmask).
+
+### Applying Poison (line 40120)
+
+```javascript
+function applyPoison(player, poisonLevel) {
+    // A5 = WP + I * (2 + 2*(CL=10))
+    // Alchemist gets double poison effectiveness
+    const multiplier = player.class === 10 ? 4 : 2;
+    player.effectiveWeapon = player.weapon + poisonLevel * multiplier;
+}
+```
+
+- **Thief/Assassin**: Weapon + (poisonLevel × 2)
+- **Alchemist**: Weapon + (poisonLevel × 4)
+
+### Poison Cap (line 40150)
+
+Poison effectiveness caps at weapon + 2:
+
+```javascript
+// IF A5 > WP + 2 THEN A5 = WP + 2
+if (player.effectiveWeapon > player.weapon + 2) {
+    player.effectiveWeapon = player.weapon + 2;
+    // "Your weapon has as much poison as it can hold. The rest just drips off."
+}
+```
+
+### Poison Consumption (line 40140)
+
+33% chance to consume poison vial on use:
+
+```javascript
+// RND(3) = 1 THEN SP = SP - 2^(I-1) = poison consumed
+if (Math.floor(Math.random() * 3) === 0) {
+    player.spells &= ~(1 << (poisonLevel - 1)); // Clear poison bit
+    // "You toss the empty vial aside."
+}
+```
+
+## Cleric Healing Cost (from DUNGEON.BAS line 10010)
+
+```javascript
+function getClericHealingCost(maxHP, currentHP, level, baseWeaponPrice) {
+    // BW is a scaling factor (likely base weapon multiplier)
+    // WP(1) is the base weapon price (Hands = 0, effectively making this formula 0 for low levels)
+    const damage = maxHP - currentHP;
+    const levelFactor = Math.pow(2, (level + 1) / (100 / BW));
+    return Math.floor(damage * levelFactor * baseWeaponPrice * 250 / maxHP);
+}
+```
+
+**Note:** This formula scales healing cost with:
+- Amount of damage to heal
+- Player level (exponential)
+- Base weapon price (ties cost to economy)
 
 ## Notes
 
